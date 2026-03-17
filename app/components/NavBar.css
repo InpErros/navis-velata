@@ -1,9 +1,9 @@
 .navbar {
+    background-color: #66C8D8;
+    padding: 12px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 32px;
-    background-color: #000000;
     flex-wrap: wrap;
     position: relative;
   }
@@ -27,7 +27,7 @@
   
   .nav-links a:not(.nav-donate) {
     text-decoration: none;
-    color: #ffffff;
+    color: #000000;
     font-size: 15px;
     padding-bottom: 2px;
     border-bottom: 2px solid transparent;
@@ -35,10 +35,11 @@
   }
   
   .nav-links a:not(.nav-donate):hover {
-    border-bottom: 2px solid #ecaa00;
-    color: #ffffff;
+    border-bottom: 2px solid #000000;
+    color: #000000;
     opacity: 1;
   }
+
   .nav-donate {
     background-color: #ecaa00;
     color: #000000;
@@ -68,7 +69,7 @@
     display: block;
     width: 24px;
     height: 2px;
-    background-color: #ffffff;
+    background-color: #000000;
   }
   
   /* Mobile */
