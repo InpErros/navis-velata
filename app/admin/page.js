@@ -33,7 +33,7 @@ export default function Admin() {
   }, [])
 
   const fetchEvents = async (pw) => {
-    const res = await fetch('/api/events', {
+    const res = await fetch('/api/admin/events', {
       headers: { 'x-admin-password': pw }
     })
     const data = await res.json()
@@ -42,15 +42,15 @@ export default function Admin() {
 
   const handleLogin = async (e) => {
     e.preventDefault()
-    const pw = e.target.password.value  // ← read directly from the form
+    const pw = e.target.password.value
     
-    const res = await fetch('/api/events', {
+    const res = await fetch('/api/admin/events', {
       headers: { 'x-admin-password': pw }
     })
     if (res.status === 401) {
       setError('Incorrect password')
     } else {
-      sessionStorage.setItem('admin_pw', pw)  // ← save the actual value
+      sessionStorage.setItem('admin_pw', pw)
       setPassword(pw)
       setAuthed(true)
       fetchEvents(pw)
