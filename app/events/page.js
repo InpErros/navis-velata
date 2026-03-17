@@ -82,6 +82,7 @@ export default async function Events() {
                   </p>
                 </div>
                 <a href={event.registrationLink || '#'}
+                data-external
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{

@@ -142,7 +142,7 @@ export default function LearnToSail() {
           <p style={{ fontSize: '17px', color: '#6b7280', marginBottom: '32px', lineHeight: '1.8' }}>
             Check the schedule and register for your first course today.
           </p>
-          <a href="https://your-registration-link.com" target="_blank" rel="noopener noreferrer" style={{
+          <a href="https://your-registration-link.com" data-external target="_blank" rel="noopener noreferrer" style={{
             backgroundColor: '#0ea5e9',
             color: '#ffffff',
             padding: '14px 32px',

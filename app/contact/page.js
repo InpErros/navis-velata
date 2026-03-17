@@ -95,6 +95,7 @@ export default function Contact() {
                 href="https://maps.google.com/?q=5437+E+Ocean+Blvd,+Long+Beach,+CA+90803"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-external
                 style={{
                   backgroundColor: '#ecaa00',
                   color: '#000000',

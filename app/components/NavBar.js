@@ -30,7 +30,7 @@ export default function NavBar() {
         <Link href="/events">Events</Link>
         <Link href="/about">About</Link>
         <Link href="/contact">Contact</Link>
-        <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN" target="_blank" rel="noopener noreferrer" className="nav-donate">Cashnet</a>
+        <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN" data-external target="_blank" rel="noopener noreferrer" className="nav-donate">Cashnet</a>
       </div>
     </nav>
   )
