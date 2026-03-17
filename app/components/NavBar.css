@@ -25,20 +25,33 @@
     align-items: center;
   }
   
-  .nav-links a {
+  .nav-links a:not(.nav-donate) {
     text-decoration: none;
     color: #ffffff;
     font-size: 15px;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.15s ease, color 0.15s ease;
   }
   
+  .nav-links a:not(.nav-donate):hover {
+    border-bottom: 2px solid #ecaa00;
+    color: #ffffff;
+    opacity: 1;
+  }
   .nav-donate {
     background-color: #ecaa00;
-    color: #000000 !important;
+    color: #000000;
     padding: 8px 18px;
     border-radius: 6px;
     font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
   }
   
+  .nav-donate:hover {
+    opacity: 0.85;
+  }
   /* Hide toggle mechanics on desktop */
   .nav-toggle {
     display: none;
