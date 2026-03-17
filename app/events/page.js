@@ -1,60 +1,15 @@
-export default function Events() {
-    const events = [
-      {
-        title: 'Learn to Sail Session',
-        date: 'April 5, 2026',
-        time: '10:00 AM – 1:00 PM',
-        location: 'CSULB Sailing Base',
-        description: 'A beginner-friendly session teaching the fundamentals of sailing using US Sailing standards. Open to all CSULB students.',
-        type: 'Learn to Sail',
-        registrationLink: 'https://your-registration-link.com',
-      },
-      {
-        title: 'Casual Sail Day',
-        date: 'April 12, 2026',
-        time: '11:00 AM – 3:00 PM',
-        location: 'CSULB Sailing Base',
-        description: 'A relaxed afternoon on the water for members of all skill levels. Come enjoy the breeze and good company.',
-        type: 'Casual Sail',
-        registrationLink: 'https://your-registration-link.com',
-      },
-      {
-        title: 'Spring BBQ',
-        date: 'April 19, 2026',
-        time: '12:00 PM – 4:00 PM',
-        location: 'CSULB Sailing Base',
-        description: 'Join us for our annual spring BBQ! Food, fun, and friends. A great chance to meet other club members.',
-        type: 'BBQ',
-        registrationLink: 'https://your-registration-link.com',
-      },
-      {
-        title: 'Boat Maintenance Day',
-        date: 'April 26, 2026',
-        time: '9:00 AM – 12:00 PM',
-        location: 'CSULB Sailing Base',
-        description: 'Help us keep our fleet in top shape! All skill levels welcome — a great way to learn more about our boats.',
-        type: 'Maintenance',
-        registrationLink: 'https://your-registration-link.com',
-      },
-      {
-        title: 'Pirate Themed Sail',
-        date: 'May 3, 2026',
-        time: '11:00 AM – 3:00 PM',
-        location: 'CSULB Sailing Base',
-        description: 'Dress up and sail the high seas! Our famous themed sail event — costumes encouraged.',
-        type: 'Themed Event',
-        registrationLink: 'https://your-registration-link.com',
-      },
-      {
-        title: 'End of Semester Social',
-        date: 'May 17, 2026',
-        time: '5:00 PM – 8:00 PM',
-        location: 'TBD',
-        description: 'Celebrate the end of the semester with your fellow sailors. Details to be announced.',
-        type: 'Social',
-        registrationLink: 'https://your-registration-link.com',
-      },
-    ]
+export const dynamic = 'force-dynamic'
+
+async function getEvents() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/events`, {
+    cache: 'no-store'
+  })
+  return res.json()
+}
+
+export default async function Events() {
+  const events = await getEvents()
+  // ... rest of the page stays the same, just remove the hardcoded events array
   
     const typeColors = {
       'Learn to Sail': { bg: '#f0f9ff', border: '#bae6fd', tag: '#0ea5e9' },
