@@ -1,6 +1,7 @@
 import './globals.css'
 import Image from 'next/image'
 import NavBar from './components/NavBar'  
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata = {
   title: 'CSULB Sailing Association',
@@ -65,7 +66,7 @@ export default function RootLayout({ children }) {
             </a>
           </div>
         </footer>
-
+        <Analytics />
       </body>
     </html>
   )
