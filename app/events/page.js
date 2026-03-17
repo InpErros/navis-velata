@@ -139,8 +139,24 @@ export default function Events() {
                   Register
                 </a>
               </div>
+              
             )
           })}
+        
+        </div>
+
+        {/* Google Calendar */}
+        <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '24px' }}>Club Calendar</h2>
+        <div style={{
+          borderRadius: '12px',
+          overflow: 'hidden',
+          marginBottom: '64px',
+          border: '1px solid #e5e7eb',
+        }}>
+          <iframe
+            src="https://calendar.google.com/calendar/u/0/embed?src=48211216a0cec9408e4a852f7815a9b5236fce6350675de9212f4c42d817212c@group.calendar.google.com&ctz=America/Los_Angeles"
+            style={{ border: 'none', width: '100%', height: '600px', display: 'block' }}
+          />
         </div>
         </div>
       </div>
