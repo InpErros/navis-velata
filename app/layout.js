@@ -2,6 +2,7 @@ import './globals.css'
 import Image from 'next/image'
 import NavBar from './components/NavBar'  
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata = {
   title: 'CSULB Sailing Association',
@@ -67,6 +68,7 @@ export default function RootLayout({ children }) {
           </div>
         </footer>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
