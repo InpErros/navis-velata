@@ -1,15 +1,16 @@
+import { Redis } from '@upstash/redis'
+
 export const dynamic = 'force-dynamic'
 
 async function getEvents() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/events`, {
-    cache: 'no-store'
-  })
-  return res.json()
+  const redis = Redis.fromEnv()
+  const events = await redis.get('events')
+  return events || []
 }
 
 export default async function Events() {
   const events = await getEvents()
-  // ... rest of the page stays the same, just remove the hardcoded events array
+
   
     const typeColors = {
       'Learn to Sail': { bg: '#f0f9ff', border: '#bae6fd', tag: '#0ea5e9' },
