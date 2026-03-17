@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import ExternalLink from './components/ExternalLinkModal'
 
 export default function Home() {
   return (
@@ -35,7 +36,7 @@ export default function Home() {
           </p>
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
             <a href="/learn-to-sail" style={primaryBtn}>Learn to Sail</a>
-            <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN" target="_blank" rel="noopener noreferrer" style={secondaryBtn}>Donate</a>
+            <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN" data-external>Donate</a>
           </div>
         </div>
       </div>

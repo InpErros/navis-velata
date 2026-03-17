@@ -80,19 +80,24 @@ export default async function Events() {
                     {event.description}
                   </p>
                 </div>
-                <a href={event.registrationLink} target="_blank" rel="noopener noreferrer" style={{
-                  backgroundColor: '#0ea5e9',
-                  color: '#ffffff',
+                <a href={event.registrationLink || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  backgroundColor: event.registrationLink ? '#ecaa00' : '#d1d5db',
+                  color: event.registrationLink ? '#000000' : '#9ca3af',
                   padding: '10px 20px',
                   borderRadius: '6px',
                   textDecoration: 'none',
                   fontSize: '14px',
-                  fontWeight: '600',
+                  fontWeight: '700',
                   whiteSpace: 'nowrap',
                   flexShrink: 0,
-                }}>
-                  Register
-                </a>
+                  pointerEvents: event.registrationLink ? 'auto' : 'none',
+                }}
+              >
+                {event.registrationLink ? 'Register' : 'Coming Soon'}
+              </a>
               </div>
               
             )

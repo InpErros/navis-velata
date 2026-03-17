@@ -3,6 +3,7 @@ import Image from 'next/image'
 import NavBar from './components/NavBar'  
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import ExternalLinkModal from './components/ExternalLinkModal'
 
 export const metadata = {
   title: 'CSULB Sailing Association',
@@ -69,6 +70,7 @@ export default function RootLayout({ children }) {
         </footer>
         <Analytics />
         <SpeedInsights />
+        <ExternalLinkModal />
       </body>
     </html>
   )
