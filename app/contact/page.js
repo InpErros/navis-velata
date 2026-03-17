@@ -1,6 +1,13 @@
 export default function Contact() {
     return (
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 24px' }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '48px 24px 80px' }}>
+        <div className="page-card"
+          style={{
+          backgroundColor: '#ffffff',
+          borderRadius: '16px',
+          padding: '48px',
+          color: '#111827',
+        }}>
   
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
@@ -126,7 +133,7 @@ export default function Contact() {
             />
           </div>
         </div>
-  
+        </div>
       </div>
     )
   }

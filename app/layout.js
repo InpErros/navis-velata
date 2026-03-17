@@ -1,5 +1,6 @@
 import './globals.css'
 import Image from 'next/image'
+import NavBar from './components/NavBar'  
 
 export const metadata = {
   title: 'CSULB Sailing Association',
@@ -12,29 +13,7 @@ export default function RootLayout({ children }) {
       <body>
 
         {/* Navigation */}
-        <nav style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '12px 32px',
-          backgroundColor: '#000000',
-        }}>
-          <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Image src="/logo-borderless.png" alt="CSULB Sailing Association" width={48} height={48} style={{ objectFit: 'contain' }} />
-            <span style={{ fontWeight: '700', fontSize: '16px', color: '#ffffff', lineHeight: '1.2' }}>
-              CSULB<br/>Sailing Association
-            </span>
-          </a>
-
-          <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-            <a href="/" style={navLink}>Home</a>
-            <a href="/about" style={navLink}>About</a>
-            <a href="/events" style={navLink}>Events</a>
-            <a href="/learn-to-sail" style={navLink}>Learn to Sail</a>
-            <a href="/contact" style={navLink}>Contact</a>
-            <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILAS1" target="_blank" rel="noopener noreferrer" style={donateBtn}>Donate</a>
-          </div>
-        </nav>
+        <NavBar />
 
         {/* Page content */}
         <main>

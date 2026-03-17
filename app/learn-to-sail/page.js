@@ -38,7 +38,14 @@ export default function LearnToSail() {
     ]
   
     return (
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 24px' }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '48px 24px 80px' }}>
+        <div className="page-card"
+          style={{
+          backgroundColor: '#ffffff',
+          borderRadius: '16px',
+          padding: '48px',
+          color: '#111827',
+        }}>
   
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
@@ -52,7 +59,7 @@ export default function LearnToSail() {
   
         {/* Membership fee banner */}
         <div style={{
-          backgroundColor: '#111827',
+          backgroundColor: '#64100F',
           color: '#ffffff',
           borderRadius: '12px',
           padding: '32px',
@@ -128,7 +135,7 @@ export default function LearnToSail() {
         <div style={{
           backgroundColor: '#f9fafb',
           borderRadius: '12px',
-          padding: '48px',
+          padding: '48px 24px',
           textAlign: 'center',
         }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '12px' }}>Ready to get started?</h2>
@@ -143,11 +150,14 @@ export default function LearnToSail() {
             textDecoration: 'none',
             fontSize: '16px',
             fontWeight: '600',
+            display: 'inline-block',
+            maxWidth: '100%',
+            whiteSpace: 'normal',
           }}>
             Check Schedule & Register
           </a>
         </div>
-  
+        </div>
       </div>
     )
   }

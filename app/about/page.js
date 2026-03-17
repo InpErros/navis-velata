@@ -1,6 +1,14 @@
 export default function About() {
     return (
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 24px' }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '48px 24px 80px' }}>
+        <div className="page-card"
+          style={{
+          backgroundColor: '#ffffff',
+          borderRadius: '16px',
+          padding: '48px',
+          color: '#111827',
+        }}>
+          {/* all existing page content stays here */}
   
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
@@ -133,7 +141,7 @@ export default function About() {
             ))}
           </div>
         </div>
-  
+        </div>
       </div>
     )
   }

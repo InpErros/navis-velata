@@ -35,15 +35,15 @@ export default function Home() {
           </p>
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
             <a href="/learn-to-sail" style={primaryBtn}>Learn to Sail</a>
-            <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILAS1" target="_blank" rel="noopener noreferrer" style={secondaryBtn}>Donate</a>
+            <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN" target="_blank" rel="noopener noreferrer" style={secondaryBtn}>Donate</a>
           </div>
         </div>
       </div>
 
       {/* About snapshot */}
       <div style={{ maxWidth: '800px', margin: '80px auto', textAlign: 'center', padding: '0 24px' }}>
-        <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px' }}>Who We Are</h2>
-        <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', marginBottom: '32px' }}>
+        <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Who We Are</h2>
+        <p style={{ fontSize: '18px', color: '#cce8f0', lineHeight: '1.8', marginBottom: '32px' }}>
           The CSULB Sailing Association is a student-run sailing club at California State University Long Beach.
           We welcome sailors of all skill levels — from complete beginners to seasoned racers.
           Whether you want to learn the basics or compete at the collegiate level, there's a place for you on the water.
@@ -52,10 +52,10 @@ export default function Home() {
       </div>
 
       {/* Events preview */}
-      <div style={{ backgroundColor: '#f9fafb', padding: '80px 24px' }}>
+      <div style={{ backgroundColor: 'rgba(0,0,0,0.25)', padding: '80px 24px' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px' }}>Upcoming Events</h2>
-          <p style={{ fontSize: '18px', color: '#6b7280', marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Upcoming Events</h2>
+          <p style={{ fontSize: '18px', color: '#cce8f0', marginBottom: '32px' }}>
             From casual sails to competitive regattas, there's always something happening on the water.
           </p>
           <a href="/events" style={primaryBtn}>See All Events</a>
