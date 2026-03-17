@@ -73,6 +73,8 @@ export default function Admin() {
       body: JSON.stringify(form),
     })
 
+    console.log('response status:', res.status)
+
     setForm(emptyForm)
     setEditingId(null)
     setSaving(false)
