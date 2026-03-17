@@ -11,7 +11,7 @@ export default function NavBar() {
           fontFamily: "'Farro', sans-serif",
           fontWeight: '700',
           fontSize: '16px',
-          color: '#ecaa00',
+          color: '#000000',
           lineHeight: '1.2',
           whiteSpace: 'nowrap',
         }}>
