@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
 
         {/* Footer */}
         <footer style={{
-          backgroundColor: '#66C8D8',
+          backgroundColor: '#ffffff',
           padding: '40px 32px',
           marginTop: '64px',
           display: 'flex',
