@@ -237,9 +237,6 @@ export default function About() {
             <h1 style={{ fontSize: '40px', fontWeight: '700', color: '#ffffff', margin: '0 0 8px' }}>
               Meet the Club
             </h1>
-            <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.75)', margin: 0 }}>
-              CSULB Sailing Association · Long Beach, CA
-            </p>
           </div>
         </div>
 
@@ -265,10 +262,7 @@ export default function About() {
 
           {/* What We Do */}
           <div style={{ marginBottom: '56px' }}>
-            <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '8px' }}>What We Do</h2>
-            <p style={{ fontSize: '15px', color: '#6b7280', marginBottom: '28px' }}>
-              Four core activities define the club year-round.
-            </p>
+            <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '28px' }}>What We Do</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '16px' }}>
               {goals.map((goal, i) => (
                 <div key={i} style={{
@@ -295,11 +289,8 @@ export default function About() {
           </div>
 
           {/* Fleet */}
-          <div style={{ backgroundColor: '#f9fafb', borderRadius: '12px', padding: '40px', marginBottom: '48px' }}>
-            <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '8px' }}>Our Fleet</h2>
-            <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.8', marginBottom: '24px' }}>
-              Over 25 boats across four classes — click a class to learn more.
-            </p>
+          <div style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>Our Fleet</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {boats.map(boat => (
                 <BoatButton key={boat.name} boat={boat} />
@@ -310,7 +301,6 @@ export default function About() {
           {/* Meet our Board */}
           <ExpandableSection
             title="Meet our Board"
-            subtitle={`${boardMembers.length} members · elected each semester`}
             accentColor="#1e3a5f"
           >
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
@@ -342,7 +332,6 @@ export default function About() {
           {/* Meet our Coaches */}
           <ExpandableSection
             title="Meet our Coaches"
-            subtitle={`${coaches.length} coaches · volunteer instructors`}
             accentColor="#0c4a6e"
           >
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
