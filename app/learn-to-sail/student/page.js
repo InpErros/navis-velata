@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import RegistrationModal from '../components/RegistrationModal';
+import RegistrationModal from '../../components/RegistrationModal';
 
 const courses = [
   {
