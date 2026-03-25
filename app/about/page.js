@@ -2,6 +2,27 @@
 
 import { useState } from 'react';
 
+// ─── Update board members here ───────────────────────────────────────────────
+const boardMembers = [
+  { role: 'Commodore / President', name: 'Gabe Auge' },
+  { role: 'Vice President',        name: 'James Flores' },
+  { role: 'Secretary',             name: 'Rosalie Ahern' },
+  { role: 'Treasurer',             name: 'Alison Curd' },
+  { role: 'Event Chair',           name: 'Carter Jepsen' },
+];
+
+// ─── Update coaches here ──────────────────────────────────────────────────────
+const coaches = [
+  { role: 'Head Coach',                name: 'Name TBD' },
+  { role: 'Small Boat Sailing Coach',  name: 'Name TBD' },
+  { role: 'Small Boat Sailing Coach',  name: 'Name TBD' },
+  { role: 'Small Boat Sailing Coach',  name: 'Name TBD' },
+  { role: 'Small Boat Sailing Coach',  name: 'Name TBD' },
+  { role: 'Shields / Keelboat Coach',  name: 'Name TBD' },
+  { role: 'Boatwright',                name: 'Name TBD' },
+];
+
+// ─── Update boat fleet info here ──────────────────────────────────────────────
 const boats = [
   {
     name: 'RS Quest',
@@ -173,13 +194,7 @@ export default function About() {
             The student board rotates yearly and is elected by club members.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
-            {[
-              { role: 'Commodore / President', name: 'Name TBD' },
-              { role: 'Vice President', name: 'Name TBD' },
-              { role: 'Secretary', name: 'Name TBD' },
-              { role: 'Treasurer', name: 'Name TBD' },
-              { role: 'Event Chair', name: 'Name TBD' },
-            ].map((member, index) => (
+            {boardMembers.map((member, index) => (
               <div key={index} style={{
                 backgroundColor: '#ffffff',
                 border: '1px solid #e5e7eb',
@@ -214,15 +229,7 @@ export default function About() {
             Our volunteer coaches bring years of sailing experience to help every member improve on the water.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
-            {[
-              { role: 'Head Coach', name: 'Name TBD' },
-              { role: 'Small Boat Sailing Coach', name: 'Name TBD' },
-              { role: 'Small Boat Sailing Coach', name: 'Name TBD' },
-              { role: 'Small Boat Sailing Coach', name: 'Name TBD' },
-              { role: 'Small Boat Sailing Coach', name: 'Name TBD' },
-              { role: 'Shields / Keelboat Coach', name: 'Name TBD' },
-              { role: 'Boatwright', name: 'Name TBD' },
-            ].map((coach, index) => (
+            {coaches.map((coach, index) => (
               <div key={index} style={{
                 backgroundColor: '#f0f9ff',
                 border: '1px solid #bae6fd',
