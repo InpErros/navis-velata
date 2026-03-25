@@ -46,8 +46,8 @@ export default function Home() {
         <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Who We Are</h2>
         <p style={{ fontSize: '18px', color: '#cce8f0', lineHeight: '1.8', marginBottom: '32px' }}>
           The CSULB Sailing Association is a student-run sailing club at California State University Long Beach.
-          We welcome sailors of all skill levels — from complete beginners to seasoned racers.
-          Whether you want to learn the basics or compete at the collegiate level, there's a place for you on the water.
+          We welcome sailors of all skill levels, from complete beginners to seasoned sailors.
+          Whether you want to learn the basics or skipper a boat solo.
         </p>
         <a href="/about" style={primaryBtn}>Learn More About Us</a>
       </div>

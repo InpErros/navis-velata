@@ -16,8 +16,9 @@ export default function LearnToSail() {
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
           <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Learn to Sail</h1>
           <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '650px', margin: '0 auto' }}>
-            We run two sailing programs — one for CSULB students and one open to the general public.
-            Select the program that applies to you.
+            Interested in learning to sail?
+            If you are a CSULB Student, you can sign up for our beginner sailing courses. 
+            If you are not a CSULB student, you can check out our public shields program which runs during the summer.
           </p>
         </div>
 
@@ -52,8 +53,8 @@ export default function LearnToSail() {
                 Student Program
               </h2>
               <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.7', marginBottom: '24px', flex: 1 }}>
-                For current CSULB students. Progress through Sailing A, B, and C certifications
-                using our dinghy fleet, and gain independent access to the boatyard.
+                For current CSULB students. Progress through Sailing A, B, and C courses
+                using our dinghy fleet, and learn the basics of sailing!
               </p>
               <span style={{
                 color: '#0ea5e9', fontWeight: '600', fontSize: '15px',
@@ -93,13 +94,13 @@ export default function LearnToSail() {
               </h2>
               <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.7', marginBottom: '24px', flex: 1 }}>
                 Open to adults in the general public. Learn the fundamentals of keelboat sailing
-                aboard our Shields fleet in a welcoming, beginner-friendly environment.
+                aboard our beautiful Shields.
               </p>
               <span style={{
                 color: '#16a34a', fontWeight: '600', fontSize: '15px',
                 display: 'flex', alignItems: 'center', gap: '6px',
               }}>
-                View community courses →
+                View Shields courses →
               </span>
             </div>
           </Link>

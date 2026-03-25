@@ -26,9 +26,9 @@ const coaches = [
 const boats = [
   {
     name: 'RS Quest',
-    count: 12,
+    count: 5,
     description:
-      'The RS Quest is a stable, beginner-friendly dinghy used as the primary teaching boat for our Learn to Sail program. Its forgiving design lets new sailors focus on fundamentals without worrying about capsizing.',
+      'The RS Quest is a beginner-friendly dinghy used as the primary teaching boat for our beginner sailing courses. Fast, sleak, and fun to sail, these boats are an amazing sail.',
     photos: [
       // Replace with real paths, e.g. '/boats/rs-quest-1.jpg'
       null,
@@ -37,23 +37,23 @@ const boats = [
   },
   {
     name: 'Laser',
-    count: 10,
+    count: 13,
     description:
-      'The Laser is a single-handed, high-performance dinghy and one of the most popular racing classes in the world. We use Lasers to develop intermediate and advanced sailors who want a more athletic, responsive sailing experience.',
+      'The Laser is a single-handed, high-performance dinghy and one of the most popular racing classes in the world. We use Lasers for events and races where our sailors can sail solo.',
     photos: [null, null],
   },
   {
     name: 'Hobie Catamaran',
-    count: 4,
+    count: 3,
     description:
-      'Our Hobie Catamarans are twin-hulled boats known for their speed and stability. They are a great way to experience multi-hull sailing and are especially fun in stronger winds.',
+      'Our Hobie Catamarans are twin-hulled boats known for their speed and stability. These boats come with us on our yearly trip to Mission Bay.',
     photos: [null, null],
   },
   {
     name: 'Shields',
-    count: 6,
+    count: 4,
     description:
-      'The Shields is a classic one-design keelboat raced competitively across the country. Our fleet gives members the opportunity to learn keelboat racing tactics and experience crewed team sailing.',
+      'The Shields are a beautiful classic one-design keelboat raced competitively across the country. Our classic fleet gives members the opportunity to learn keelboat sailing and appreciate boating history.',
     photos: [null, null],
   },
 ];
@@ -155,7 +155,7 @@ export default function About() {
           <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '700px', margin: '0 auto' }}>
             The CSULB Sailing Association is one of the oldest recreational clubs on campus.
             The club maintains its own fleet of boats in order to make sailing accessible and
-            affordable for the university community.
+            affordable for CSULB students.
           </p>
         </div>
 
@@ -164,8 +164,7 @@ export default function About() {
           <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>Our Mission</h2>
           <p style={{ fontSize: '17px', color: '#6b7280', lineHeight: '1.8', marginBottom: '16px' }}>
             We offer sailing instruction to CSULB students and sponsor many types of sailing-related
-            events through the club. Our efforts focus on improving the overall skills of our students
-            and promoting sailing as a life-long sport.
+            events through the club. 
           </p>
           <p style={{ fontSize: '17px', color: '#6b7280', lineHeight: '1.8' }}>
             We welcome members with all levels of sailing experience, including those who have never

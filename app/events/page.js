@@ -35,7 +35,7 @@ export default async function Events() {
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
           <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Events</h1>
           <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '600px', margin: '0 auto' }}>
-            From casual sails to themed events and BBQs, there's always something happening
+            From casual sails, to themed events, and BBQs, there's always something happening
             at the CSULB Sailing Association.
           </p>
         </div>
