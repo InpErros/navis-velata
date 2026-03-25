@@ -246,17 +246,13 @@ export default function About() {
           <div style={{ marginBottom: '56px' }}>
             <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>Our Story</h2>
             <p style={{ fontSize: '17px', color: '#4b5563', lineHeight: '1.8', marginBottom: '16px' }}>
-              The CSULB Sailing Association is one of the oldest recreational clubs on campus,
-              with roots stretching back decades to when a small group of students first brought
-              sailboats to the waters off Long Beach. What began as a handful of members sharing
-              a passion for the water has grown into a thriving club with a fleet of over 25 boats
-              and a community of sailors at every skill level.
+              The CSULB Sailing Association is one of the oldest recreational clubs on campus...
             </p>
             <p style={{ fontSize: '17px', color: '#4b5563', lineHeight: '1.8' }}>
               The club has always been student-run and student-driven. Each semester a new board
               takes the helm, carrying on the tradition of making sailing accessible and affordable
-              for the university community — and for the broader Long Beach area through our
-              summer programs.
+              for the university community, and for the broader Long Beach area through our
+              summer program.
             </p>
           </div>
 
