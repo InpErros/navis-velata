@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 // ─── Update board members here ───────────────────────────────────────────────
 const boardMembers = [
-  { role: 'Commodore / President', name: 'Gabe Auge' },
+  { role: 'President', name: 'Gabe Auge' },
   { role: 'Vice President',        name: 'James Flores' },
   { role: 'Secretary',             name: 'Rosalie Ahern' },
   { role: 'Treasurer',             name: 'Alison Curd' },
@@ -18,7 +18,7 @@ const coaches = [
   { role: 'Small Boat Sailing Coach',  name: 'Camille Hambly' },
   { role: 'Small Boat Sailing Coach',  name: 'Keith Cares' },
   { role: 'Small Boat Sailing Coach',  name: 'Lucas Demchik' },
-  { role: 'Shields / Keelboat Coach',  name: 'Mossy Kennedy' },
+  { role: 'Keelboat Coach',            name: 'Mossy Kennedy' },
   { role: 'Boatwright',                name: 'Dennis Trombley' },
 ];
 
@@ -57,17 +57,17 @@ const boats = [
 const goals = [
   {
     title: 'Teaching Students to Sail',
-    description: 'We offer structured sailing instruction through our Sailing A, B, and C courses, taking students from complete beginners to independent sailors using US Sailing standards.',
+    description: 'We offer structured sailing instruction at low cost to CSULB students through our various sailing courses.',
     icon: '🎓',
   },
   {
     title: 'Running Events',
-    description: 'From casual sails and themed events to competitive regattas, we keep the calendar full and the water busy throughout the semester.',
+    description: 'From casual sails to themed events, our board plans exciting events to ensure our members have a chance to sail outside of class.',
     icon: '📅',
   },
   {
     title: 'Maintaining the Fleet',
-    description: 'Our boatwright and volunteer crew keep our fleet of over 25 boats seaworthy and ready for the water, preserving equipment that makes the club accessible to everyone.',
+    description: 'Supported by our boatwright, the club maintains its own fleet over 30 boat to make sure sailing is accessible to every student.',
     icon: '⚓',
   },
   {
