@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import RegistrationModal from '../../components/RegistrationModal';
+import PageHero from '../../components/PageHero';
 
 const courses = [
   {
@@ -45,9 +46,13 @@ export default function StudentProgram() {
       <div className="page-card" style={{
         backgroundColor: '#ffffff',
         borderRadius: '16px',
-        padding: '48px',
+        overflow: 'hidden',
         color: '#111827',
       }}>
+
+        <PageHero title="Student Program" />
+
+        <div style={{ padding: '48px' }}>
 
         {/* Back link */}
         <Link href="/learn-to-sail" style={{
@@ -161,8 +166,8 @@ export default function StudentProgram() {
           </p>
           <RegistrationModal />
         </div>
-
-      </div>
+        </div>{/* end padding */}
+      </div>{/* end page-card */}
     </div>
   );
 }

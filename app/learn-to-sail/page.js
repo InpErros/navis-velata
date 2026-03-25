@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import PageHero from '../components/PageHero';
 
 export default function LearnToSail() {
   return (
@@ -8,19 +9,13 @@ export default function LearnToSail() {
       <div className="page-card" style={{
         backgroundColor: '#ffffff',
         borderRadius: '16px',
-        padding: '48px',
+        overflow: 'hidden',
         color: '#111827',
       }}>
 
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Learn to Sail</h1>
-          <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '650px', margin: '0 auto' }}>
-            Interested in learning to sail?
-            If you are a CSULB Student, you can sign up for our beginner sailing courses. 
-            If you are not a CSULB student, you can check out our public shields program which runs during the summer.
-          </p>
-        </div>
+        <PageHero title="Learn to Sail" />
+
+        <div style={{ padding: '48px' }}>
 
         {/* Program cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '24px' }}>
@@ -106,7 +101,8 @@ export default function LearnToSail() {
           </Link>
 
         </div>
-      </div>
+        </div>{/* end padding */}
+      </div>{/* end page-card */}
     </div>
   );
 }

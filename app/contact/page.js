@@ -1,15 +1,13 @@
+import PageHero from '../components/PageHero'
+
 export default function Contact() {
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 24px' }}>
-      <div className="page-card" style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '48px', color: '#111827' }}>
+      <div className="page-card" style={{ backgroundColor: '#ffffff', borderRadius: '16px', overflow: 'hidden', color: '#111827' }}>
 
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Contact Us</h1>
-          <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '600px', margin: '0 auto' }}>
-            The best way to get in touch is through our Discord or Instagram. We'd love to hear from you!
-          </p>
-        </div>
+        <PageHero title="Contact Us" />
+
+        <div style={{ padding: '48px' }}>
 
         {/* Social cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px', marginBottom: '48px' }}>
@@ -127,7 +125,8 @@ export default function Contact() {
             </div>
           </div>
         </div>
-        </div>
+        </div>{/* end padding */}
+      </div>{/* end page-card */}
     </div>
   )
 }

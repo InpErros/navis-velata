@@ -1,4 +1,5 @@
 import { Redis } from '@upstash/redis'
+import PageHero from '../components/PageHero'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,18 +28,13 @@ export default async function Events() {
           style={{
           backgroundColor: '#ffffff',
           borderRadius: '16px',
-          padding: '48px',
+          overflow: 'hidden',
           color: '#111827',
         }}>
-  
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Events</h1>
-          <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '600px', margin: '0 auto' }}>
-            From casual sails, to themed events, and BBQs, there's always something happening
-            at the CSULB Sailing Association.
-          </p>
-        </div>
+
+        <PageHero title="Events" />
+
+        <div style={{ padding: '48px' }}>
   
         {/* Events list */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -120,7 +116,8 @@ export default async function Events() {
             style={{ border: 'none', width: '100%', height: '600px', display: 'block' }}
           />
         </div>
-        </div>
+        </div>{/* end padding */}
+        </div>{/* end page-card */}
       </div>
     )
   }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import PageHero from '../components/PageHero';
 
 // ─── Update board members here ───────────────────────────────────────────────
 const boardMembers = [
@@ -214,31 +215,7 @@ export default function About() {
         color: '#111827',
       }}>
 
-        {/* Hero banner */}
-        <div style={{
-          position: 'relative',
-          height: '320px',
-          backgroundColor: '#1e3a5f',
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'flex-start',
-        }}>
-          {/* Replace src below with a real photo, e.g. '/about/fleet-on-water.jpg' */}
-          {/* <img src="/about/fleet-on-water.jpg" alt="CSULB fleet on the water"
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.55 }} /> */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'rgba(255,255,255,0.15)', fontSize: '14px', fontStyle: 'italic',
-          }}>
-            [ photo of fleet on the water goes here ]
-          </div>
-          <div style={{ position: 'relative', padding: '32px 40px' }}>
-            <h1 style={{ fontSize: '40px', fontWeight: '700', color: '#ffffff', margin: '0 0 8px' }}>
-              Meet the Club
-            </h1>
-          </div>
-        </div>
+        <PageHero title="Meet the Club" />
 
         <div style={{ padding: '48px' }}>
 

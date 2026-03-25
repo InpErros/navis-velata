@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PageHero from '../../components/PageHero';
 
 // ─── Update community program course info here ────────────────────────────────
 const courses = [
@@ -22,9 +23,13 @@ export default function PublicProgram() {
       <div className="page-card" style={{
         backgroundColor: '#ffffff',
         borderRadius: '16px',
-        padding: '48px',
+        overflow: 'hidden',
         color: '#111827',
       }}>
+
+        <PageHero title="Community Program" />
+
+        <div style={{ padding: '48px' }}>
 
         {/* Back link */}
         <Link href="/learn-to-sail" style={{
@@ -150,7 +155,8 @@ export default function PublicProgram() {
           </Link>
         </div>
 
-      </div>
+        </div>{/* end padding */}
+      </div>{/* end page-card */}
     </div>
   );
 }
