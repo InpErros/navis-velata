@@ -300,13 +300,15 @@ export default function About() {
                   backgroundColor: '#ffffff',
                   border: '1px solid #e5e7eb',
                   borderRadius: '10px',
-                  padding: '20px',
+                  padding: '24px 16px',
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '14px',
+                  gap: '12px',
+                  textAlign: 'center',
                 }}>
                   <div style={{
-                    width: '48px', height: '48px', borderRadius: '50%',
+                    width: '80px', height: '80px', borderRadius: '50%',
                     flexShrink: 0, overflow: 'hidden',
                   }}>
                     {member.photo
@@ -338,13 +340,15 @@ export default function About() {
                   backgroundColor: '#f0f9ff',
                   border: '1px solid #bae6fd',
                   borderRadius: '10px',
-                  padding: '20px',
+                  padding: '24px 16px',
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '14px',
+                  gap: '12px',
+                  textAlign: 'center',
                 }}>
                   <div style={{
-                    width: '48px', height: '48px', borderRadius: '50%',
+                    width: '80px', height: '80px', borderRadius: '50%',
                     flexShrink: 0, overflow: 'hidden',
                   }}>
                     {coach.photo
