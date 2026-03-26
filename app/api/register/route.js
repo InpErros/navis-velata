@@ -1,6 +1,7 @@
 import { Redis } from '@upstash/redis'
 import { NextResponse } from 'next/server'
 import { uploadToDrive, appendToSheet } from '@/app/lib/googleApi'
+import { sendRegistrationConfirmation } from '@/app/lib/emails'
 
 const redis = Redis.fromEnv()
 
@@ -82,6 +83,11 @@ export const POST = async (req) => {
     c.id === courseId ? { ...c, enrolled: (c.enrolled || 0) + 1 } : c
   )
   await redis.set('courses', updatedCourses)
+
+  // Send confirmation email (non-blocking — don't fail the registration if email fails)
+  sendRegistrationConfirmation({ to: email, name, course }).catch(err =>
+    console.error('Confirmation email failed:', err)
+  )
 
   return NextResponse.json({ success: true })
 }
