@@ -1,6 +1,15 @@
 import Image from 'next/image'
 import ExternalLink from './components/ExternalLinkModal'
 
+// ─── Collage photos ───────────────────────────────────────────────────────────
+// Drop images into /public and update the src values below.
+// Leave src as null to keep the placeholder.
+const collagePhotos = [
+  { src: null, alt: 'Sailing on the water' },
+  { src: null, alt: 'Club members at the dock' },
+  { src: null, alt: 'Racing on the bay' },
+]
+
 export default function Home() {
   return (
     <div>
@@ -50,6 +59,26 @@ export default function Home() {
           Whether you want to learn the basics or skipper a boat solo.
         </p>
         <a href="/about" style={primaryBtn}>Learn More About Us</a>
+      </div>
+
+      {/* Photo collage divider */}
+      <div style={{ display: 'flex', height: '280px', gap: '4px', overflow: 'hidden' }}>
+        {collagePhotos.map((photo, i) => (
+          <div key={i} style={{ flex: 1, position: 'relative', overflow: 'hidden', backgroundColor: '#1e3a5f' }}>
+            {photo.src ? (
+              <img src={photo.src} alt={photo.alt}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            ) : (
+              <div style={{
+                width: '100%', height: '100%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'rgba(255,255,255,0.2)', fontSize: '13px', fontStyle: 'italic',
+              }}>
+                [ photo {i + 1} ]
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* Events preview */}
