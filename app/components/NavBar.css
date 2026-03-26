@@ -53,18 +53,16 @@
   .nav-donate:hover {
     opacity: 0.85;
   }
-  /* Hide toggle mechanics on desktop */
-  .nav-toggle {
-    display: none;
-  }
-  
   .nav-hamburger {
     display: none;
     flex-direction: column;
     gap: 5px;
     cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
   }
-  
+
   .nav-hamburger span {
     display: block;
     width: 24px;
@@ -101,8 +99,7 @@
       text-align: center;
     }
   
-    /* Show menu when checkbox is checked */
-    .nav-toggle:checked ~ .nav-links {
+    .nav-links-open {
       display: flex;
     }
   }
