@@ -1,9 +1,16 @@
 import './globals.css'
 import Image from 'next/image'
-import NavBar from './components/NavBar'  
+import NavBar from './components/NavBar'
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import ExternalLinkModal from './components/ExternalLinkModal'
+import SiteBanner from './components/SiteBanner'
+
+// ─── Site-wide banner message ─────────────────────────────────────────────────
+// Set to a string to show a dismissible banner at the bottom of every page.
+// Set to null to hide it.
+const SITE_BANNER = 'ATTENTION!!! WEBSITE IS UNDER CONSTRUCTION - Some Pictures and other functionality may not work!!!'
+// Example: const SITE_BANNER = '🌊 Spring sailing courses are now open — register today!'
 
 export const metadata = {
   title: 'CSULB Sailing Association',
@@ -69,6 +76,7 @@ export default function RootLayout({ children }) {
         <Analytics />
         <SpeedInsights />
         <ExternalLinkModal />
+        <SiteBanner message={SITE_BANNER} />
       </body>
     </html>
   )
