@@ -53,6 +53,10 @@ export default function Admin() {
   const [selectedCourseFilter, setSelectedCourseFilter] = useState('')
   const [registrationsLoading, setRegistrationsLoading] = useState(false)
 
+  // Waitlist state
+  const [waitlist, setWaitlist] = useState([])
+  const [waitlistLoading, setWaitlistLoading] = useState(false)
+
   // Users state
   const [users, setUsers] = useState([])
   const [newUsername, setNewUsername] = useState('')
@@ -122,9 +126,27 @@ export default function Admin() {
     setRegistrationsLoading(false)
   }
 
+  const fetchWaitlist = async () => {
+    setWaitlistLoading(true)
+    const res = await fetch('/api/admin/waitlist', { headers: authHeaders() })
+    const data = await res.json()
+    setWaitlist(data)
+    setWaitlistLoading(false)
+  }
+
+  const removeFromWaitlist = async (id, name) => {
+    if (!confirm(`Remove ${name} from the waitlist?`)) return
+    await fetch('/api/admin/waitlist', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ id, name }),
+    })
+    fetchWaitlist()
+  }
+
   const handleTabChange = (tab) => {
     setActiveTab(tab)
-    if (tab === 'courses') fetchCourses()
+    if (tab === 'courses') { fetchCourses(); fetchWaitlist() }
     if (tab === 'users') fetchUsers()
     if (tab === 'audit') fetchAuditLog()
   }
@@ -654,6 +676,55 @@ export default function Admin() {
                     </div>
                   </div>
                 ))}
+            </div>
+
+            {/* ── Waitlist ── */}
+            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '40px', marginBottom: '48px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Waitlist ({waitlist.length})</h2>
+                <button onClick={fetchWaitlist} disabled={waitlistLoading} style={secondaryBtn}>
+                  {waitlistLoading ? 'Loading...' : 'Refresh'}
+                </button>
+              </div>
+              {waitlist.length === 0 ? (
+                <p style={{ color: '#6b7280' }}>No waitlist entries yet.</p>
+              ) : (
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f3f4f6' }}>
+                        {['Course', 'Name', 'Email', 'Discord', 'Joined', ''].map(h => (
+                          <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb' }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...waitlist]
+                        .sort((a, b) => a.courseType.localeCompare(b.courseType) || new Date(a.timestamp) - new Date(b.timestamp))
+                        .map(entry => (
+                          <tr key={entry.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                            <td style={{ padding: '10px 14px' }}>
+                              <span style={{ fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '999px', backgroundColor: '#1e3a5f', color: '#fff' }}>
+                                {entry.courseType}
+                              </span>
+                            </td>
+                            <td style={{ padding: '10px 14px', color: '#374151', fontWeight: '600' }}>{entry.name}</td>
+                            <td style={{ padding: '10px 14px', color: '#374151' }}>{entry.email}</td>
+                            <td style={{ padding: '10px 14px', color: '#374151' }}>{entry.discord}</td>
+                            <td style={{ padding: '10px 14px', color: '#9ca3af', fontSize: '13px' }}>
+                              {entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : '—'}
+                            </td>
+                            <td style={{ padding: '10px 14px' }}>
+                              <button onClick={() => removeFromWaitlist(entry.id, entry.name)} style={deleteBtn}>
+                                Remove
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
 
             {/* ── Registrations roster ── */}
