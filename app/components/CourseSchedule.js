@@ -19,11 +19,6 @@ export default function CourseSchedule({ programType, courseType }) {
         if (courseType) filtered = filtered.filter(c => c.courseType === courseType)
         setCourses(filtered)
 
-        // Default: open first section that has courses
-        const types = COURSE_TYPE_ORDER.filter(t => filtered.some(c => c.courseType === t))
-        if (types.length > 0) {
-          setOpenSections({ [types[0]]: true })
-        }
         setLoading(false)
       })
       .catch(() => setLoading(false))
