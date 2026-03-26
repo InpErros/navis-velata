@@ -16,7 +16,7 @@ const emptyForm = {
   registrationLink: '',
 }
 
-const emptyOption = () => ({ date: '', startTime: '', endTime: '' })
+const emptyOption = () => ({ date: '', startTime: '', endTime: '', spots: '' })
 const emptyDay = (label) => ({ label, options: [emptyOption()] })
 
 const emptyCourseForm = {
@@ -627,7 +627,7 @@ export default function Admin() {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '10px' }}>
                         <label style={{ ...fieldLabel, fontSize: '11px' }}>Date options (students pick one)</label>
                         {day.options.map((opt, oi) => (
-                          <div key={oi} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '8px', alignItems: 'center' }}>
+                          <div key={oi} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 80px auto', gap: '8px', alignItems: 'center' }}>
                             <input type="text" placeholder="April 5, 2026" value={opt.date}
                               onChange={e => updateOption(di, oi, 'date', e.target.value)}
                               style={{ ...inputStyle, fontSize: '13px' }} />
@@ -636,6 +636,9 @@ export default function Admin() {
                               style={{ ...inputStyle, fontSize: '13px' }} />
                             <input type="text" placeholder="4:00 PM" value={opt.endTime}
                               onChange={e => updateOption(di, oi, 'endTime', e.target.value)}
+                              style={{ ...inputStyle, fontSize: '13px' }} />
+                            <input type="number" min="0" placeholder="Spots" value={opt.spots ?? ''}
+                              onChange={e => updateOption(di, oi, 'spots', e.target.value)}
                               style={{ ...inputStyle, fontSize: '13px' }} />
                             <button type="button" onClick={() => removeOption(di, oi)} disabled={day.options.length === 1}
                               style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '16px', opacity: day.options.length === 1 ? 0.3 : 1 }}>

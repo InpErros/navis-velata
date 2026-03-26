@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import RegistrationModal from '../../components/RegistrationModal';
+// import RegistrationModal from '../../components/RegistrationModal';
 import PageHero from '../../components/PageHero';
 import CourseSchedule from '../../components/CourseSchedule';
 
@@ -112,60 +112,63 @@ export default function StudentProgram() {
           </div>
         </div>
 
-        {/* Courses */}
+        {/* Courses + inline session schedules */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '64px' }}>
           {courses.map((course, index) => (
-            <div key={index} style={{
-              backgroundColor: course.color.bg,
-              border: `1px solid ${course.color.border}`,
-              borderRadius: '12px',
-              padding: '32px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              gap: '24px',
-              flexWrap: 'wrap',
-            }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                  <span style={{
-                    backgroundColor: course.color.tag,
-                    color: '#ffffff',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    padding: '4px 10px',
-                    borderRadius: '999px',
-                  }}>
-                    {course.level}
-                  </span>
+            <div key={index}>
+              {/* Course bubble */}
+              <div style={{
+                backgroundColor: course.color.bg,
+                border: `1px solid ${course.color.border}`,
+                borderRadius: '12px',
+                padding: '32px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                gap: '24px',
+                flexWrap: 'wrap',
+              }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                    <span style={{
+                      backgroundColor: course.color.tag,
+                      color: '#ffffff',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      padding: '4px 10px',
+                      borderRadius: '999px',
+                    }}>
+                      {course.level}
+                    </span>
+                  </div>
+                  <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 12px', color: '#111827' }}>
+                    {course.tagline}
+                  </h2>
+                  <ul style={{ margin: '0 0 16px', paddingLeft: '20px' }}>
+                    {course.perks.map((perk, i) => (
+                      <li key={i} style={{ fontSize: '15px', color: '#374151', lineHeight: '1.8' }}>{perk}</li>
+                    ))}
+                  </ul>
+                  <p style={{ fontSize: '14px', color: '#6b7280', margin: 0, fontStyle: 'italic' }}>
+                    {course.note}
+                  </p>
                 </div>
-                <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 12px', color: '#111827' }}>
-                  {course.tagline}
-                </h2>
-                <ul style={{ margin: '0 0 16px', paddingLeft: '20px' }}>
-                  {course.perks.map((perk, i) => (
-                    <li key={i} style={{ fontSize: '15px', color: '#374151', lineHeight: '1.8' }}>{perk}</li>
-                  ))}
-                </ul>
-                <p style={{ fontSize: '14px', color: '#6b7280', margin: 0, fontStyle: 'italic' }}>
-                  {course.note}
-                </p>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <p style={{ fontSize: '36px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>
+                    {course.price}
+                  </p>
+                  <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>per course</p>
+                </div>
               </div>
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                <p style={{ fontSize: '36px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>
-                  {course.price}
-                </p>
-                <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>per course</p>
-              </div>
+
+              {/* Sessions accordion for this course type */}
+              <CourseSchedule programType="student" courseType={course.level} />
             </div>
           ))}
         </div>
 
-        {/* Dynamic course schedule + registration */}
-        <CourseSchedule programType="student" />
-
         {/* CTA */}
-        <div style={{
+        {/* <div style={{
           backgroundColor: '#f9fafb',
           borderRadius: '12px',
           padding: '48px 24px',
@@ -176,7 +179,7 @@ export default function StudentProgram() {
             Check our course schedule and register today!
           </p>
           <RegistrationModal />
-        </div>
+        </div> */}
         </div>{/* end padding */}
       </div>{/* end page-card */}
     </div>
