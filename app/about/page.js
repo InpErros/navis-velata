@@ -14,13 +14,13 @@ const boardMembers = [
 
 // ─── Update coaches here ──────────────────────────────────────────────────────
 const coaches = [
-  { role: 'Head Coach',                name: 'Kyle Henneberque' },
-  { role: 'Small Boat Sailing Coach',  name: 'Mike Burke' },
-  { role: 'Small Boat Sailing Coach',  name: 'Camille Hambly' },
-  { role: 'Small Boat Sailing Coach',  name: 'Keith Cares' },
-  { role: 'Small Boat Sailing Coach',  name: 'Lucas Demchik' },
-  { role: 'Keelboat Coach',            name: 'Mossy Kennedy' },
-  { role: 'Boatwright',                name: 'Dennis Trombley' },
+  { role: '',  name: 'Kyle Henneberque' },
+  { role: '',  name: 'Mike Burke' },
+  { role: '',  name: 'Camille Hambly' },
+  { role: '',  name: 'Keith Cares' },
+  { role: '',  name: 'Lucas Demchik' },
+  { role: '',  name: 'Mossy Kennedy' },
+  { role: '',  name: 'Dennis Trombley' },
 ];
 
 // ─── Update boat fleet info here ──────────────────────────────────────────────

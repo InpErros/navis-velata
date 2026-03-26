@@ -3,9 +3,9 @@
 import { useState } from 'react';
 
 // ─── Update registration links here ──────────────────────────────────────────
-const GOOGLE_FORM_URL   = 'https://your-google-form-link.com';   // course schedule / signup form
+const GOOGLE_FORM_URL   = 'https://docs.google.com/forms/d/e/1FAIpQLSd8Q-eq43asuP8dyQhquOTLeZ6-beN5OgTNveyFOTD7eaBvPA/viewform?usp=sharing&ouid=114493447945086633847';   // course schedule / signup form
 const CASHNET_URL       = 'https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN';
-const DO_SPORTS_EASY_URL = 'https://www.domesports.com/';         // Do Sports Easy registration
+const DO_SPORTS_EASY_URL = 'https://csulb.dserec.com/online/clubsports';         // Do Sports Easy registration
 
 const steps = [
   {
