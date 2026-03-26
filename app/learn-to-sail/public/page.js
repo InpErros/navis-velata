@@ -137,7 +137,7 @@ export default function PublicProgram() {
         }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '12px' }}>Interested in joining?</h2>
           <p style={{ fontSize: '17px', color: '#6b7280', marginBottom: '32px', lineHeight: '1.8' }}>
-            Check the schedule and register for a course today!
+            Check our course schedule and register today!
           </p>
           <Link href="/contact" style={{
             backgroundColor: '#16a34a',

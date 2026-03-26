@@ -4,23 +4,27 @@ import { useState } from 'react';
 import PageHero from '../components/PageHero';
 
 // ─── Update board members here ───────────────────────────────────────────────
+// photo: path relative to /public, e.g. '/profiles/gabe-auge.jpg'
+// focalPoint: CSS object-position to control crop, e.g. 'center 30%'
 const boardMembers = [
-  { role: 'President', name: 'Gabe Auge' },
-  { role: 'Vice President',        name: 'James Flores' },
-  { role: 'Secretary',             name: 'Rosalie Ahern' },
-  { role: 'Treasurer',             name: 'Alison Curd' },
-  { role: 'Event Chair',           name: 'Carter Jepsen' },
+  { role: 'President',      name: 'Gabe Auge',     photo: '/public/gabe-auge.jpg', focalPoint: 'center 30%' },
+  { role: 'Vice President', name: 'James Flores',  photo: null },
+  { role: 'Secretary',      name: 'Rosalie Ahern', photo: null },
+  { role: 'Treasurer',      name: 'Alison Curd',   photo: null },
+  { role: 'Event Chair',    name: 'Carter Jepsen', photo: null },
 ];
 
 // ─── Update coaches here ──────────────────────────────────────────────────────
+// photo: path relative to /public, e.g. '/profiles/kyle-henneberque.jpg'
+// focalPoint: CSS object-position to control crop, e.g. 'center 30%'
 const coaches = [
-  { role: '',  name: 'Kyle Henneberque' },
-  { role: '',  name: 'Mike Burke' },
-  { role: '',  name: 'Camille Hambly' },
-  { role: '',  name: 'Keith Cares' },
-  { role: '',  name: 'Lucas Demchik' },
-  { role: '',  name: 'Mossy Kennedy' },
-  { role: '',  name: 'Dennis Trombley' },
+  { role: '', name: 'Kyle Henneberque', photo: '/public/kyle-h.jpg', focalPoint: 'center' },
+  { role: '', name: 'Mike Burke',       photo: null, focalPoint: 'center' },
+  { role: '', name: 'Camille Hambly',   photo: '/public/camille-h.png', focalPoint: 'center' },
+  { role: '', name: 'Keith Cares',      photo: null, focalPoint: 'center' },
+  { role: '', name: 'Lucas Demchik',    photo: null, focalPoint: 'center' },
+  { role: '', name: 'Mossy Kennedy',    photo: null, focalPoint: 'center' },
+  { role: '', name: 'Dennis Trombley',  photo: null, focalPoint: 'center' },
 ];
 
 // ─── Update boat fleet info here ──────────────────────────────────────────────
@@ -79,6 +83,18 @@ const goals = [
 ];
 
 // ─── Reusable components ──────────────────────────────────────────────────────
+
+function Silhouette({ bg = '#e5e7eb', fg = '#9ca3af' }) {
+  return (
+    <svg viewBox="0 0 48 48" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="48" fill={bg} />
+      {/* head */}
+      <circle cx="24" cy="18" r="9" fill={fg} />
+      {/* shoulders */}
+      <path d="M4 46 Q4 32 24 32 Q44 32 44 46Z" fill={fg} />
+    </svg>
+  );
+}
 
 function PhotoPlaceholder({ label }) {
   return (
@@ -291,8 +307,15 @@ export default function About() {
                 }}>
                   <div style={{
                     width: '48px', height: '48px', borderRadius: '50%',
-                    backgroundColor: '#e5e7eb', flexShrink: 0,
-                  }} />
+                    flexShrink: 0, overflow: 'hidden',
+                  }}>
+                    {member.photo
+                      ? <img src={member.photo} alt={member.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover',
+                            objectPosition: member.focalPoint || 'center' }} />
+                      : <Silhouette bg="#e5e7eb" fg="#9ca3af" />
+                    }
+                  </div>
                   <div>
                     <p style={{ fontWeight: '700', fontSize: '15px', margin: '0 0 3px', color: '#111827' }}>
                       {member.name}
@@ -322,8 +345,15 @@ export default function About() {
                 }}>
                   <div style={{
                     width: '48px', height: '48px', borderRadius: '50%',
-                    backgroundColor: '#bae6fd', flexShrink: 0,
-                  }} />
+                    flexShrink: 0, overflow: 'hidden',
+                  }}>
+                    {coach.photo
+                      ? <img src={coach.photo} alt={coach.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover',
+                            objectPosition: coach.focalPoint || 'center' }} />
+                      : <Silhouette bg="#bae6fd" fg="#7dd3fc" />
+                    }
+                  </div>
                   <div>
                     <p style={{ fontWeight: '700', fontSize: '15px', margin: '0 0 3px', color: '#111827' }}>
                       {coach.name}
