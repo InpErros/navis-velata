@@ -78,8 +78,6 @@ export default function NavBar() {
           </div>
         </div>
 
-        {/* Admin */}
-        <Link href="/admin" className="nav-admin" onClick={close}>Admin</Link>
       </div>
     </nav>
   )

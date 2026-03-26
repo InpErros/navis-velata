@@ -55,6 +55,8 @@ export default function RootLayout({ children }) {
 
           <p style={{ color: '#003a45', fontSize: '13px', margin: 0 }}>
             © {new Date().getFullYear()} CSULB Sailing Association. All rights reserved.
+            {' · '}
+            <a href="/admin" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '12px' }}>Admin</a>
           </p>
 
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
