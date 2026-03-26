@@ -1,6 +1,7 @@
 import { Redis } from '@upstash/redis'
 import { NextResponse } from 'next/server'
-import { uploadToDrive, appendToSheet } from '@/app/lib/googleApi'
+import { put } from '@vercel/blob'
+import { appendToSheet } from '@/app/lib/googleApi'
 import { sendRegistrationConfirmation } from '@/app/lib/emails'
 
 const redis = Redis.fromEnv()
@@ -10,13 +11,11 @@ const MAX_SIZE = 10 * 1024 * 1024 // 10 MB
 
 export const POST = async (req) => {
   const spreadsheetId = process.env.GOOGLE_SHEETS_ID
-  const driveFolderId = process.env.GOOGLE_DRIVE_FOLDER_ID
   const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON
-  if (!spreadsheetId || !driveFolderId || !serviceAccountJson) {
+  if (!spreadsheetId || !serviceAccountJson) {
     const missing = [
       !serviceAccountJson && 'GOOGLE_SERVICE_ACCOUNT_JSON',
       !spreadsheetId && 'GOOGLE_SHEETS_ID',
-      !driveFolderId && 'GOOGLE_DRIVE_FOLDER_ID',
     ].filter(Boolean).join(', ')
     console.error('Missing env vars:', missing)
     return NextResponse.json({ error: 'Registration is not configured yet.' }, { status: 503 })
@@ -63,17 +62,19 @@ export const POST = async (req) => {
   if (course.enrolled >= course.capacity) {
     return NextResponse.json({ error: 'This course is full.' }, { status: 409 })
   }
-  // Upload receipt to Google Drive
+
+  // Upload receipt to Vercel Blob
   const timestamp = new Date().toISOString()
   const ext = receiptFile.type === 'application/pdf' ? 'pdf' : receiptFile.type === 'image/png' ? 'png' : 'jpg'
-  const fileName = `${course.name} - ${name} - ${Date.now()}.${ext}`
+  const blobPath = `receipts/${course.name} - ${name} - ${Date.now()}.${ext}`
 
   let receiptUrl
   try {
-    receiptUrl = await uploadToDrive(buffer, fileName, receiptFile.type, driveFolderId)
+    const blob = await put(blobPath, buffer, { access: 'public', contentType: receiptFile.type })
+    receiptUrl = blob.url
   } catch (err) {
-    console.error('Drive upload failed:', err)
-    return NextResponse.json({ error: `Drive upload failed: ${err.message}` }, { status: 500 })
+    console.error('Blob upload failed:', err)
+    return NextResponse.json({ error: `Blob upload failed: ${err.message}` }, { status: 500 })
   }
 
   // Append row to Google Sheets
