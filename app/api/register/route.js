@@ -92,10 +92,14 @@ export const POST = async (req) => {
   )
   await redis.set('courses', updatedCourses)
 
-  // Send confirmation email (non-blocking — don't fail the registration if email fails)
-  sendRegistrationConfirmation({ to: email, name, course }).catch(err =>
+  // Send confirmation email
+  let emailError = null
+  try {
+    await sendRegistrationConfirmation({ to: email, name, course })
+  } catch (err) {
     console.error('Confirmation email failed:', err)
-  )
+    emailError = err.message
+  }
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true, emailError })
 }

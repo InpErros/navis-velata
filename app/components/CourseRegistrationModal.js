@@ -49,6 +49,7 @@ export default function CourseRegistrationModal({ course, onClose }) {
         setErrorMsg(data.error || 'Something went wrong. Please try again.')
         setStatus('error')
       } else {
+        if (data.emailError) console.warn('Email failed:', data.emailError)
         setStatus('success')
       }
     } catch {
