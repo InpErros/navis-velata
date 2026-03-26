@@ -4,21 +4,21 @@ import { useState, useEffect } from 'react'
 import CourseRegistrationModal from './CourseRegistrationModal'
 
 const COURSE_TYPE_ORDER = ['Sailing A', 'Sailing B', 'Sailing C', 'Level 1 Keelboat', 'Other']
+const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3, 'Level 1 Keelboat': 2, 'Other': 1 }
 
 export default function CourseSchedule({ programType, courseType }) {
-  const [courses, setCourses] = useState([])
+  const [sessions, setSessions] = useState([])
   const [loading, setLoading] = useState(true)
-  const [selectedCourse, setSelectedCourse] = useState(null)
+  const [registering, setRegistering] = useState(null) // { courseType, sessions }
   const [openSections, setOpenSections] = useState({})
 
   useEffect(() => {
     fetch('/api/courses')
       .then(r => r.json())
       .then(data => {
-        let filtered = data.filter(c => c.programType === programType)
-        if (courseType) filtered = filtered.filter(c => c.courseType === courseType)
-        setCourses(filtered)
-
+        let filtered = data.filter(s => s.programType === programType)
+        if (courseType) filtered = filtered.filter(s => s.courseType === courseType)
+        setSessions(filtered)
         setLoading(false)
       })
       .catch(() => setLoading(false))
@@ -36,9 +36,9 @@ export default function CourseSchedule({ programType, courseType }) {
     )
   }
 
-  if (courses.length === 0) return null
+  if (sessions.length === 0) return null
 
-  const courseTypes = COURSE_TYPE_ORDER.filter(t => courses.some(c => c.courseType === t))
+  const courseTypes = COURSE_TYPE_ORDER.filter(t => sessions.some(s => s.courseType === t))
   const inline = Boolean(courseType)
 
   return (
@@ -55,8 +55,15 @@ export default function CourseSchedule({ programType, courseType }) {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {courseTypes.map(type => {
-            const typeCourses = courses.filter(c => c.courseType === type)
+            const typeSessions = sessions.filter(s => s.courseType === type)
             const isOpen = openSections[type]
+            const dayCount = COURSE_DAY_COUNT[type] || 1
+            const requiredDays = Array.from({ length: dayCount }, (_, i) => i + 1)
+
+            // Can register if every required day has at least one open session with spots
+            const canRegister = requiredDays.every(d =>
+              typeSessions.some(s => s.dayNumber === d && s.isOpen && (s.enrolled || 0) < s.spots)
+            )
 
             return (
               <div key={type} style={{ border: '1px solid #e5e7eb', borderRadius: inline ? '0 0 12px 12px' : '12px', overflow: 'hidden', marginTop: inline ? '-1px' : '0' }}>
@@ -65,7 +72,8 @@ export default function CourseSchedule({ programType, courseType }) {
                   onClick={() => toggleSection(type)}
                   style={{
                     width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    padding: inline ? '14px 28px' : '20px 28px', background: isOpen ? '#1e3a5f' : '#f9fafb',
+                    padding: inline ? '14px 28px' : '20px 28px',
+                    background: isOpen ? '#1e3a5f' : '#f9fafb',
                     border: 'none', cursor: 'pointer', textAlign: 'left',
                     transition: 'background 0.15s',
                   }}
@@ -81,7 +89,7 @@ export default function CourseSchedule({ programType, courseType }) {
                       backgroundColor: isOpen ? 'rgba(255,255,255,0.15)' : '#e5e7eb',
                       color: isOpen ? '#fff' : '#6b7280',
                     }}>
-                      {typeCourses.length} session{typeCourses.length !== 1 ? 's' : ''} available
+                      {typeSessions.length} session{typeSessions.length !== 1 ? 's' : ''} available
                     </span>
                   </div>
                   <span style={{ fontSize: '18px', color: isOpen ? '#fff' : '#6b7280', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
@@ -91,100 +99,65 @@ export default function CourseSchedule({ programType, courseType }) {
 
                 {/* Accordion body */}
                 {isOpen && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0', borderTop: '1px solid #e5e7eb' }}>
-                    {typeCourses.map((course, idx) => {
-                      const spotsLeft = course.capacity - (course.enrolled || 0)
-                      const isFull = spotsLeft <= 0
-
-                      return (
-                        <div key={course.id} style={{
-                          padding: '24px 28px',
-                          borderBottom: idx < typeCourses.length - 1 ? '1px solid #f3f4f6' : 'none',
-                          display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
-                          gap: '24px', flexWrap: 'wrap', backgroundColor: '#fff',
-                        }}>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                              <h3 style={{ fontSize: '16px', fontWeight: '700', margin: 0, color: '#111827' }}>
-                                {course.name}
-                              </h3>
-                              {isFull && (
-                                <span style={{
-                                  backgroundColor: '#fef2f2', color: '#dc2626',
-                                  fontSize: '11px', fontWeight: '700', padding: '2px 8px',
-                                  borderRadius: '999px', border: '1px solid #fecaca',
-                                }}>
-                                  Full
-                                </span>
+                  <div style={{ borderTop: '1px solid #e5e7eb', backgroundColor: '#fff' }}>
+                    <div style={{ padding: '24px 28px' }}>
+                      {/* Sessions grouped by day */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '24px' }}>
+                        {requiredDays.map(dayNum => {
+                          const daySessions = typeSessions.filter(s => s.dayNumber === dayNum)
+                          return (
+                            <div key={dayNum}>
+                              <p style={{ fontSize: '13px', fontWeight: '700', color: '#374151', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                Day {dayNum}
+                              </p>
+                              {daySessions.length === 0 ? (
+                                <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>No sessions scheduled yet.</p>
+                              ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                  {daySessions.map(s => {
+                                    const spotsLeft = s.spots - (s.enrolled || 0)
+                                    const full = spotsLeft <= 0
+                                    return (
+                                      <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                                        <span style={{
+                                          backgroundColor: full ? '#f3f4f6' : '#e0f2fe',
+                                          color: full ? '#9ca3af' : '#0369a1',
+                                          fontSize: '13px', fontWeight: '600',
+                                          padding: '4px 12px', borderRadius: '6px',
+                                        }}>
+                                          {s.date}{s.startTime ? ` · ${s.startTime}${s.endTime ? `–${s.endTime}` : ''}` : ''}
+                                        </span>
+                                        <span style={{
+                                          fontSize: '12px', fontWeight: '600',
+                                          color: full ? '#dc2626' : spotsLeft <= 3 ? '#d97706' : '#16a34a',
+                                        }}>
+                                          {full ? 'Full' : `${spotsLeft} spot${spotsLeft !== 1 ? 's' : ''} left`}
+                                        </span>
+                                      </div>
+                                    )
+                                  })}
+                                </div>
                               )}
                             </div>
+                          )
+                        })}
+                      </div>
 
-                            {course.description && (
-                              <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 12px', lineHeight: '1.6' }}>
-                                {course.description}
-                              </p>
-                            )}
-
-                            {/* Days + per-option spots */}
-                            {course.days?.length > 0 && (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                {course.days.map((day, di) => (
-                                  <div key={di}>
-                                    <span style={{ fontSize: '12px', fontWeight: '700', color: '#374151', display: 'block', marginBottom: '4px' }}>
-                                      {day.label}
-                                    </span>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                      {day.options.filter(o => o.date).map((opt, oi) => {
-                                        const optSpots = opt.spots !== '' && opt.spots != null ? Number(opt.spots) : null
-                                        const optFull = optSpots !== null && optSpots <= 0
-                                        return (
-                                          <div key={oi} style={{
-                                            display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap',
-                                          }}>
-                                            <span style={{
-                                              backgroundColor: optFull ? '#f3f4f6' : '#e0f2fe',
-                                              color: optFull ? '#9ca3af' : '#0369a1',
-                                              fontSize: '12px', fontWeight: '600', padding: '3px 10px',
-                                              borderRadius: '6px',
-                                            }}>
-                                              {opt.date}{opt.startTime ? ` · ${opt.startTime}${opt.endTime ? `–${opt.endTime}` : ''}` : ''}
-                                            </span>
-                                            {optSpots !== null && (
-                                              <span style={{
-                                                fontSize: '11px', fontWeight: '600',
-                                                color: optFull ? '#dc2626' : optSpots <= 3 ? '#d97706' : '#16a34a',
-                                              }}>
-                                                {optFull ? 'Full' : `${optSpots} spot${optSpots !== 1 ? 's' : ''} left`}
-                                              </span>
-                                            )}
-                                          </div>
-                                        )
-                                      })}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-
-                          <div style={{ textAlign: 'right', flexShrink: 0, paddingTop: '4px' }}>
-                            <button
-                              onClick={() => setSelectedCourse(course)}
-                              disabled={isFull}
-                              style={{
-                                backgroundColor: isFull ? '#e5e7eb' : '#ecaa00',
-                                color: isFull ? '#9ca3af' : '#000',
-                                border: 'none', borderRadius: '6px',
-                                padding: '10px 22px', fontWeight: '700',
-                                fontSize: '14px', cursor: isFull ? 'default' : 'pointer',
-                              }}
-                            >
-                              {isFull ? 'Full' : 'Register'}
-                            </button>
-                          </div>
-                        </div>
-                      )
-                    })}
+                      {/* Register button */}
+                      <button
+                        onClick={() => setRegistering({ courseType: type, sessions: typeSessions })}
+                        disabled={!canRegister}
+                        style={{
+                          backgroundColor: canRegister ? '#ecaa00' : '#e5e7eb',
+                          color: canRegister ? '#000' : '#9ca3af',
+                          border: 'none', borderRadius: '6px',
+                          padding: '10px 24px', fontWeight: '700',
+                          fontSize: '14px', cursor: canRegister ? 'pointer' : 'default',
+                        }}
+                      >
+                        {canRegister ? `Register for ${type}` : 'Full'}
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -193,10 +166,11 @@ export default function CourseSchedule({ programType, courseType }) {
         </div>
       </div>
 
-      {selectedCourse && (
+      {registering && (
         <CourseRegistrationModal
-          course={selectedCourse}
-          onClose={() => setSelectedCourse(null)}
+          courseType={registering.courseType}
+          sessions={registering.sessions}
+          onClose={() => setRegistering(null)}
         />
       )}
     </>

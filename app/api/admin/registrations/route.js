@@ -32,7 +32,7 @@ export const DELETE = async (req) => {
     return NextResponse.json({ error: 'GOOGLE_SHEETS_ID is not configured.' }, { status: 503 })
   }
 
-  const { sheetRowIndex, courseId, studentName } = await req.json()
+  const { sheetRowIndex, sessionIds, studentName } = await req.json()
   if (sheetRowIndex == null) {
     return NextResponse.json({ error: 'sheetRowIndex is required.' }, { status: 400 })
   }
@@ -44,13 +44,13 @@ export const DELETE = async (req) => {
     return NextResponse.json({ error: 'Failed to delete registration.' }, { status: 500 })
   }
 
-  // Decrement enrolled count for the course in Redis
-  if (courseId) {
-    const courses = await redis.get('courses') || []
-    const updated = courses.map(c =>
-      c.id === courseId ? { ...c, enrolled: Math.max(0, (c.enrolled || 1) - 1) } : c
+  // Decrement enrolled on each selected session
+  if (sessionIds?.length) {
+    const sessions = await redis.get('sessions') || []
+    const updated = sessions.map(s =>
+      sessionIds.includes(s.id) ? { ...s, enrolled: Math.max(0, (s.enrolled || 1) - 1) } : s
     )
-    await redis.set('courses', updated)
+    await redis.set('sessions', updated)
   }
 
   await logAction(admin.username, 'deleted registration', studentName || `row ${sheetRowIndex}`)

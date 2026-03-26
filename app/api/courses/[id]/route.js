@@ -10,10 +10,10 @@ export const PUT = async (req, { params }) => {
 
   const { id } = await params
   const updated = await req.json()
-  const courses = await redis.get('courses') || []
-  const newCourses = courses.map(c => c.id === id ? { ...updated, id } : c)
-  await redis.set('courses', newCourses)
-  await logAction(admin.username, 'edited course', updated.name)
+  const sessions = await redis.get('sessions') || []
+  const newSessions = sessions.map(s => s.id === id ? { ...updated, id } : s)
+  await redis.set('sessions', newSessions)
+  await logAction(admin.username, 'edited session', `${updated.courseType} Day ${updated.dayNumber} – ${updated.date}`)
   return NextResponse.json({ success: true })
 }
 
@@ -22,10 +22,10 @@ export const DELETE = async (req, { params }) => {
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await params
-  const courses = await redis.get('courses') || []
-  const target = courses.find(c => c.id === id)
-  const newCourses = courses.filter(c => c.id !== id)
-  await redis.set('courses', newCourses)
-  await logAction(admin.username, 'deleted course', target?.name || id)
+  const sessions = await redis.get('sessions') || []
+  const target = sessions.find(s => s.id === id)
+  const newSessions = sessions.filter(s => s.id !== id)
+  await redis.set('sessions', newSessions)
+  await logAction(admin.username, 'deleted session', target ? `${target.courseType} Day ${target.dayNumber} – ${target.date}` : id)
   return NextResponse.json({ success: true })
 }

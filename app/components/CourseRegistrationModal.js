@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 
-export default function CourseRegistrationModal({ course, onClose }) {
-  const days = course.days || []
+const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3, 'Level 1 Keelboat': 2, 'Other': 1 }
 
-  // selectedDays: { [dayIndex]: optionIndex }
-  const [selectedDays, setSelectedDays] = useState(() =>
-    Object.fromEntries(days.map((_, i) => [i, 0]))
-  )
+export default function CourseRegistrationModal({ courseType, sessions, onClose }) {
+  const dayCount = COURSE_DAY_COUNT[courseType] || 1
+  const requiredDays = Array.from({ length: dayCount }, (_, i) => i + 1)
+
+  const [selectedSessions, setSelectedSessions] = useState({}) // { dayNumber: sessionId }
   const [form, setForm] = useState({ name: '', email: '', discord: '' })
   const [receipt, setReceipt] = useState(null)
   const [receiptError, setReceiptError] = useState('')
@@ -35,22 +35,33 @@ export default function CourseRegistrationModal({ course, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Validate all days selected
+    for (const day of requiredDays) {
+      if (!selectedSessions[day]) {
+        setErrorMsg(`Please select a Day ${day} session.`)
+        setStatus('error')
+        return
+      }
+    }
     if (!receipt) {
       setReceiptError('Please attach your payment receipt.')
       return
     }
 
-    // Build a human-readable summary of selected sessions
-    const sessionSummary = days.map((day, di) => {
-      const opt = day.options[selectedDays[di]]
-      if (!opt) return null
-      const time = opt.startTime ? ` (${opt.startTime}${opt.endTime ? `–${opt.endTime}` : ''})` : ''
-      return `${day.label}: ${opt.date}${time}`
+    const sessionIds = requiredDays.map(d => selectedSessions[d])
+
+    // Build human-readable summary
+    const sessionSummary = requiredDays.map(d => {
+      const s = sessions.find(x => x.id === selectedSessions[d])
+      if (!s) return null
+      return `Day ${d}: ${s.date}${s.startTime ? ` (${s.startTime}${s.endTime ? `–${s.endTime}` : ''})` : ''}`
     }).filter(Boolean).join(', ')
 
     setStatus('submitting')
     const fd = new FormData()
-    fd.append('courseId', course.id)
+    fd.append('courseType', courseType)
+    fd.append('sessionIds', sessionIds.join(','))
     fd.append('name', form.name)
     fd.append('email', form.email)
     fd.append('discord', form.discord)
@@ -73,11 +84,11 @@ export default function CourseRegistrationModal({ course, onClose }) {
     }
   }
 
-  // Build success summary for display
-  const successSummary = days.map((day, di) => {
-    const opt = day.options[selectedDays[di]]
-    if (!opt?.date) return null
-    return `${day.label}: ${opt.date}${opt.startTime ? ` · ${opt.startTime}${opt.endTime ? `–${opt.endTime}` : ''}` : ''}`
+  // Build success summary
+  const successSummary = requiredDays.map(d => {
+    const s = sessions.find(x => x.id === selectedSessions[d])
+    if (!s) return null
+    return `Day ${d}: ${s.date}${s.startTime ? ` · ${s.startTime}${s.endTime ? `–${s.endTime}` : ''}` : ''}`
   }).filter(Boolean)
 
   return (
@@ -91,7 +102,7 @@ export default function CourseRegistrationModal({ course, onClose }) {
     >
       <div style={{
         backgroundColor: '#fff', borderRadius: '16px', padding: '40px',
-        width: '100%', maxWidth: '500px', position: 'relative',
+        width: '100%', maxWidth: '520px', position: 'relative',
         maxHeight: '90vh', overflowY: 'auto',
       }}>
         {/* Close button */}
@@ -109,7 +120,7 @@ export default function CourseRegistrationModal({ course, onClose }) {
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
             <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '12px', color: '#111827' }}>You&apos;re registered!</h2>
             <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.7', marginBottom: '16px' }}>
-              We received your registration for <strong>{course.name}</strong>.
+              We received your registration for <strong>{courseType}</strong>.
             </p>
             {successSummary.length > 0 && (
               <div style={{ backgroundColor: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '8px', padding: '12px 16px', marginBottom: '24px', textAlign: 'left' }}>
@@ -133,11 +144,11 @@ export default function CourseRegistrationModal({ course, onClose }) {
                 borderRadius: '999px', display: 'inline-block', marginBottom: '10px',
                 textTransform: 'uppercase', letterSpacing: '0.05em',
               }}>
-                {course.courseType}
+                {courseType}
               </span>
-              <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>{course.name}</h2>
+              <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>Register for {courseType}</h2>
               <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>
-                {course.capacity - course.enrolled} spot{course.capacity - course.enrolled !== 1 ? 's' : ''} remaining
+                Select one session per day below.
               </p>
             </div>
 
@@ -163,38 +174,57 @@ export default function CourseRegistrationModal({ course, onClose }) {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-              {/* Day selectors */}
-              {days.map((day, di) => (
-                <div key={di} style={fieldWrap}>
-                  <label style={fieldLabel}>{day.label} — choose a date</label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {day.options.map((opt, oi) => {
-                      const selected = selectedDays[di] === oi
-                      const label = [opt.date, opt.startTime && `${opt.startTime}${opt.endTime ? `–${opt.endTime}` : ''}`].filter(Boolean).join(' · ')
-                      return (
-                        <label key={oi} style={{
-                          display: 'flex', alignItems: 'center', gap: '10px',
-                          padding: '10px 14px', borderRadius: '8px', cursor: 'pointer',
-                          border: `2px solid ${selected ? '#ecaa00' : '#e5e7eb'}`,
-                          backgroundColor: selected ? '#fffbeb' : '#fff',
-                          fontSize: '14px', color: '#111827', fontWeight: selected ? '600' : '400',
-                        }}>
-                          <input
-                            type="radio"
-                            name={`day-${di}`}
-                            checked={selected}
-                            onChange={() => setSelectedDays(s => ({ ...s, [di]: oi }))}
-                            style={{ accentColor: '#ecaa00' }}
-                          />
-                          {label || `Option ${oi + 1}`}
-                        </label>
-                      )
-                    })}
+              {/* Day session selectors */}
+              {requiredDays.map(dayNum => {
+                const daySessions = sessions.filter(s => s.dayNumber === dayNum)
+                return (
+                  <div key={dayNum} style={fieldWrap}>
+                    <label style={fieldLabel}>Day {dayNum} — choose a session</label>
+                    {daySessions.length === 0 ? (
+                      <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>No sessions available for Day {dayNum}.</p>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {daySessions.map(s => {
+                          const spotsLeft = s.spots - (s.enrolled || 0)
+                          const full = spotsLeft <= 0
+                          const selected = selectedSessions[dayNum] === s.id
+                          const label = [s.date, s.startTime && `${s.startTime}${s.endTime ? `–${s.endTime}` : ''}`].filter(Boolean).join(' · ')
+                          return (
+                            <label key={s.id} style={{
+                              display: 'flex', alignItems: 'center', gap: '10px',
+                              padding: '10px 14px', borderRadius: '8px',
+                              cursor: full ? 'not-allowed' : 'pointer',
+                              border: `2px solid ${selected ? '#ecaa00' : '#e5e7eb'}`,
+                              backgroundColor: selected ? '#fffbeb' : full ? '#fafafa' : '#fff',
+                              fontSize: '14px', color: full ? '#9ca3af' : '#111827',
+                              fontWeight: selected ? '600' : '400',
+                              opacity: full ? 0.6 : 1,
+                            }}>
+                              <input
+                                type="radio"
+                                name={`day-${dayNum}`}
+                                disabled={full}
+                                checked={selected}
+                                onChange={() => !full && setSelectedSessions(p => ({ ...p, [dayNum]: s.id }))}
+                                style={{ accentColor: '#ecaa00' }}
+                              />
+                              <span style={{ flex: 1 }}>{label || `Session ${s.id}`}</span>
+                              <span style={{
+                                fontSize: '12px', fontWeight: '600', flexShrink: 0,
+                                color: full ? '#dc2626' : spotsLeft <= 3 ? '#d97706' : '#16a34a',
+                              }}>
+                                {full ? 'Full' : `${spotsLeft} left`}
+                              </span>
+                            </label>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                )
+              })}
 
               <div style={fieldWrap}>
                 <label style={fieldLabel}>Full Name</label>

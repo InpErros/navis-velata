@@ -28,15 +28,15 @@ export const POST = async (req) => {
     return NextResponse.json({ error: 'Invalid form data.' }, { status: 400 })
   }
 
-  const courseId = formData.get('courseId')
+  const courseType = formData.get('courseType')
+  const sessionIdsRaw = formData.get('sessionIds') // comma-separated session IDs
   const name = formData.get('name')?.trim()
   const email = formData.get('email')?.trim()
   const discord = formData.get('discord')?.trim()
   const sessionSummary = formData.get('sessionSummary')?.trim() || ''
   const receiptFile = formData.get('receipt')
 
-  // Basic field validation
-  if (!courseId || !name || !email || !discord) {
+  if (!courseType || !sessionIdsRaw || !name || !email || !discord) {
     return NextResponse.json({ error: 'All fields are required.' }, { status: 400 })
   }
   if (!receiptFile || typeof receiptFile === 'string') {
@@ -51,23 +51,28 @@ export const POST = async (req) => {
     return NextResponse.json({ error: 'Receipt file must be under 10 MB.' }, { status: 400 })
   }
 
-  // Load course from Redis
-  const courses = await redis.get('courses') || []
-  const course = courses.find(c => c.id === courseId)
-  if (!course) {
-    return NextResponse.json({ error: 'Course not found.' }, { status: 404 })
+  const sessionIds = sessionIdsRaw.split(',').filter(Boolean)
+
+  // Validate sessions
+  const sessions = await redis.get('sessions') || []
+  const selectedSessions = sessionIds.map(id => sessions.find(s => s.id === id)).filter(Boolean)
+
+  if (selectedSessions.length !== sessionIds.length) {
+    return NextResponse.json({ error: 'One or more sessions not found.' }, { status: 404 })
   }
-  if (!course.isOpen) {
-    return NextResponse.json({ error: 'Registration for this course is closed.' }, { status: 409 })
-  }
-  if (course.enrolled >= course.capacity) {
-    return NextResponse.json({ error: 'This course is full.' }, { status: 409 })
+  for (const session of selectedSessions) {
+    if (!session.isOpen) {
+      return NextResponse.json({ error: `Session on ${session.date} is closed.` }, { status: 409 })
+    }
+    if (session.enrolled >= session.spots) {
+      return NextResponse.json({ error: `Session on ${session.date} is full.` }, { status: 409 })
+    }
   }
 
   // Upload receipt to Vercel Blob
   const timestamp = new Date().toISOString()
   const ext = receiptFile.type === 'application/pdf' ? 'pdf' : receiptFile.type === 'image/png' ? 'png' : 'jpg'
-  const blobPath = `receipts/${course.name} - ${name} - ${Date.now()}.${ext}`
+  const blobPath = `receipts/${courseType} - ${name} - ${Date.now()}.${ext}`
 
   let receiptUrl
   try {
@@ -79,25 +84,24 @@ export const POST = async (req) => {
   }
 
   // Append row to Google Sheets
-  // Columns: Timestamp | Course Name | Course ID | Full Name | Email | Discord | Receipt URL
+  // Columns: Timestamp | Course Type | Session IDs | Full Name | Email | Discord | Sessions Summary | Receipt URL
   try {
-    // Columns: Timestamp | Course Name | Course ID | Full Name | Email | Discord | Sessions | Receipt URL
-    await appendToSheet(spreadsheetId, [timestamp, course.name, course.id, name, email, discord, sessionSummary, receiptUrl])
+    await appendToSheet(spreadsheetId, [timestamp, courseType, sessionIds.join(','), name, email, discord, sessionSummary, receiptUrl])
   } catch (err) {
     console.error('Sheets append failed:', err)
     return NextResponse.json({ error: `Sheets append failed: ${err.message}` }, { status: 500 })
   }
 
-  // Increment enrolled count in Redis
-  const updatedCourses = courses.map(c =>
-    c.id === courseId ? { ...c, enrolled: (c.enrolled || 0) + 1 } : c
+  // Increment enrolled on each selected session
+  const updatedSessions = sessions.map(s =>
+    sessionIds.includes(s.id) ? { ...s, enrolled: (s.enrolled || 0) + 1 } : s
   )
-  await redis.set('courses', updatedCourses)
+  await redis.set('sessions', updatedSessions)
 
   // Send confirmation email
   let emailError = null
   try {
-    await sendRegistrationConfirmation({ to: email, name, course, sessionSummary })
+    await sendRegistrationConfirmation({ to: email, name, course: { name: courseType }, sessionSummary })
   } catch (err) {
     console.error('Confirmation email failed:', err)
     emailError = err.message

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 const EVENT_TYPES = ['Learn to Sail', 'Casual Sail', 'BBQ', 'Maintenance', 'Themed Event', 'Social']
 const COURSE_TYPES = ['Sailing A', 'Sailing B', 'Sailing C', 'Level 1 Keelboat', 'Other']
 const PROGRAM_TYPES = ['student', 'community']
+const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3, 'Level 1 Keelboat': 2, 'Other': 1 }
 
 const emptyForm = {
   title: '',
@@ -16,16 +17,14 @@ const emptyForm = {
   registrationLink: '',
 }
 
-const emptyOption = () => ({ date: '', startTime: '', endTime: '', spots: '' })
-const emptyDay = (label) => ({ label, options: [emptyOption()] })
-
-const emptyCourseForm = {
-  name: '',
-  description: '',
-  capacity: '',
-  programType: 'student',
+const emptySessionForm = {
   courseType: 'Sailing A',
-  days: [emptyDay('Day 1'), emptyDay('Day 2')],
+  programType: 'student',
+  dayNumber: 1,
+  date: '',
+  startTime: '',
+  endTime: '',
+  spots: '',
   isOpen: false,
 }
 
@@ -44,7 +43,7 @@ export default function Admin() {
 
   // Courses state
   const [courses, setCourses] = useState([])
-  const [courseForm, setCourseForm] = useState(emptyCourseForm)
+  const [courseForm, setCourseForm] = useState(emptySessionForm)
   const [editingCourseId, setEditingCourseId] = useState(null)
   const [courseSaving, setCourseSaving] = useState(false)
   const [courseError, setCourseError] = useState('')
@@ -159,7 +158,7 @@ export default function Admin() {
     fetchEvents(u, pw)
   }
 
-  // ── Courses ──────────────────────────────────────────────────────────────────
+  // ── Sessions ─────────────────────────────────────────────────────────────────
 
   const handleCourseSave = async (e) => {
     e.preventDefault()
@@ -169,7 +168,8 @@ export default function Admin() {
     const url = editingCourseId ? `/api/courses/${editingCourseId}` : '/api/courses'
     const payload = {
       ...courseForm,
-      capacity: parseInt(courseForm.capacity) || 0,
+      dayNumber: parseInt(courseForm.dayNumber) || 1,
+      spots: parseInt(courseForm.spots) || 0,
     }
     const res = await fetch(url, {
       method,
@@ -178,56 +178,38 @@ export default function Admin() {
     })
     if (!res.ok) {
       const data = await res.json()
-      setCourseError(data.error || 'Failed to save course')
+      setCourseError(data.error || 'Failed to save session')
     } else {
-      setCourseForm(emptyCourseForm)
+      setCourseForm(emptySessionForm)
       setEditingCourseId(null)
       fetchCourses()
     }
     setCourseSaving(false)
   }
 
-  const handleCourseEdit = (course) => {
+  const handleCourseEdit = (session) => {
     setCourseForm({
-      ...course,
-      capacity: String(course.capacity),
-      days: course.days?.length ? course.days : [emptyDay('Day 1'), emptyDay('Day 2')],
+      ...session,
+      spots: String(session.spots ?? ''),
     })
-    setEditingCourseId(course.id)
+    setEditingCourseId(session.id)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleCourseDelete = async (id) => {
-    if (!confirm('Delete this course?')) return
+    if (!confirm('Delete this session?')) return
     await fetch(`/api/courses/${id}`, { method: 'DELETE', headers: authHeaders() })
     fetchCourses()
   }
 
-  const handleCourseToggleOpen = async (course) => {
-    await fetch(`/api/courses/${course.id}`, {
+  const handleCourseToggleOpen = async (session) => {
+    await fetch(`/api/courses/${session.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', ...authHeaders() },
-      body: JSON.stringify({ ...course, isOpen: !course.isOpen }),
+      body: JSON.stringify({ ...session, isOpen: !session.isOpen }),
     })
     fetchCourses()
   }
-
-  const addDay = () => setCourseForm(f => ({ ...f, days: [...f.days, emptyDay(`Day ${f.days.length + 1}`)] }))
-  const removeDay = (di) => setCourseForm(f => ({ ...f, days: f.days.filter((_, i) => i !== di) }))
-  const updateDayLabel = (di, label) => setCourseForm(f => ({
-    ...f, days: f.days.map((d, i) => i === di ? { ...d, label } : d),
-  }))
-  const addOption = (di) => setCourseForm(f => ({
-    ...f, days: f.days.map((d, i) => i === di ? { ...d, options: [...d.options, emptyOption()] } : d),
-  }))
-  const removeOption = (di, oi) => setCourseForm(f => ({
-    ...f, days: f.days.map((d, i) => i === di ? { ...d, options: d.options.filter((_, j) => j !== oi) } : d),
-  }))
-  const updateOption = (di, oi, field, value) => setCourseForm(f => ({
-    ...f, days: f.days.map((d, i) => i === di
-      ? { ...d, options: d.options.map((o, j) => j === oi ? { ...o, [field]: value } : o) }
-      : d),
-  }))
 
   // ── Events ──────────────────────────────────────────────────────────────────
 
@@ -556,20 +538,14 @@ export default function Admin() {
         {/* ── Courses tab ── */}
         {activeTab === 'courses' && (
           <>
-            {/* ── Add / Edit Course form ── */}
+            {/* ── Add / Edit Session form ── */}
             <form onSubmit={handleCourseSave} style={{ marginBottom: '48px' }}>
               <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-                {editingCourseId ? 'Edit Course' : 'Add New Course'}
+                {editingCourseId ? 'Edit Session' : 'Add New Session'}
               </h2>
               {courseError && <p style={{ color: '#dc2626', marginBottom: '16px', fontSize: '14px' }}>{courseError}</p>}
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', gridColumn: '1 / -1' }}>
-                  <label style={fieldLabel}>Course Name</label>
-                  <input type="text" placeholder="e.g. Sailing A – Spring 2026" value={courseForm.name}
-                    onChange={e => setCourseForm({ ...courseForm, name: e.target.value })} style={inputStyle} required />
-                </div>
-
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <label style={fieldLabel}>Course Type</label>
                   <select value={courseForm.courseType} onChange={e => setCourseForm({ ...courseForm, courseType: e.target.value })} style={inputStyle}>
@@ -586,82 +562,43 @@ export default function Admin() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={fieldLabel}>Capacity (max students)</label>
-                  <input type="number" min="1" placeholder="20" value={courseForm.capacity}
-                    onChange={e => setCourseForm({ ...courseForm, capacity: e.target.value })} style={inputStyle} required />
+                  <label style={fieldLabel}>Day Number</label>
+                  <select value={courseForm.dayNumber} onChange={e => setCourseForm({ ...courseForm, dayNumber: parseInt(e.target.value) })} style={inputStyle}>
+                    {[1, 2, 3, 4].map(n => <option key={n} value={n}>Day {n}</option>)}
+                  </select>
                 </div>
 
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
-                <label style={fieldLabel}>Description</label>
-                <textarea placeholder="What students will learn..." value={courseForm.description}
-                  onChange={e => setCourseForm({ ...courseForm, description: e.target.value })}
-                  rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
-              </div>
-
-              {/* Days */}
-              <div style={{ marginBottom: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <label style={fieldLabel}>Course Days</label>
-                  <button type="button" onClick={addDay} style={{ ...secondaryBtn, padding: '6px 14px', fontSize: '13px' }}>+ Add day</button>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Spots</label>
+                  <input type="number" min="1" placeholder="12" value={courseForm.spots}
+                    onChange={e => setCourseForm({ ...courseForm, spots: e.target.value })} style={inputStyle} required />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {courseForm.days.map((day, di) => (
-                    <div key={di} style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '16px', backgroundColor: '#f9fafb' }}>
-                      {/* Day header */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                        <input
-                          type="text"
-                          value={day.label}
-                          onChange={e => updateDayLabel(di, e.target.value)}
-                          style={{ ...inputStyle, fontSize: '14px', fontWeight: '600', flex: 1 }}
-                          placeholder="e.g. Day 1"
-                        />
-                        <button type="button" onClick={() => removeDay(di)} disabled={courseForm.days.length === 1}
-                          style={{ ...deleteBtn, padding: '8px 12px', fontSize: '13px', opacity: courseForm.days.length === 1 ? 0.4 : 1 }}>
-                          Remove day
-                        </button>
-                      </div>
-                      {/* Date options for this day */}
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '10px' }}>
-                        <label style={{ ...fieldLabel, fontSize: '11px' }}>Date options (students pick one)</label>
-                        {day.options.map((opt, oi) => (
-                          <div key={oi} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 80px auto', gap: '8px', alignItems: 'center' }}>
-                            <input type="text" placeholder="April 5, 2026" value={opt.date}
-                              onChange={e => updateOption(di, oi, 'date', e.target.value)}
-                              style={{ ...inputStyle, fontSize: '13px' }} />
-                            <input type="text" placeholder="8:00 AM" value={opt.startTime}
-                              onChange={e => updateOption(di, oi, 'startTime', e.target.value)}
-                              style={{ ...inputStyle, fontSize: '13px' }} />
-                            <input type="text" placeholder="4:00 PM" value={opt.endTime}
-                              onChange={e => updateOption(di, oi, 'endTime', e.target.value)}
-                              style={{ ...inputStyle, fontSize: '13px' }} />
-                            <input type="number" min="0" placeholder="Spots" value={opt.spots ?? ''}
-                              onChange={e => updateOption(di, oi, 'spots', e.target.value)}
-                              style={{ ...inputStyle, fontSize: '13px' }} />
-                            <button type="button" onClick={() => removeOption(di, oi)} disabled={day.options.length === 1}
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '16px', opacity: day.options.length === 1 ? 0.3 : 1 }}>
-                              ✕
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                      <button type="button" onClick={() => addOption(di)}
-                        style={{ ...secondaryBtn, padding: '5px 12px', fontSize: '12px' }}>
-                        + Add date option
-                      </button>
-                    </div>
-                  ))}
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', gridColumn: '1 / -1' }}>
+                  <label style={fieldLabel}>Date</label>
+                  <input type="text" placeholder="e.g. April 5, 2026" value={courseForm.date}
+                    onChange={e => setCourseForm({ ...courseForm, date: e.target.value })} style={inputStyle} required />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Start Time</label>
+                  <input type="text" placeholder="e.g. 8:00 AM" value={courseForm.startTime}
+                    onChange={e => setCourseForm({ ...courseForm, startTime: e.target.value })} style={inputStyle} />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>End Time</label>
+                  <input type="text" placeholder="e.g. 4:00 PM" value={courseForm.endTime}
+                    onChange={e => setCourseForm({ ...courseForm, endTime: e.target.value })} style={inputStyle} />
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                 <button type="submit" disabled={courseSaving} style={primaryBtn}>
-                  {courseSaving ? 'Saving...' : editingCourseId ? 'Save Changes' : 'Add Course'}
+                  {courseSaving ? 'Saving...' : editingCourseId ? 'Save Changes' : 'Add Session'}
                 </button>
                 {editingCourseId && (
-                  <button type="button" onClick={() => { setCourseForm(emptyCourseForm); setEditingCourseId(null) }} style={secondaryBtn}>
+                  <button type="button" onClick={() => { setCourseForm(emptySessionForm); setEditingCourseId(null) }} style={secondaryBtn}>
                     Cancel
                   </button>
                 )}
@@ -673,42 +610,50 @@ export default function Admin() {
               </div>
             </form>
 
-            {/* ── Course list ── */}
+            {/* ── Session list ── */}
             <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-              Current Courses ({courses.length})
+              Sessions ({courses.length})
             </h2>
-            {courses.length === 0 && <p style={{ color: '#6b7280' }}>No courses yet. Add one above.</p>}
+            {courses.length === 0 && <p style={{ color: '#6b7280' }}>No sessions yet. Add one above.</p>}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '48px' }}>
-              {courses.map(course => (
-                <div key={course.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                      <p style={{ fontWeight: '700', fontSize: '16px', margin: 0 }}>{course.name}</p>
-                      <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '600',
-                        backgroundColor: course.isOpen ? '#dcfce7' : '#f3f4f6',
-                        color: course.isOpen ? '#16a34a' : '#6b7280' }}>
-                        {course.isOpen ? 'Open' : 'Closed'}
-                      </span>
-                    </div>
-                    <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 4px' }}>
-                      {course.courseType} · {course.programType === 'student' ? 'Student Program' : 'Community Program'} · {course.enrolled}/{course.capacity} enrolled
-                    </p>
-                    {course.days?.length > 0 && (
-                      <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>
-                        {course.days.map(d => `${d.label}: ${d.options.map(o => o.date).filter(Boolean).join(' / ')}`).join(' · ')}
+              {[...courses]
+                .sort((a, b) => {
+                  if (a.courseType !== b.courseType) return a.courseType.localeCompare(b.courseType)
+                  return (a.dayNumber || 0) - (b.dayNumber || 0)
+                })
+                .map(session => (
+                  <div key={session.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '700', backgroundColor: '#1e3a5f', color: '#fff' }}>
+                          {session.courseType}
+                        </span>
+                        <span style={{ fontSize: '12px', fontWeight: '600', color: '#374151' }}>
+                          Day {session.dayNumber}
+                        </span>
+                        <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '600',
+                          backgroundColor: session.isOpen ? '#dcfce7' : '#f3f4f6',
+                          color: session.isOpen ? '#16a34a' : '#6b7280' }}>
+                          {session.isOpen ? 'Open' : 'Closed'}
+                        </span>
+                      </div>
+                      <p style={{ fontSize: '14px', fontWeight: '600', color: '#111827', margin: '0 0 2px' }}>
+                        {session.date}{session.startTime ? ` · ${session.startTime}${session.endTime ? `–${session.endTime}` : ''}` : ''}
                       </p>
-                    )}
+                      <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>
+                        {session.programType === 'student' ? 'Student' : 'Community'} · {session.enrolled || 0}/{session.spots} enrolled
+                      </p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                      <button onClick={() => handleCourseToggleOpen(session)}
+                        style={{ ...secondaryBtn, padding: '8px 14px', fontSize: '13px' }}>
+                        {session.isOpen ? 'Close' : 'Open'}
+                      </button>
+                      <button onClick={() => handleCourseEdit(session)} style={editBtn}>Edit</button>
+                      <button onClick={() => handleCourseDelete(session.id)} style={deleteBtn}>Delete</button>
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                    <button onClick={() => handleCourseToggleOpen(course)}
-                      style={{ ...secondaryBtn, padding: '8px 14px', fontSize: '13px' }}>
-                      {course.isOpen ? 'Close' : 'Open'}
-                    </button>
-                    <button onClick={() => handleCourseEdit(course)} style={editBtn}>Edit</button>
-                    <button onClick={() => handleCourseDelete(course.id)} style={deleteBtn}>Delete</button>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             {/* ── Registrations roster ── */}
@@ -717,8 +662,8 @@ export default function Admin() {
                 <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Registrations</h2>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                   <select value={selectedCourseFilter} onChange={e => setSelectedCourseFilter(e.target.value)} style={{ ...inputStyle, fontSize: '14px' }}>
-                    <option value="">All courses</option>
-                    {courses.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                    <option value="">All course types</option>
+                    {COURSE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                   <button onClick={fetchRegistrations} disabled={registrationsLoading} style={secondaryBtn}>
                     {registrationsLoading ? 'Loading...' : 'Load'}
@@ -727,7 +672,7 @@ export default function Admin() {
               </div>
 
               {registrations.length === 0 && (
-                <p style={{ color: '#6b7280' }}>Click "Load" to fetch registrations from Google Sheets.</p>
+                <p style={{ color: '#6b7280' }}>Click &quot;Load&quot; to fetch registrations from Google Sheets.</p>
               )}
 
               {registrations.length > 0 && (() => {
@@ -735,13 +680,13 @@ export default function Admin() {
                   ? registrations.filter(r => r.row[1] === selectedCourseFilter)
                   : registrations
                 return filtered.length === 0
-                  ? <p style={{ color: '#6b7280' }}>No registrations for this course yet.</p>
+                  ? <p style={{ color: '#6b7280' }}>No registrations for this course type yet.</p>
                   : (
                     <div style={{ overflowX: 'auto' }}>
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                         <thead>
                           <tr style={{ backgroundColor: '#f3f4f6' }}>
-                            {['Course', 'Name', 'Email', 'Discord', 'Sessions', 'Receipt', 'Submitted', ''].map(h => (
+                            {['Course Type', 'Name', 'Email', 'Discord', 'Sessions', 'Receipt', 'Submitted', ''].map(h => (
                               <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb' }}>{h}</th>
                             ))}
                           </tr>
@@ -767,7 +712,7 @@ export default function Admin() {
                                     await fetch('/api/admin/registrations', {
                                       method: 'DELETE',
                                       headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                                      body: JSON.stringify({ sheetRowIndex, courseId: row[2], studentName: row[3] }),
+                                      body: JSON.stringify({ sheetRowIndex, sessionIds: row[2]?.split(',').filter(Boolean) || [], studentName: row[3] }),
                                     })
                                     fetchRegistrations()
                                     fetchCourses()
