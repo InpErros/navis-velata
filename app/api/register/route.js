@@ -83,10 +83,16 @@ export const POST = async (req) => {
     return NextResponse.json({ error: `Blob upload failed: ${err.message}` }, { status: 500 })
   }
 
+  // Build coach-friendly session detail from actual session objects (sorted by day)
+  const sessionDetail = [...selectedSessions]
+    .sort((a, b) => (a.dayNumber || 0) - (b.dayNumber || 0))
+    .map(s => `Day ${s.dayNumber}: ${s.date}`)
+    .join(' · ')
+
   // Append row to Google Sheets
-  // Columns: Timestamp | Course Type | Session IDs | Full Name | Email | Discord | Sessions Summary | Receipt URL
+  // Columns: Timestamp | Course Type | Name | Session Detail | Email | Discord | Session IDs | Receipt URL
   try {
-    await appendToSheet(spreadsheetId, [timestamp, courseType, sessionIds.join(','), name, email, discord, sessionSummary, receiptUrl])
+    await appendToSheet(spreadsheetId, [timestamp, courseType, name, sessionDetail, email, discord, sessionIds.join(','), receiptUrl])
   } catch (err) {
     console.error('Sheets append failed:', err)
     return NextResponse.json({ error: `Sheets append failed: ${err.message}` }, { status: 500 })

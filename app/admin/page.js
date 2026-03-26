@@ -686,7 +686,7 @@ export default function Admin() {
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                         <thead>
                           <tr style={{ backgroundColor: '#f3f4f6' }}>
-                            {['Course Type', 'Name', 'Email', 'Discord', 'Sessions', 'Receipt', 'Submitted', ''].map(h => (
+                            {['Course Type', 'Name', 'Sessions', 'Email', 'Discord', 'Receipt', 'Submitted', ''].map(h => (
                               <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb' }}>{h}</th>
                             ))}
                           </tr>
@@ -695,10 +695,10 @@ export default function Admin() {
                           {filtered.map(({ row, sheetRowIndex }) => (
                             <tr key={sheetRowIndex} style={{ borderBottom: '1px solid #f3f4f6' }}>
                               <td style={{ padding: '10px 14px', color: '#374151' }}>{row[1]}</td>
-                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[3]}</td>
+                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[2]}</td>
+                              <td style={{ padding: '10px 14px', color: '#374151', fontSize: '13px' }}>{row[3] || '—'}</td>
                               <td style={{ padding: '10px 14px', color: '#374151' }}>{row[4]}</td>
                               <td style={{ padding: '10px 14px', color: '#374151' }}>{row[5]}</td>
-                              <td style={{ padding: '10px 14px', color: '#374151', fontSize: '13px' }}>{row[6] || '—'}</td>
                               <td style={{ padding: '10px 14px' }}>
                                 {row[7] ? <a href={row[7]} target="_blank" rel="noreferrer" style={{ color: '#006E90' }}>View</a> : '—'}
                               </td>
@@ -712,7 +712,7 @@ export default function Admin() {
                                     await fetch('/api/admin/registrations', {
                                       method: 'DELETE',
                                       headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                                      body: JSON.stringify({ sheetRowIndex, sessionIds: row[2]?.split(',').filter(Boolean) || [], studentName: row[3] }),
+                                      body: JSON.stringify({ sheetRowIndex, sessionIds: row[6]?.split(',').filter(Boolean) || [], studentName: row[2] }),
                                     })
                                     fetchRegistrations()
                                     fetchCourses()
