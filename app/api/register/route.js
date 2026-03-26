@@ -11,7 +11,14 @@ const MAX_SIZE = 10 * 1024 * 1024 // 10 MB
 export const POST = async (req) => {
   const spreadsheetId = process.env.GOOGLE_SHEETS_ID
   const driveFolderId = process.env.GOOGLE_DRIVE_FOLDER_ID
-  if (!spreadsheetId || !driveFolderId) {
+  const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON
+  if (!spreadsheetId || !driveFolderId || !serviceAccountJson) {
+    const missing = [
+      !serviceAccountJson && 'GOOGLE_SERVICE_ACCOUNT_JSON',
+      !spreadsheetId && 'GOOGLE_SHEETS_ID',
+      !driveFolderId && 'GOOGLE_DRIVE_FOLDER_ID',
+    ].filter(Boolean).join(', ')
+    console.error('Missing env vars:', missing)
     return NextResponse.json({ error: 'Registration is not configured yet.' }, { status: 503 })
   }
 
@@ -66,7 +73,8 @@ export const POST = async (req) => {
     receiptUrl = await uploadToDrive(buffer, fileName, receiptFile.type, driveFolderId)
   } catch (err) {
     console.error('Drive upload failed:', err)
-    return NextResponse.json({ error: 'Failed to upload receipt. Please try again.' }, { status: 500 })
+    const msg = process.env.NODE_ENV === 'development' ? `Drive upload failed: ${err.message}` : 'Failed to upload receipt. Please try again.'
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 
   // Append row to Google Sheets
@@ -75,7 +83,8 @@ export const POST = async (req) => {
     await appendToSheet(spreadsheetId, [timestamp, course.name, course.id, name, email, discord, receiptUrl])
   } catch (err) {
     console.error('Sheets append failed:', err)
-    return NextResponse.json({ error: 'Failed to save registration. Please try again.' }, { status: 500 })
+    const msg = process.env.NODE_ENV === 'development' ? `Sheets append failed: ${err.message}` : 'Failed to save registration. Please try again.'
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 
   // Increment enrolled count in Redis
