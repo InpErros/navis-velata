@@ -144,6 +144,16 @@ export default function CourseRegistrationModal({ course, onClose }) {
             {/* Payment note */}
             <div style={{ backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: '8px', padding: '12px 16px', marginBottom: '24px', fontSize: '13px', color: '#92400e', lineHeight: '1.6' }}>
               <strong>Before registering:</strong> Complete your payment via CashNet, then upload your receipt below.
+              <div style={{ marginTop: '10px' }}>
+                <a
+                  href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-block', backgroundColor: '#ecaa00', color: '#000', padding: '8px 16px', borderRadius: '6px', fontWeight: '700', fontSize: '13px', textDecoration: 'none' }}
+                >
+                  Pay on CashNet →
+                </a>
+              </div>
             </div>
 
             {/* Error banner */}
