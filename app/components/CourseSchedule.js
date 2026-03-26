@@ -84,25 +84,28 @@ export default function CourseSchedule({ programType }) {
                     </p>
                   )}
 
-                  {course.sessions?.length > 0 && course.sessions.some(s => s.date) && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                      {course.sessions.filter(s => s.date).map((session, i) => (
-                        <span key={i} style={{
-                          backgroundColor: '#e0f2fe', color: '#0369a1',
-                          fontSize: '12px', fontWeight: '600', padding: '4px 10px',
-                          borderRadius: '6px',
-                        }}>
-                          {session.date}{session.startTime ? ` · ${session.startTime}` : ''}{session.endTime ? `–${session.endTime}` : ''}
-                        </span>
+                  {course.days?.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      {course.days.map((day, di) => (
+                        <div key={di}>
+                          <span style={{ fontSize: '12px', fontWeight: '700', color: '#374151' }}>{day.label}: </span>
+                          {day.options.filter(o => o.date).map((opt, oi) => (
+                            <span key={oi} style={{
+                              display: 'inline-block', marginRight: '6px',
+                              backgroundColor: '#e0f2fe', color: '#0369a1',
+                              fontSize: '12px', fontWeight: '600', padding: '3px 8px',
+                              borderRadius: '6px',
+                            }}>
+                              {opt.date}{opt.startTime ? ` · ${opt.startTime}` : ''}
+                            </span>
+                          ))}
+                        </div>
                       ))}
                     </div>
                   )}
                 </div>
 
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <p style={{ fontSize: '32px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>
-                    ${course.price}
-                  </p>
                   <p style={{ fontSize: '13px', color: isFull ? '#dc2626' : '#6b7280', margin: '0 0 16px' }}>
                     {isFull ? 'No spots left' : `${spotsLeft} spot${spotsLeft !== 1 ? 's' : ''} left`}
                   </p>

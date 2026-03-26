@@ -32,6 +32,7 @@ export const POST = async (req) => {
   const name = formData.get('name')?.trim()
   const email = formData.get('email')?.trim()
   const discord = formData.get('discord')?.trim()
+  const sessionSummary = formData.get('sessionSummary')?.trim() || ''
   const receiptFile = formData.get('receipt')
 
   // Basic field validation
@@ -80,7 +81,8 @@ export const POST = async (req) => {
   // Append row to Google Sheets
   // Columns: Timestamp | Course Name | Course ID | Full Name | Email | Discord | Receipt URL
   try {
-    await appendToSheet(spreadsheetId, [timestamp, course.name, course.id, name, email, discord, receiptUrl])
+    // Columns: Timestamp | Course Name | Course ID | Full Name | Email | Discord | Sessions | Receipt URL
+    await appendToSheet(spreadsheetId, [timestamp, course.name, course.id, name, email, discord, sessionSummary, receiptUrl])
   } catch (err) {
     console.error('Sheets append failed:', err)
     return NextResponse.json({ error: `Sheets append failed: ${err.message}` }, { status: 500 })
@@ -95,7 +97,7 @@ export const POST = async (req) => {
   // Send confirmation email
   let emailError = null
   try {
-    await sendRegistrationConfirmation({ to: email, name, course })
+    await sendRegistrationConfirmation({ to: email, name, course, sessionSummary })
   } catch (err) {
     console.error('Confirmation email failed:', err)
     emailError = err.message

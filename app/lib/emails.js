@@ -5,13 +5,12 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 /**
  * Sends a registration confirmation email to the student.
  */
-export async function sendRegistrationConfirmation({ to, name, course }) {
+export async function sendRegistrationConfirmation({ to, name, course, sessionSummary }) {
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@sailcsulb.org'
   const contactUrl = 'https://sailcsulb.org/contact'
 
-  const sessions = course.sessions?.filter(s => s.date) || []
-  const sessionLines = sessions.length
-    ? sessions.map(s => `${s.date}${s.startTime ? ` · ${s.startTime}` : ''}${s.endTime ? `–${s.endTime}` : ''}`).join('<br/>')
+  const sessionLines = sessionSummary
+    ? sessionSummary.split(', ').join('<br/>')
     : 'Dates to be announced — check with an officer on Discord.'
 
   const html = `

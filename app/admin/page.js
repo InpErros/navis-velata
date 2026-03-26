@@ -16,14 +16,16 @@ const emptyForm = {
   registrationLink: '',
 }
 
+const emptyOption = () => ({ date: '', startTime: '', endTime: '' })
+const emptyDay = (label) => ({ label, options: [emptyOption()] })
+
 const emptyCourseForm = {
   name: '',
   description: '',
-  price: '',
   capacity: '',
   programType: 'student',
   courseType: 'Sailing A',
-  sessions: [{ date: '', startTime: '', endTime: '' }],
+  days: [emptyDay('Day 1'), emptyDay('Day 2')],
   isOpen: false,
 }
 
@@ -167,7 +169,6 @@ export default function Admin() {
     const url = editingCourseId ? `/api/courses/${editingCourseId}` : '/api/courses'
     const payload = {
       ...courseForm,
-      price: parseFloat(courseForm.price) || 0,
       capacity: parseInt(courseForm.capacity) || 0,
     }
     const res = await fetch(url, {
@@ -189,9 +190,8 @@ export default function Admin() {
   const handleCourseEdit = (course) => {
     setCourseForm({
       ...course,
-      price: String(course.price),
       capacity: String(course.capacity),
-      sessions: course.sessions?.length ? course.sessions : [{ date: '', startTime: '', endTime: '' }],
+      days: course.days?.length ? course.days : [emptyDay('Day 1'), emptyDay('Day 2')],
     })
     setEditingCourseId(course.id)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -212,11 +212,21 @@ export default function Admin() {
     fetchCourses()
   }
 
-  const addSession = () => setCourseForm(f => ({ ...f, sessions: [...f.sessions, { date: '', startTime: '', endTime: '' }] }))
-  const removeSession = (i) => setCourseForm(f => ({ ...f, sessions: f.sessions.filter((_, idx) => idx !== i) }))
-  const updateSession = (i, field, value) => setCourseForm(f => ({
-    ...f,
-    sessions: f.sessions.map((s, idx) => idx === i ? { ...s, [field]: value } : s),
+  const addDay = () => setCourseForm(f => ({ ...f, days: [...f.days, emptyDay(`Day ${f.days.length + 1}`)] }))
+  const removeDay = (di) => setCourseForm(f => ({ ...f, days: f.days.filter((_, i) => i !== di) }))
+  const updateDayLabel = (di, label) => setCourseForm(f => ({
+    ...f, days: f.days.map((d, i) => i === di ? { ...d, label } : d),
+  }))
+  const addOption = (di) => setCourseForm(f => ({
+    ...f, days: f.days.map((d, i) => i === di ? { ...d, options: [...d.options, emptyOption()] } : d),
+  }))
+  const removeOption = (di, oi) => setCourseForm(f => ({
+    ...f, days: f.days.map((d, i) => i === di ? { ...d, options: d.options.filter((_, j) => j !== oi) } : d),
+  }))
+  const updateOption = (di, oi, field, value) => setCourseForm(f => ({
+    ...f, days: f.days.map((d, i) => i === di
+      ? { ...d, options: d.options.map((o, j) => j === oi ? { ...o, [field]: value } : o) }
+      : d),
   }))
 
   // ── Events ──────────────────────────────────────────────────────────────────
@@ -576,12 +586,6 @@ export default function Admin() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={fieldLabel}>Price ($)</label>
-                  <input type="number" min="0" step="0.01" placeholder="80" value={courseForm.price}
-                    onChange={e => setCourseForm({ ...courseForm, price: e.target.value })} style={inputStyle} required />
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <label style={fieldLabel}>Capacity (max students)</label>
                   <input type="number" min="1" placeholder="20" value={courseForm.capacity}
                     onChange={e => setCourseForm({ ...courseForm, capacity: e.target.value })} style={inputStyle} required />
@@ -596,33 +600,53 @@ export default function Admin() {
                   rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
               </div>
 
-              {/* Sessions */}
+              {/* Days */}
               <div style={{ marginBottom: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                  <label style={fieldLabel}>Sessions (dates &amp; times)</label>
-                  <button type="button" onClick={addSession} style={{ ...secondaryBtn, padding: '6px 14px', fontSize: '13px' }}>+ Add session</button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                  <label style={fieldLabel}>Course Days</label>
+                  <button type="button" onClick={addDay} style={{ ...secondaryBtn, padding: '6px 14px', fontSize: '13px' }}>+ Add day</button>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {courseForm.sessions.map((session, i) => (
-                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '10px', alignItems: 'end' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        {i === 0 && <label style={{ ...fieldLabel, fontSize: '11px' }}>Date</label>}
-                        <input type="text" placeholder="e.g. April 5, 2026" value={session.date}
-                          onChange={e => updateSession(i, 'date', e.target.value)} style={{ ...inputStyle, fontSize: '14px' }} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {courseForm.days.map((day, di) => (
+                    <div key={di} style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '16px', backgroundColor: '#f9fafb' }}>
+                      {/* Day header */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                        <input
+                          type="text"
+                          value={day.label}
+                          onChange={e => updateDayLabel(di, e.target.value)}
+                          style={{ ...inputStyle, fontSize: '14px', fontWeight: '600', flex: 1 }}
+                          placeholder="e.g. Day 1"
+                        />
+                        <button type="button" onClick={() => removeDay(di)} disabled={courseForm.days.length === 1}
+                          style={{ ...deleteBtn, padding: '8px 12px', fontSize: '13px', opacity: courseForm.days.length === 1 ? 0.4 : 1 }}>
+                          Remove day
+                        </button>
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        {i === 0 && <label style={{ ...fieldLabel, fontSize: '11px' }}>Start Time</label>}
-                        <input type="text" placeholder="8:00 AM" value={session.startTime}
-                          onChange={e => updateSession(i, 'startTime', e.target.value)} style={{ ...inputStyle, fontSize: '14px' }} />
+                      {/* Date options for this day */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '10px' }}>
+                        <label style={{ ...fieldLabel, fontSize: '11px' }}>Date options (students pick one)</label>
+                        {day.options.map((opt, oi) => (
+                          <div key={oi} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '8px', alignItems: 'center' }}>
+                            <input type="text" placeholder="April 5, 2026" value={opt.date}
+                              onChange={e => updateOption(di, oi, 'date', e.target.value)}
+                              style={{ ...inputStyle, fontSize: '13px' }} />
+                            <input type="text" placeholder="8:00 AM" value={opt.startTime}
+                              onChange={e => updateOption(di, oi, 'startTime', e.target.value)}
+                              style={{ ...inputStyle, fontSize: '13px' }} />
+                            <input type="text" placeholder="4:00 PM" value={opt.endTime}
+                              onChange={e => updateOption(di, oi, 'endTime', e.target.value)}
+                              style={{ ...inputStyle, fontSize: '13px' }} />
+                            <button type="button" onClick={() => removeOption(di, oi)} disabled={day.options.length === 1}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '16px', opacity: day.options.length === 1 ? 0.3 : 1 }}>
+                              ✕
+                            </button>
+                          </div>
+                        ))}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        {i === 0 && <label style={{ ...fieldLabel, fontSize: '11px' }}>End Time</label>}
-                        <input type="text" placeholder="4:00 PM" value={session.endTime}
-                          onChange={e => updateSession(i, 'endTime', e.target.value)} style={{ ...inputStyle, fontSize: '14px' }} />
-                      </div>
-                      <button type="button" onClick={() => removeSession(i)} disabled={courseForm.sessions.length === 1}
-                        style={{ ...deleteBtn, padding: '8px 12px', fontSize: '13px', opacity: courseForm.sessions.length === 1 ? 0.4 : 1 }}>
-                        ✕
+                      <button type="button" onClick={() => addOption(di)}
+                        style={{ ...secondaryBtn, padding: '5px 12px', fontSize: '12px' }}>
+                        + Add date option
                       </button>
                     </div>
                   ))}
@@ -664,11 +688,11 @@ export default function Admin() {
                       </span>
                     </div>
                     <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 4px' }}>
-                      {course.courseType} · {course.programType === 'student' ? 'Student Program' : 'Community Program'} · ${course.price} · {course.enrolled}/{course.capacity} enrolled
+                      {course.courseType} · {course.programType === 'student' ? 'Student Program' : 'Community Program'} · {course.enrolled}/{course.capacity} enrolled
                     </p>
-                    {course.sessions?.length > 0 && (
+                    {course.days?.length > 0 && (
                       <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>
-                        Sessions: {course.sessions.map(s => s.date).filter(Boolean).join(', ')}
+                        {course.days.map(d => `${d.label}: ${d.options.map(o => o.date).filter(Boolean).join(' / ')}`).join(' · ')}
                       </p>
                     )}
                   </div>
@@ -714,7 +738,7 @@ export default function Admin() {
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                         <thead>
                           <tr style={{ backgroundColor: '#f3f4f6' }}>
-                            {['Course', 'Name', 'Email', 'Discord', 'Receipt', 'Submitted', ''].map(h => (
+                            {['Course', 'Name', 'Email', 'Discord', 'Sessions', 'Receipt', 'Submitted', ''].map(h => (
                               <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb' }}>{h}</th>
                             ))}
                           </tr>
@@ -726,8 +750,9 @@ export default function Admin() {
                               <td style={{ padding: '10px 14px', color: '#374151' }}>{row[3]}</td>
                               <td style={{ padding: '10px 14px', color: '#374151' }}>{row[4]}</td>
                               <td style={{ padding: '10px 14px', color: '#374151' }}>{row[5]}</td>
+                              <td style={{ padding: '10px 14px', color: '#374151', fontSize: '13px' }}>{row[6] || '—'}</td>
                               <td style={{ padding: '10px 14px' }}>
-                                {row[6] ? <a href={row[6]} target="_blank" rel="noreferrer" style={{ color: '#006E90' }}>View</a> : '—'}
+                                {row[7] ? <a href={row[7]} target="_blank" rel="noreferrer" style={{ color: '#006E90' }}>View</a> : '—'}
                               </td>
                               <td style={{ padding: '10px 14px', color: '#9ca3af', fontSize: '13px' }}>
                                 {row[0] ? new Date(row[0]).toLocaleString() : '—'}
