@@ -103,6 +103,7 @@ function BoatButton({ boat }) {
   return (
     <div style={{ width: '100%' }}>
       <button
+        className="dropdown-btn"
         onClick={() => setOpen(prev => !prev)}
         style={{
           backgroundColor: open ? '#1e3a5f' : '#ffffff',
@@ -122,10 +123,10 @@ function BoatButton({ boat }) {
         }}
       >
         <span>{boat.name}</span>
-        <span style={{ fontSize: '18px', lineHeight: 1 }}>{open ? '▲' : '▼'}</span>
+        <span style={{ fontSize: '18px', lineHeight: 1, flexShrink: 0, marginLeft: '8px' }}>{open ? '▲' : '▼'}</span>
       </button>
       {open && (
-        <div style={{
+        <div className="expandable-body" style={{
           border: '1px solid #1e3a5f',
           borderTop: 'none',
           borderRadius: '0 0 8px 8px',
@@ -159,6 +160,7 @@ function ExpandableSection({ title, subtitle, accentColor = '#1e3a5f', children 
   return (
     <div style={{ marginBottom: '16px' }}>
       <button
+        className="dropdown-btn"
         onClick={() => setOpen(prev => !prev)}
         style={{
           backgroundColor: open ? accentColor : '#ffffff',
@@ -184,12 +186,12 @@ function ExpandableSection({ title, subtitle, accentColor = '#1e3a5f', children 
             </p>
           )}
         </div>
-        <span style={{ fontSize: '20px', lineHeight: 1, color: open ? '#ffffff' : '#6b7280' }}>
+        <span style={{ fontSize: '20px', lineHeight: 1, color: open ? '#ffffff' : '#6b7280', flexShrink: 0, marginLeft: '8px' }}>
           {open ? '▲' : '▼'}
         </span>
       </button>
       {open && (
-        <div style={{
+        <div className="expandable-body" style={{
           border: `2px solid ${accentColor}`,
           borderTop: 'none',
           borderRadius: '0 0 12px 12px',
@@ -217,7 +219,7 @@ export default function About() {
 
         <PageHero title="Meet the Club" />
 
-        <div style={{ padding: '48px' }}>
+        <div className="page-content">
 
           {/* Our Story */}
           <div style={{ marginBottom: '56px' }}>
@@ -236,7 +238,7 @@ export default function About() {
           {/* What We Do */}
           <div style={{ marginBottom: '56px' }}>
             <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '28px' }}>What We Do</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '16px' }}>
+            <div className="grid-2col" style={{ gap: '16px' }}>
               {goals.map((goal, i) => (
                 <div key={i} style={{
                   backgroundColor: '#f9fafb',

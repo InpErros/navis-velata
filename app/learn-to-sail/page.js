@@ -15,10 +15,10 @@ export default function LearnToSail() {
 
         <PageHero title="Learn to Sail" />
 
-        <div style={{ padding: '48px' }}>
+        <div className="page-content">
 
         {/* Program cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '24px' }}>
+        <div className="grid-2col">
 
           {/* Student Program */}
           <Link href="/learn-to-sail/student" style={{ textDecoration: 'none' }}>

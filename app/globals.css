@@ -16,13 +16,54 @@ a:hover {
   transition: opacity 0.15s ease;
 }
 
-@media (max-width: 680px) {
-  .hero-title { font-size: 32px !important; }
-  .hero-subtitle { font-size: 17px !important; }
+/* Inner page content padding — used on all interior pages */
+.page-content {
+  padding: 48px;
+}
+
+/* Two-column auto grid used across pages */
+.grid-2col {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* Event card row — flips to column on mobile */
+.event-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* Dropdown/accordion button text shouldn't overflow */
+.dropdown-btn {
+  word-break: break-word;
 }
 
 @media (max-width: 680px) {
-  .page-card { padding: 24px !important; }
+  .hero-title  { font-size: 32px !important; }
+  .hero-subtitle { font-size: 17px !important; }
+
+  .page-content { padding: 24px !important; }
+
+  .grid-2col { grid-template-columns: 1fr !important; }
+
+  .event-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .event-card-register {
+    width: 100% !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Tighter padding inside expandable sections on mobile */
+  .expandable-body { padding: 16px !important; }
+
+  /* Boat / board / coach buttons full-width comfortable padding */
+  .dropdown-btn { padding: 12px 16px !important; }
 }
 
 .nav-links a:hover {

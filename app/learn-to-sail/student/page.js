@@ -52,7 +52,7 @@ export default function StudentProgram() {
 
         <PageHero title="Student Program" />
 
-        <div style={{ padding: '48px' }}>
+        <div className="page-content">
 
         {/* Back link */}
         <Link href="/learn-to-sail" style={{

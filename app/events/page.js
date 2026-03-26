@@ -34,22 +34,18 @@ export default async function Events() {
 
         <PageHero title="Events" />
 
-        <div style={{ padding: '48px' }}>
+        <div className="page-content">
   
         {/* Events list */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {events.map((event, index) => {
             const colors = typeColors[event.type] || typeColors['Social']
             return (
-              <div key={index} style={{
+              <div key={index} className="event-card" style={{
                 backgroundColor: colors.bg,
                 border: `1px solid ${colors.border}`,
                 borderRadius: '12px',
-                padding: '32px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                gap: '24px',
+                padding: '24px',
               }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
@@ -81,6 +77,7 @@ export default async function Events() {
                 data-external
                 target="_blank"
                 rel="noopener noreferrer"
+                className="event-card-register"
                 style={{
                   backgroundColor: event.registrationLink ? '#ecaa00' : '#d1d5db',
                   color: event.registrationLink ? '#000000' : '#9ca3af',

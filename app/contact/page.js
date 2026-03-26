@@ -7,10 +7,10 @@ export default function Contact() {
 
         <PageHero title="Contact Us" />
 
-        <div style={{ padding: '48px' }}>
+        <div className="page-content">
 
         {/* Social cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px', marginBottom: '48px' }}>
+        <div className="grid-2col" style={{ marginBottom: '48px' }}>
 
           {/* Discord */}
           <a href="https://discord.gg/DYuD3Zs4JE" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
