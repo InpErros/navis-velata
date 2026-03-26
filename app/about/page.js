@@ -7,7 +7,7 @@ import PageHero from '../components/PageHero';
 // photo: path relative to /public, e.g. '/profiles/gabe-auge.jpg'
 // focalPoint: CSS object-position to control crop, e.g. 'center 30%'
 const boardMembers = [
-  { role: 'President',      name: 'Gabe Auge',     photo: '/public/gabe-auge.jpg', focalPoint: 'center 30%' },
+  { role: 'President',      name: 'Gabe Auge',     photo: '/gabe-auge.jpg', focalPoint: 'center 30%' },
   { role: 'Vice President', name: 'James Flores',  photo: null },
   { role: 'Secretary',      name: 'Rosalie Ahern', photo: null },
   { role: 'Treasurer',      name: 'Alison Curd',   photo: null },
@@ -18,9 +18,9 @@ const boardMembers = [
 // photo: path relative to /public, e.g. '/profiles/kyle-henneberque.jpg'
 // focalPoint: CSS object-position to control crop, e.g. 'center 30%'
 const coaches = [
-  { role: '', name: 'Kyle Henneberque', photo: '/public/kyle-h.jpg', focalPoint: 'center' },
+  { role: '', name: 'Kyle Henneberque', photo: '/kyle-h.jpg', focalPoint: 'center' },
   { role: '', name: 'Mike Burke',       photo: null, focalPoint: 'center' },
-  { role: '', name: 'Camille Hambly',   photo: '/public/camille-h.png', focalPoint: 'center' },
+  { role: '', name: 'Camille Hambly',   photo: '/camille-h.png', focalPoint: 'center' },
   { role: '', name: 'Keith Cares',      photo: null, focalPoint: 'center' },
   { role: '', name: 'Lucas Demchik',    photo: null, focalPoint: 'center' },
   { role: '', name: 'Mossy Kennedy',    photo: null, focalPoint: 'center' },
