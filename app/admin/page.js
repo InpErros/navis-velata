@@ -37,6 +37,13 @@ export default function Admin() {
   // Audit log state
   const [auditLog, setAuditLog] = useState([])
 
+  // Change password state
+  const [showChangePw, setShowChangePw] = useState(false)
+  const [newPw, setNewPw] = useState('')
+  const [confirmPw, setConfirmPw] = useState('')
+  const [changePwError, setChangePwError] = useState('')
+  const [changePwSuccess, setChangePwSuccess] = useState(false)
+
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -187,6 +194,34 @@ export default function Admin() {
     fetchUsers()
   }
 
+  // ── Change password ───────────────────────────────────────────────────────────
+
+  const handleChangePw = async (e) => {
+    e.preventDefault()
+    setChangePwError('')
+    setChangePwSuccess(false)
+    if (newPw !== confirmPw) {
+      setChangePwError('Passwords do not match')
+      return
+    }
+    const res = await fetch('/api/admin/users/password', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ newPassword: newPw }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setChangePwError(data.error)
+    } else {
+      // Update stored password so future requests still work
+      sessionStorage.setItem('admin_pw', newPw)
+      setPassword(newPw)
+      setNewPw('')
+      setConfirmPw('')
+      setChangePwSuccess(true)
+    }
+  }
+
   // ── Login screen ─────────────────────────────────────────────────────────────
 
   if (!authed) {
@@ -230,12 +265,31 @@ export default function Admin() {
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '48px 24px' }}>
       <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '48px', color: '#111827' }}>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
           <h1 style={{ fontSize: '32px', fontWeight: '700', margin: 0 }}>Admin Panel</h1>
-          <span style={{ fontSize: '14px', color: '#6b7280' }}>
-            Signed in as <strong style={{ color: '#111827' }}>{username}</strong>
-            {isSuperAdmin && <span style={{ marginLeft: '8px', backgroundColor: '#ecaa00', color: '#000', fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '999px' }}>SUPER ADMIN</span>}
-          </span>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>
+              Signed in as <strong style={{ color: '#111827' }}>{username}</strong>
+              {isSuperAdmin && <span style={{ marginLeft: '8px', backgroundColor: '#ecaa00', color: '#000', fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '999px' }}>SUPER ADMIN</span>}
+            </div>
+            {!isSuperAdmin && (
+              <button onClick={() => { setShowChangePw(v => !v); setChangePwError(''); setChangePwSuccess(false) }} style={{ fontSize: '13px', color: '#006E90', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                {showChangePw ? 'Cancel' : 'Change password'}
+              </button>
+            )}
+            {isSuperAdmin && (
+              <span style={{ fontSize: '13px', color: '#9ca3af' }}>Change password via Vercel env vars</span>
+            )}
+            {showChangePw && !isSuperAdmin && (
+              <form onSubmit={handleChangePw} style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+                {changePwError && <p style={{ color: '#dc2626', fontSize: '13px', margin: 0 }}>{changePwError}</p>}
+                {changePwSuccess && <p style={{ color: '#16a34a', fontSize: '13px', margin: 0 }}>Password updated!</p>}
+                <input type="password" placeholder="New password" value={newPw} onChange={e => setNewPw(e.target.value)} style={{ ...inputStyle, fontSize: '13px', padding: '8px 12px' }} />
+                <input type="password" placeholder="Confirm password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} style={{ ...inputStyle, fontSize: '13px', padding: '8px 12px' }} />
+                <button type="submit" style={{ ...primaryBtn, fontSize: '13px', padding: '8px 16px' }}>Update</button>
+              </form>
+            )}
+          </div>
         </div>
 
         {/* Tabs */}
