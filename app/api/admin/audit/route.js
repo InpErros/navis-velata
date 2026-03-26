@@ -8,6 +8,6 @@ export const GET = async (req) => {
   const admin = await validateAdmin(req)
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const events = await redis.get('events')
-  return NextResponse.json(events || [])
+  const log = await redis.get('admin_audit_log') || []
+  return NextResponse.json(log)
 }
