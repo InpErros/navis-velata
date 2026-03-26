@@ -1,13 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import './NavBar.css'
 
 export default function NavBar() {
-  const [open, setOpen] = useState(false)
-  const close = () => setOpen(false)
+  const [open, setOpen]           = useState(false)
+  const [linksOpen, setLinksOpen] = useState(false)
+  const dropdownRef               = useRef(null)
+
+  const close      = () => { setOpen(false); setLinksOpen(false) }
+  const toggleLinks = (e) => { e.stopPropagation(); setLinksOpen(prev => !prev) }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setLinksOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
   return (
     <nav className="navbar">
@@ -39,11 +54,32 @@ export default function NavBar() {
         <Link href="/events"        onClick={close}>Events</Link>
         <Link href="/about"         onClick={close}>About</Link>
         <Link href="/contact"       onClick={close}>Contact</Link>
-        <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN"
-           data-external target="_blank" rel="noopener noreferrer"
-           className="nav-donate" onClick={close}>
-          Cashnet
-        </a>
+
+        {/* Quick Links dropdown */}
+        <div className="nav-dropdown" ref={dropdownRef}>
+          <button
+            className="nav-dropdown-btn"
+            onClick={toggleLinks}
+            aria-expanded={linksOpen}
+          >
+            Quick Links <span className="nav-dropdown-arrow">{linksOpen ? '▲' : '▼'}</span>
+          </button>
+          <div className={`nav-dropdown-menu${linksOpen ? ' nav-dropdown-menu-open' : ''}`}>
+            <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN"
+               data-external target="_blank" rel="noopener noreferrer"
+               onClick={close}>
+              Cashnet
+            </a>
+            <a href="https://csulb.dserec.com/online/clubsports"
+               data-external target="_blank" rel="noopener noreferrer"
+               onClick={close}>
+              Do Sports Easy
+            </a>
+          </div>
+        </div>
+
+        {/* Admin */}
+        <Link href="/admin" className="nav-admin" onClick={close}>Admin</Link>
       </div>
     </nav>
   )
