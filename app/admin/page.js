@@ -226,27 +226,54 @@ export default function Admin() {
 
   if (!authed) {
     return (
-      <div style={{ maxWidth: '400px', margin: '120px auto', padding: '0 24px' }}>
-        <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '48px', color: '#111827' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '24px' }}>Admin Login</h1>
-          {error && <p style={{ color: '#dc2626', marginBottom: '16px', fontSize: '14px' }}>{error}</p>}
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              autoComplete="username"
-              style={inputStyle}
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              autoComplete="current-password"
-              style={inputStyle}
-            />
-            <button type="submit" style={primaryBtn}>Log In</button>
-          </form>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', marginTop: '-64px' }}>
+        <div style={{ width: '100%', maxWidth: '400px' }}>
+
+          {/* Logo + title */}
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <img src="/logo-borderless.png" alt="CSULB Sailing" style={{ width: '56px', height: '56px', objectFit: 'contain', marginBottom: '16px' }} />
+            <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>CSULB Sailing Association</h1>
+            <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>Admin Portal</p>
+          </div>
+
+          {/* Card */}
+          <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '40px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+            {error && (
+              <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '12px 16px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span style={{ fontSize: '14px', color: '#dc2626' }}>{error}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={fieldLabel}>Username</label>
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Enter your username"
+                  autoComplete="username"
+                  style={inputStyle}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={fieldLabel}>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
+                  style={inputStyle}
+                />
+              </div>
+              <button type="submit" style={{ ...primaryBtn, width: '100%', marginTop: '8px', padding: '12px' }}>
+                Sign In
+              </button>
+            </form>
+          </div>
+
         </div>
       </div>
     )
@@ -267,6 +294,15 @@ export default function Admin() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
           <h1 style={{ fontSize: '32px', fontWeight: '700', margin: 0 }}>Admin Panel</h1>
+          <button
+            onClick={() => { sessionStorage.clear(); setAuthed(false); setUsername(''); setPassword(''); setIsSuperAdmin(false) }}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', color: '#6b7280', background: 'none', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '6px 14px', cursor: 'pointer' }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Sign out
+          </button>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>
               Signed in as <strong style={{ color: '#111827' }}>{username}</strong>
