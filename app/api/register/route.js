@@ -73,8 +73,7 @@ export const POST = async (req) => {
     receiptUrl = await uploadToDrive(buffer, fileName, receiptFile.type, driveFolderId)
   } catch (err) {
     console.error('Drive upload failed:', err)
-    const msg = process.env.NODE_ENV === 'development' ? `Drive upload failed: ${err.message}` : 'Failed to upload receipt. Please try again.'
-    return NextResponse.json({ error: msg }, { status: 500 })
+    return NextResponse.json({ error: `Drive upload failed: ${err.message}` }, { status: 500 })
   }
 
   // Append row to Google Sheets
@@ -83,8 +82,7 @@ export const POST = async (req) => {
     await appendToSheet(spreadsheetId, [timestamp, course.name, course.id, name, email, discord, receiptUrl])
   } catch (err) {
     console.error('Sheets append failed:', err)
-    const msg = process.env.NODE_ENV === 'development' ? `Sheets append failed: ${err.message}` : 'Failed to save registration. Please try again.'
-    return NextResponse.json({ error: msg }, { status: 500 })
+    return NextResponse.json({ error: `Sheets append failed: ${err.message}` }, { status: 500 })
   }
 
   // Increment enrolled count in Redis
