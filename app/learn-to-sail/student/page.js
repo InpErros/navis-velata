@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import RegistrationModal from '../../components/RegistrationModal';
 import PageHero from '../../components/PageHero';
+import CourseSchedule from '../../components/CourseSchedule';
 
 const courses = [
   {
@@ -159,6 +160,9 @@ export default function StudentProgram() {
             </div>
           ))}
         </div>
+
+        {/* Dynamic course schedule + registration */}
+        <CourseSchedule programType="student" />
 
         {/* CTA */}
         <div style={{

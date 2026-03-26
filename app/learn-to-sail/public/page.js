@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PageHero from '../../components/PageHero';
+import CourseSchedule from '../../components/CourseSchedule';
 
 // ─── Update community program course info here ────────────────────────────────
 const courses = [
@@ -127,6 +128,9 @@ export default function PublicProgram() {
             </div>
           ))}
         </div>
+
+        {/* Dynamic course schedule + registration */}
+        <CourseSchedule programType="community" />
 
         {/* CTA */}
         <div style={{

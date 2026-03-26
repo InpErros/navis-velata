@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 
 const EVENT_TYPES = ['Learn to Sail', 'Casual Sail', 'BBQ', 'Maintenance', 'Themed Event', 'Social']
+const COURSE_TYPES = ['Sailing A', 'Sailing B', 'Sailing C', 'Level 1 Keelboat', 'Other']
+const PROGRAM_TYPES = ['student', 'community']
 
 const emptyForm = {
   title: '',
@@ -12,6 +14,17 @@ const emptyForm = {
   description: '',
   type: 'Learn to Sail',
   registrationLink: '',
+}
+
+const emptyCourseForm = {
+  name: '',
+  description: '',
+  price: '',
+  capacity: '',
+  programType: 'student',
+  courseType: 'Sailing A',
+  sessions: [{ date: '', startTime: '', endTime: '' }],
+  isOpen: false,
 }
 
 export default function Admin() {
@@ -26,6 +39,18 @@ export default function Admin() {
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState(null)
   const [saving, setSaving] = useState(false)
+
+  // Courses state
+  const [courses, setCourses] = useState([])
+  const [courseForm, setCourseForm] = useState(emptyCourseForm)
+  const [editingCourseId, setEditingCourseId] = useState(null)
+  const [courseSaving, setCourseSaving] = useState(false)
+  const [courseError, setCourseError] = useState('')
+
+  // Registrations state
+  const [registrations, setRegistrations] = useState([])
+  const [selectedCourseFilter, setSelectedCourseFilter] = useState('')
+  const [registrationsLoading, setRegistrationsLoading] = useState(false)
 
   // Users state
   const [users, setUsers] = useState([])
@@ -82,8 +107,23 @@ export default function Admin() {
     setAuditLog(data)
   }
 
+  const fetchCourses = async (u, pw) => {
+    const res = await fetch('/api/admin/courses', { headers: authHeaders(u, pw) })
+    const data = await res.json()
+    setCourses(data)
+  }
+
+  const fetchRegistrations = async () => {
+    setRegistrationsLoading(true)
+    const res = await fetch('/api/admin/registrations', { headers: authHeaders() })
+    const data = await res.json()
+    setRegistrations(data)
+    setRegistrationsLoading(false)
+  }
+
   const handleTabChange = (tab) => {
     setActiveTab(tab)
+    if (tab === 'courses') fetchCourses()
     if (tab === 'users') fetchUsers()
     if (tab === 'audit') fetchAuditLog()
   }
@@ -116,6 +156,68 @@ export default function Admin() {
     setAuthed(true)
     fetchEvents(u, pw)
   }
+
+  // ── Courses ──────────────────────────────────────────────────────────────────
+
+  const handleCourseSave = async (e) => {
+    e.preventDefault()
+    setCourseError('')
+    setCourseSaving(true)
+    const method = editingCourseId ? 'PUT' : 'POST'
+    const url = editingCourseId ? `/api/courses/${editingCourseId}` : '/api/courses'
+    const payload = {
+      ...courseForm,
+      price: parseFloat(courseForm.price) || 0,
+      capacity: parseInt(courseForm.capacity) || 0,
+    }
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const data = await res.json()
+      setCourseError(data.error || 'Failed to save course')
+    } else {
+      setCourseForm(emptyCourseForm)
+      setEditingCourseId(null)
+      fetchCourses()
+    }
+    setCourseSaving(false)
+  }
+
+  const handleCourseEdit = (course) => {
+    setCourseForm({
+      ...course,
+      price: String(course.price),
+      capacity: String(course.capacity),
+      sessions: course.sessions?.length ? course.sessions : [{ date: '', startTime: '', endTime: '' }],
+    })
+    setEditingCourseId(course.id)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleCourseDelete = async (id) => {
+    if (!confirm('Delete this course?')) return
+    await fetch(`/api/courses/${id}`, { method: 'DELETE', headers: authHeaders() })
+    fetchCourses()
+  }
+
+  const handleCourseToggleOpen = async (course) => {
+    await fetch(`/api/courses/${course.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ ...course, isOpen: !course.isOpen }),
+    })
+    fetchCourses()
+  }
+
+  const addSession = () => setCourseForm(f => ({ ...f, sessions: [...f.sessions, { date: '', startTime: '', endTime: '' }] }))
+  const removeSession = (i) => setCourseForm(f => ({ ...f, sessions: f.sessions.filter((_, idx) => idx !== i) }))
+  const updateSession = (i, field, value) => setCourseForm(f => ({
+    ...f,
+    sessions: f.sessions.map((s, idx) => idx === i ? { ...s, [field]: value } : s),
+  }))
 
   // ── Events ──────────────────────────────────────────────────────────────────
 
@@ -444,14 +546,202 @@ export default function Admin() {
 
         {/* ── Courses tab ── */}
         {activeTab === 'courses' && (
-          <div style={{ padding: '48px 0', textAlign: 'center', color: '#6b7280' }}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto 16px' }}>
-              <path d="M12 20h9"/>
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-            </svg>
-            <p style={{ fontSize: '18px', fontWeight: '600', margin: '0 0 8px', color: '#374151' }}>Coming Soon</p>
-            <p style={{ fontSize: '15px', margin: 0 }}>Course management is not yet implemented.</p>
-          </div>
+          <>
+            {/* ── Add / Edit Course form ── */}
+            <form onSubmit={handleCourseSave} style={{ marginBottom: '48px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
+                {editingCourseId ? 'Edit Course' : 'Add New Course'}
+              </h2>
+              {courseError && <p style={{ color: '#dc2626', marginBottom: '16px', fontSize: '14px' }}>{courseError}</p>}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', gridColumn: '1 / -1' }}>
+                  <label style={fieldLabel}>Course Name</label>
+                  <input type="text" placeholder="e.g. Sailing A – Spring 2026" value={courseForm.name}
+                    onChange={e => setCourseForm({ ...courseForm, name: e.target.value })} style={inputStyle} required />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Course Type</label>
+                  <select value={courseForm.courseType} onChange={e => setCourseForm({ ...courseForm, courseType: e.target.value })} style={inputStyle}>
+                    {COURSE_TYPES.map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Program</label>
+                  <select value={courseForm.programType} onChange={e => setCourseForm({ ...courseForm, programType: e.target.value })} style={inputStyle}>
+                    <option value="student">Student</option>
+                    <option value="community">Community</option>
+                  </select>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Price ($)</label>
+                  <input type="number" min="0" step="0.01" placeholder="80" value={courseForm.price}
+                    onChange={e => setCourseForm({ ...courseForm, price: e.target.value })} style={inputStyle} required />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Capacity (max students)</label>
+                  <input type="number" min="1" placeholder="20" value={courseForm.capacity}
+                    onChange={e => setCourseForm({ ...courseForm, capacity: e.target.value })} style={inputStyle} required />
+                </div>
+
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
+                <label style={fieldLabel}>Description</label>
+                <textarea placeholder="What students will learn..." value={courseForm.description}
+                  onChange={e => setCourseForm({ ...courseForm, description: e.target.value })}
+                  rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
+              </div>
+
+              {/* Sessions */}
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <label style={fieldLabel}>Sessions (dates &amp; times)</label>
+                  <button type="button" onClick={addSession} style={{ ...secondaryBtn, padding: '6px 14px', fontSize: '13px' }}>+ Add session</button>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {courseForm.sessions.map((session, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '10px', alignItems: 'end' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {i === 0 && <label style={{ ...fieldLabel, fontSize: '11px' }}>Date</label>}
+                        <input type="text" placeholder="e.g. April 5, 2026" value={session.date}
+                          onChange={e => updateSession(i, 'date', e.target.value)} style={{ ...inputStyle, fontSize: '14px' }} />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {i === 0 && <label style={{ ...fieldLabel, fontSize: '11px' }}>Start Time</label>}
+                        <input type="text" placeholder="8:00 AM" value={session.startTime}
+                          onChange={e => updateSession(i, 'startTime', e.target.value)} style={{ ...inputStyle, fontSize: '14px' }} />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {i === 0 && <label style={{ ...fieldLabel, fontSize: '11px' }}>End Time</label>}
+                        <input type="text" placeholder="4:00 PM" value={session.endTime}
+                          onChange={e => updateSession(i, 'endTime', e.target.value)} style={{ ...inputStyle, fontSize: '14px' }} />
+                      </div>
+                      <button type="button" onClick={() => removeSession(i)} disabled={courseForm.sessions.length === 1}
+                        style={{ ...deleteBtn, padding: '8px 12px', fontSize: '13px', opacity: courseForm.sessions.length === 1 ? 0.4 : 1 }}>
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <button type="submit" disabled={courseSaving} style={primaryBtn}>
+                  {courseSaving ? 'Saving...' : editingCourseId ? 'Save Changes' : 'Add Course'}
+                </button>
+                {editingCourseId && (
+                  <button type="button" onClick={() => { setCourseForm(emptyCourseForm); setEditingCourseId(null) }} style={secondaryBtn}>
+                    Cancel
+                  </button>
+                )}
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#374151', marginLeft: '8px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={courseForm.isOpen}
+                    onChange={e => setCourseForm({ ...courseForm, isOpen: e.target.checked })} />
+                  Open for registration
+                </label>
+              </div>
+            </form>
+
+            {/* ── Course list ── */}
+            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
+              Current Courses ({courses.length})
+            </h2>
+            {courses.length === 0 && <p style={{ color: '#6b7280' }}>No courses yet. Add one above.</p>}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '48px' }}>
+              {courses.map(course => (
+                <div key={course.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                      <p style={{ fontWeight: '700', fontSize: '16px', margin: 0 }}>{course.name}</p>
+                      <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '600',
+                        backgroundColor: course.isOpen ? '#dcfce7' : '#f3f4f6',
+                        color: course.isOpen ? '#16a34a' : '#6b7280' }}>
+                        {course.isOpen ? 'Open' : 'Closed'}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 4px' }}>
+                      {course.courseType} · {course.programType === 'student' ? 'Student Program' : 'Community Program'} · ${course.price} · {course.enrolled}/{course.capacity} enrolled
+                    </p>
+                    {course.sessions?.length > 0 && (
+                      <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>
+                        Sessions: {course.sessions.map(s => s.date).filter(Boolean).join(', ')}
+                      </p>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                    <button onClick={() => handleCourseToggleOpen(course)}
+                      style={{ ...secondaryBtn, padding: '8px 14px', fontSize: '13px' }}>
+                      {course.isOpen ? 'Close' : 'Open'}
+                    </button>
+                    <button onClick={() => handleCourseEdit(course)} style={editBtn}>Edit</button>
+                    <button onClick={() => handleCourseDelete(course.id)} style={deleteBtn}>Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* ── Registrations roster ── */}
+            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '40px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+                <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Registrations</h2>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <select value={selectedCourseFilter} onChange={e => setSelectedCourseFilter(e.target.value)} style={{ ...inputStyle, fontSize: '14px' }}>
+                    <option value="">All courses</option>
+                    {courses.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                  </select>
+                  <button onClick={fetchRegistrations} disabled={registrationsLoading} style={secondaryBtn}>
+                    {registrationsLoading ? 'Loading...' : 'Load'}
+                  </button>
+                </div>
+              </div>
+
+              {registrations.length === 0 && (
+                <p style={{ color: '#6b7280' }}>Click "Load" to fetch registrations from Google Sheets.</p>
+              )}
+
+              {registrations.length > 0 && (() => {
+                const filtered = selectedCourseFilter
+                  ? registrations.filter(r => r[1] === selectedCourseFilter)
+                  : registrations
+                return filtered.length === 0
+                  ? <p style={{ color: '#6b7280' }}>No registrations for this course yet.</p>
+                  : (
+                    <div style={{ overflowX: 'auto' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                        <thead>
+                          <tr style={{ backgroundColor: '#f3f4f6' }}>
+                            {['Course', 'Name', 'Email', 'Discord', 'Receipt', 'Submitted'].map(h => (
+                              <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb' }}>{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filtered.map((row, i) => (
+                            <tr key={i} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[1]}</td>
+                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[3]}</td>
+                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[4]}</td>
+                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[5]}</td>
+                              <td style={{ padding: '10px 14px' }}>
+                                {row[6] ? <a href={row[6]} target="_blank" rel="noreferrer" style={{ color: '#006E90' }}>View</a> : '—'}
+                              </td>
+                              <td style={{ padding: '10px 14px', color: '#9ca3af', fontSize: '13px' }}>
+                                {row[0] ? new Date(row[0]).toLocaleString() : '—'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )
+              })()}
+            </div>
+          </>
         )}
 
         {/* ── Audit Log tab ── */}

@@ -1,0 +1,87 @@
+import { Redis } from '@upstash/redis'
+import { NextResponse } from 'next/server'
+import { uploadToDrive, appendToSheet } from '@/app/lib/googleApi'
+
+const redis = Redis.fromEnv()
+
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'application/pdf']
+const MAX_SIZE = 10 * 1024 * 1024 // 10 MB
+
+export const POST = async (req) => {
+  const spreadsheetId = process.env.GOOGLE_SHEETS_ID
+  const driveFolderId = process.env.GOOGLE_DRIVE_FOLDER_ID
+  if (!spreadsheetId || !driveFolderId) {
+    return NextResponse.json({ error: 'Registration is not configured yet.' }, { status: 503 })
+  }
+
+  let formData
+  try {
+    formData = await req.formData()
+  } catch {
+    return NextResponse.json({ error: 'Invalid form data.' }, { status: 400 })
+  }
+
+  const courseId = formData.get('courseId')
+  const name = formData.get('name')?.trim()
+  const email = formData.get('email')?.trim()
+  const discord = formData.get('discord')?.trim()
+  const receiptFile = formData.get('receipt')
+
+  // Basic field validation
+  if (!courseId || !name || !email || !discord) {
+    return NextResponse.json({ error: 'All fields are required.' }, { status: 400 })
+  }
+  if (!receiptFile || typeof receiptFile === 'string') {
+    return NextResponse.json({ error: 'Payment receipt file is required.' }, { status: 400 })
+  }
+  if (!ALLOWED_TYPES.includes(receiptFile.type)) {
+    return NextResponse.json({ error: 'Receipt must be a JPG, PNG, or PDF.' }, { status: 400 })
+  }
+
+  const buffer = Buffer.from(await receiptFile.arrayBuffer())
+  if (buffer.byteLength > MAX_SIZE) {
+    return NextResponse.json({ error: 'Receipt file must be under 10 MB.' }, { status: 400 })
+  }
+
+  // Load course from Redis
+  const courses = await redis.get('courses') || []
+  const course = courses.find(c => c.id === courseId)
+  if (!course) {
+    return NextResponse.json({ error: 'Course not found.' }, { status: 404 })
+  }
+  if (!course.isOpen) {
+    return NextResponse.json({ error: 'Registration for this course is closed.' }, { status: 409 })
+  }
+  if (course.enrolled >= course.capacity) {
+    return NextResponse.json({ error: 'This course is full.' }, { status: 409 })
+  }
+  // Upload receipt to Google Drive
+  const timestamp = new Date().toISOString()
+  const ext = receiptFile.type === 'application/pdf' ? 'pdf' : receiptFile.type === 'image/png' ? 'png' : 'jpg'
+  const fileName = `${course.name} - ${name} - ${Date.now()}.${ext}`
+
+  let receiptUrl
+  try {
+    receiptUrl = await uploadToDrive(buffer, fileName, receiptFile.type, driveFolderId)
+  } catch (err) {
+    console.error('Drive upload failed:', err)
+    return NextResponse.json({ error: 'Failed to upload receipt. Please try again.' }, { status: 500 })
+  }
+
+  // Append row to Google Sheets
+  // Columns: Timestamp | Course Name | Course ID | Full Name | Email | Discord | Receipt URL
+  try {
+    await appendToSheet(spreadsheetId, [timestamp, course.name, course.id, name, email, discord, receiptUrl])
+  } catch (err) {
+    console.error('Sheets append failed:', err)
+    return NextResponse.json({ error: 'Failed to save registration. Please try again.' }, { status: 500 })
+  }
+
+  // Increment enrolled count in Redis
+  const updatedCourses = courses.map(c =>
+    c.id === courseId ? { ...c, enrolled: (c.enrolled || 0) + 1 } : c
+  )
+  await redis.set('courses', updatedCourses)
+
+  return NextResponse.json({ success: true })
+}
