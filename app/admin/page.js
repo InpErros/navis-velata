@@ -299,14 +299,26 @@ export default function Admin() {
               Signed in as <strong style={{ color: '#111827' }}>{username}</strong>
               {isSuperAdmin && <span style={{ marginLeft: '8px', backgroundColor: '#ecaa00', color: '#000', fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '999px' }}>SUPER ADMIN</span>}
             </div>
-            {!isSuperAdmin && (
-              <button onClick={() => { setShowChangePw(v => !v); setChangePwError(''); setChangePwSuccess(false) }} style={{ fontSize: '13px', color: '#006E90', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                {showChangePw ? 'Cancel' : 'Change password'}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}>
+              {!isSuperAdmin && (
+                <button onClick={() => { setShowChangePw(v => !v); setChangePwError(''); setChangePwSuccess(false) }} style={{ fontSize: '13px', color: '#006E90', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                  {showChangePw ? 'Cancel' : 'Change password'}
+                </button>
+              )}
+              {isSuperAdmin && (
+                <span style={{ fontSize: '13px', color: '#9ca3af' }}>Change password via Vercel env vars</span>
+              )}
+              <span style={{ color: '#e5e7eb', fontSize: '16px' }}>|</span>
+              <button
+                onClick={() => { sessionStorage.clear(); setAuthed(false); setUsername(''); setPassword(''); setIsSuperAdmin(false) }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '13px', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Sign out
               </button>
-            )}
-            {isSuperAdmin && (
-              <span style={{ fontSize: '13px', color: '#9ca3af' }}>Change password via Vercel env vars</span>
-            )}
+            </div>
             {showChangePw && !isSuperAdmin && (
               <form onSubmit={handleChangePw} style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
                 {changePwError && <p style={{ color: '#dc2626', fontSize: '13px', margin: 0 }}>{changePwError}</p>}
@@ -316,15 +328,6 @@ export default function Admin() {
                 <button type="submit" style={{ ...primaryBtn, fontSize: '13px', padding: '8px 16px' }}>Update</button>
               </form>
             )}
-            <button
-              onClick={() => { sessionStorage.clear(); setAuthed(false); setUsername(''); setPassword(''); setIsSuperAdmin(false) }}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '10px', fontSize: '13px', color: '#6b7280', background: 'none', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '6px 14px', cursor: 'pointer' }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-              </svg>
-              Sign out
-            </button>
           </div>
         </div>
 

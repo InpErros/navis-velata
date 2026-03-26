@@ -38,8 +38,7 @@ export default function RootLayout({ children }) {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '16px',
+          position: 'relative',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <Image src="/logo-borderless.png" alt="CSULB Sailing Association" width={36} height={36} style={{ objectFit: 'contain' }} />
@@ -53,7 +52,7 @@ export default function RootLayout({ children }) {
             </span>
           </div>
 
-          <p style={{ color: '#003a45', fontSize: '13px', margin: 0 }}>
+          <p style={{ color: '#003a45', fontSize: '13px', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
             © {new Date().getFullYear()} CSULB Sailing Association. All rights reserved.
           </p>
 
