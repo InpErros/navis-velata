@@ -6,36 +6,43 @@ const courses = [
   {
     level: 'Sailing A',
     price: '$80',
-    tagline: 'Basics of Sailing',
+    tagline: 'Our beginner course, recommened for all new members!',
     perks: [
-      'Participate in club activities',
-      'Sail with a more advanced member',
+      'Learn to rig the boat',
+      'Learn the parts of the boat',
+      'Learn capsize procedure',
+      'Learn tacking and jibing.',
+      'Learn the basic wind compass',
     ],
-    note: 'Recommended starting point for all new members.',
+    note: 'This course will be two 8 hour days.',
     color: { bg: '#f0f9ff', border: '#bae6fd', tag: '#0ea5e9' },
   },
   {
     level: 'Sailing B',
     price: '$80',
-    tagline: 'Captain a Boat',
+    tagline: 'A part two of the beginner course!',
     perks: [
-      'Participate in club activities',
-      'Sail and steer a boat with any student under safety supervision',
+      'Learn to use the jib',
+      'Learn basic right of way',
+      'Learn man overboard procedures',
+      'Learn upwind/downwind sailing',
+      'Get more time on the water',
     ],
-    note: 'For members ready to take the helm.',
+    note: 'This course will be two 8 hour days.',
     color: { bg: '#f0fdf4', border: '#bbf7d0', tag: '#16a34a' },
   },
   {
     level: 'Sailing C',
     price: '$50',
-    tagline: 'Sail on Your Own',
+    tagline: 'The last course required to become a club certified skipper.',
     perks: [
-      'Participate in club activities',
-      'Sail and steer any of our small boats without supervision',
-      'Personal access to the boatyard',
-      'Take out boats anytime — no supervision required',
+      'Learn the detailed sail compass',
+      'Practice everything you have learned',
+      'Take an on the water test',
+      'Tour the harbour',
+      'Earn your club skipper certification',
     ],
-    note: 'If you have prior experience, reach out for permission to skip to Sailing C.',
+    note: 'This course will be two 6 hour days and 1 day of on water test',
     color: { bg: '#fdf4ff', border: '#e9d5ff', tag: '#9333ea' },
   },
 ];
@@ -72,10 +79,10 @@ export default function StudentProgram() {
           }}>
             CSULB Students
           </span>
-          <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Student Program</h1>
+          <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Student Sailing Program</h1>
           <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '650px', margin: '0 auto' }}>
-            We teach complete beginners the basics of sailing using US Sailing standards.
-            Progress through three certification levels at your own pace.
+            Taught by US Sailing certified instructors, our courses teach students the basics of small boat sailing.
+            Take as many levels as you wish.
           </p>
         </div>
 
@@ -95,7 +102,7 @@ export default function StudentProgram() {
           <div>
             <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 8px' }}>Club Membership</h2>
             <p style={{ fontSize: '15px', color: '#9ca3af', margin: 0 }}>
-              Required to participate in any club activities or courses.
+              Required to participate in any club activities.
             </p>
           </div>
           <div style={{ textAlign: 'right' }}>
@@ -162,7 +169,7 @@ export default function StudentProgram() {
         }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '12px' }}>Ready to get started?</h2>
           <p style={{ fontSize: '17px', color: '#6b7280', marginBottom: '32px', lineHeight: '1.8' }}>
-            Check the schedule and register for your first course today.
+            Check our course schedule and register today!
           </p>
           <RegistrationModal />
         </div>

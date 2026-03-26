@@ -4,15 +4,15 @@ import PageHero from '../../components/PageHero';
 // ─── Update community program course info here ────────────────────────────────
 const courses = [
   {
-    title: 'Beginner Keelboat Sailing',
+    title: 'Level 1 Keelboat',
     price: '$TBD',
-    tagline: 'Introduction to Keelboat Sailing',
+    tagline: 'Introduction to Keelboat Sailing working title',
     perks: [
-      'Learn basic sailing theory and safety',
-      'Hands-on instruction aboard our Shields keelboats',
-      'Guided by experienced certified coaches',
+      'BUllet 1',
+      'Bullet 2',
+      'BUllet 3',
     ],
-    note: 'No prior sailing experience required.',
+    note: 'This is a note',
     color: { bg: '#f0fdf4', border: '#bbf7d0', tag: '#16a34a' },
   },
 ];
@@ -51,13 +51,11 @@ export default function PublicProgram() {
           </span>
           <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Community Program</h1>
           <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '650px', margin: '0 auto' }}>
-            Our community sailing program is open to adults in the greater Long Beach area —
-            no university affiliation required. Learn to sail aboard our classic Shields keelboats
-            with instruction from our certified coaches.
+            Our community sailing program is open to adults of all ages! Learn to sail about our classic fleet of Shields with instruction from our US Sailing certified coaches.
           </p>
         </div>
 
-        {/* Boats used */}
+        {/* Boats used
         <div style={{
           backgroundColor: '#f9fafb',
           border: '1px solid #e5e7eb',
@@ -79,7 +77,7 @@ export default function PublicProgram() {
               open water conditions.
             </p>
           </div>
-        </div>
+        </div> */}
 
         {/* Courses */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '64px' }}>
@@ -139,7 +137,7 @@ export default function PublicProgram() {
         }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '12px' }}>Interested in joining?</h2>
           <p style={{ fontSize: '17px', color: '#6b7280', marginBottom: '32px', lineHeight: '1.8' }}>
-            Reach out to us for current availability, scheduling, and registration details.
+            Check the schedule and register for a course today!
           </p>
           <Link href="/contact" style={{
             backgroundColor: '#16a34a',
