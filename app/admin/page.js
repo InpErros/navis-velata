@@ -705,7 +705,7 @@ export default function Admin() {
 
               {registrations.length > 0 && (() => {
                 const filtered = selectedCourseFilter
-                  ? registrations.filter(r => r[1] === selectedCourseFilter)
+                  ? registrations.filter(r => r.row[1] === selectedCourseFilter)
                   : registrations
                 return filtered.length === 0
                   ? <p style={{ color: '#6b7280' }}>No registrations for this course yet.</p>
@@ -714,14 +714,14 @@ export default function Admin() {
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                         <thead>
                           <tr style={{ backgroundColor: '#f3f4f6' }}>
-                            {['Course', 'Name', 'Email', 'Discord', 'Receipt', 'Submitted'].map(h => (
+                            {['Course', 'Name', 'Email', 'Discord', 'Receipt', 'Submitted', ''].map(h => (
                               <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb' }}>{h}</th>
                             ))}
                           </tr>
                         </thead>
                         <tbody>
-                          {filtered.map((row, i) => (
-                            <tr key={i} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                          {filtered.map(({ row, sheetRowIndex }) => (
+                            <tr key={sheetRowIndex} style={{ borderBottom: '1px solid #f3f4f6' }}>
                               <td style={{ padding: '10px 14px', color: '#374151' }}>{row[1]}</td>
                               <td style={{ padding: '10px 14px', color: '#374151' }}>{row[3]}</td>
                               <td style={{ padding: '10px 14px', color: '#374151' }}>{row[4]}</td>
@@ -731,6 +731,23 @@ export default function Admin() {
                               </td>
                               <td style={{ padding: '10px 14px', color: '#9ca3af', fontSize: '13px' }}>
                                 {row[0] ? new Date(row[0]).toLocaleString() : '—'}
+                              </td>
+                              <td style={{ padding: '10px 14px' }}>
+                                <button
+                                  onClick={async () => {
+                                    if (!confirm(`Remove registration for ${row[3]}?`)) return
+                                    await fetch('/api/admin/registrations', {
+                                      method: 'DELETE',
+                                      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                                      body: JSON.stringify({ sheetRowIndex, courseId: row[2], studentName: row[3] }),
+                                    })
+                                    fetchRegistrations()
+                                    fetchCourses()
+                                  }}
+                                  style={deleteBtn}
+                                >
+                                  Delete
+                                </button>
                               </td>
                             </tr>
                           ))}

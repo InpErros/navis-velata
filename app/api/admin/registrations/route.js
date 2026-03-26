@@ -1,6 +1,9 @@
+import { Redis } from '@upstash/redis'
 import { NextResponse } from 'next/server'
-import { validateAdmin } from '@/app/lib/adminAuth'
-import { getSheetRows } from '@/app/lib/googleApi'
+import { validateAdmin, logAction } from '@/app/lib/adminAuth'
+import { getSheetRows, deleteSheetRow } from '@/app/lib/googleApi'
+
+const redis = Redis.fromEnv()
 
 export const GET = async (req) => {
   const admin = await validateAdmin(req)
@@ -18,4 +21,38 @@ export const GET = async (req) => {
     console.error('Failed to fetch registrations:', err)
     return NextResponse.json({ error: 'Failed to load registrations.' }, { status: 500 })
   }
+}
+
+export const DELETE = async (req) => {
+  const admin = await validateAdmin(req)
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const spreadsheetId = process.env.GOOGLE_SHEETS_ID
+  if (!spreadsheetId) {
+    return NextResponse.json({ error: 'GOOGLE_SHEETS_ID is not configured.' }, { status: 503 })
+  }
+
+  const { sheetRowIndex, courseId, studentName } = await req.json()
+  if (sheetRowIndex == null) {
+    return NextResponse.json({ error: 'sheetRowIndex is required.' }, { status: 400 })
+  }
+
+  try {
+    await deleteSheetRow(spreadsheetId, sheetRowIndex)
+  } catch (err) {
+    console.error('Failed to delete registration row:', err)
+    return NextResponse.json({ error: 'Failed to delete registration.' }, { status: 500 })
+  }
+
+  // Decrement enrolled count for the course in Redis
+  if (courseId) {
+    const courses = await redis.get('courses') || []
+    const updated = courses.map(c =>
+      c.id === courseId ? { ...c, enrolled: Math.max(0, (c.enrolled || 1) - 1) } : c
+    )
+    await redis.set('courses', updated)
+  }
+
+  await logAction(admin.username, 'deleted registration', studentName || `row ${sheetRowIndex}`)
+  return NextResponse.json({ success: true })
 }

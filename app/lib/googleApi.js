@@ -70,7 +70,8 @@ export async function appendToSheet(spreadsheetId, values) {
 
 /**
  * Reads all rows from a Google Sheet.
- * Returns an array of row arrays (skips the header row).
+ * Returns an array of row arrays with their sheet row index attached as _rowIndex.
+ * Skips the header row.
  * @param {string} spreadsheetId
  */
 export async function getSheetRows(spreadsheetId) {
@@ -83,6 +84,40 @@ export async function getSheetRows(spreadsheetId) {
   })
 
   const rows = res.data.values || []
-  // Skip header row if present
-  return rows.length > 1 ? rows.slice(1) : []
+  if (rows.length <= 1) return []
+
+  // Attach the 0-based sheet row index (header is 0, first data row is 1)
+  return rows.slice(1).map((row, i) => ({ row, sheetRowIndex: i + 1 }))
+}
+
+/**
+ * Deletes a single row from a Google Sheet by its 0-based sheet row index.
+ * @param {string} spreadsheetId
+ * @param {number} sheetRowIndex - 0-based index of the row to delete (header = 0)
+ */
+export async function deleteSheetRow(spreadsheetId, sheetRowIndex) {
+  const auth = getAuth()
+  const sheets = google.sheets({ version: 'v4', auth })
+
+  // Get the sheet ID (gid) of Sheet1
+  const meta = await sheets.spreadsheets.get({ spreadsheetId })
+  const sheet = meta.data.sheets.find(s => s.properties.title === 'Sheet1')
+  if (!sheet) throw new Error('Sheet1 not found in spreadsheet')
+  const sheetId = sheet.properties.sheetId
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      requests: [{
+        deleteDimension: {
+          range: {
+            sheetId,
+            dimension: 'ROWS',
+            startIndex: sheetRowIndex,
+            endIndex: sheetRowIndex + 1,
+          },
+        },
+      }],
+    },
+  })
 }
