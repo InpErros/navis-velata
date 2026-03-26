@@ -294,15 +294,6 @@ export default function Admin() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
           <h1 style={{ fontSize: '32px', fontWeight: '700', margin: 0 }}>Admin Panel</h1>
-          <button
-            onClick={() => { sessionStorage.clear(); setAuthed(false); setUsername(''); setPassword(''); setIsSuperAdmin(false) }}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', color: '#6b7280', background: 'none', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '6px 14px', cursor: 'pointer' }}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Sign out
-          </button>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>
               Signed in as <strong style={{ color: '#111827' }}>{username}</strong>
@@ -325,6 +316,15 @@ export default function Admin() {
                 <button type="submit" style={{ ...primaryBtn, fontSize: '13px', padding: '8px 16px' }}>Update</button>
               </form>
             )}
+            <button
+              onClick={() => { sessionStorage.clear(); setAuthed(false); setUsername(''); setPassword(''); setIsSuperAdmin(false) }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '10px', fontSize: '13px', color: '#6b7280', background: 'none', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '6px 14px', cursor: 'pointer' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sign out
+            </button>
           </div>
         </div>
 
