@@ -375,7 +375,6 @@ export default function Admin() {
               </button>
             </form>
           </div>
-
         </div>
       </div>
     )
