@@ -30,6 +30,7 @@ export async function validateAdmin(req) {
 
 /**
  * Appends an entry to the audit log in Redis (capped at 500 entries).
+ * Also sends a Discord notification if DISCORD_WEBHOOK_URL is set.
  */
 export async function logAction(username, action, detail = '') {
   const log = await redis.get('admin_audit_log') || []
@@ -40,4 +41,21 @@ export async function logAction(username, action, detail = '') {
     timestamp: new Date().toISOString(),
   }
   await redis.set('admin_audit_log', [entry, ...log].slice(0, 500))
+
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL
+  if (webhookUrl) {
+    const description = detail ? `**${action}** — ${detail}` : `**${action}**`
+    await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        embeds: [{
+          description,
+          color: 0x006E90,
+          footer: { text: `${username} · CSULB Sailing Admin` },
+          timestamp: entry.timestamp,
+        }],
+      }),
+    }).catch(() => {}) // don't let a failed webhook break the action
+  }
 }

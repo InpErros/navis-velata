@@ -368,7 +368,7 @@ export default function Admin() {
                   { key: 'title', placeholder: 'Event title', label: 'Title' },
                   { key: 'date', placeholder: 'e.g. April 5, 2026', label: 'Date' },
                   { key: 'time', placeholder: 'e.g. 10:00 AM – 1:00 PM', label: 'Time' },
-                  { key: 'location', placeholder: 'e.g. CSULB Sailing Base', label: 'Location' },
+                  { key: 'location', placeholder: 'e.g. Leeway', label: 'Location' },
                   { key: 'registrationLink', placeholder: 'https://...', label: 'Registration Link' },
                 ].map(({ key, placeholder, label }) => (
                   <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
