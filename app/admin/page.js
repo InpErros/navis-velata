@@ -146,7 +146,8 @@ export default function Admin() {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab)
-    if (tab === 'courses') { fetchCourses(); fetchWaitlist() }
+    if (tab === 'courses') fetchCourses()
+    if (tab === 'registrations') { fetchRegistrations(); fetchWaitlist() }
     if (tab === 'users') fetchUsers()
     if (tab === 'audit') fetchAuditLog()
   }
@@ -397,8 +398,9 @@ export default function Admin() {
   // ── Admin panel ──────────────────────────────────────────────────────────────
 
   const tabs = [
-    { id: 'events', label: 'Add Events' },
-    { id: 'courses', label: 'Add Courses' },
+    { id: 'events', label: 'Events' },
+    { id: 'courses', label: 'Sessions' },
+    { id: 'registrations', label: 'Registrations' },
     { id: 'audit', label: 'Audit Log' },
     ...(isSuperAdmin ? [{ id: 'users', label: 'Manage Users' }] : []),
   ]
@@ -678,8 +680,14 @@ export default function Admin() {
                 ))}
             </div>
 
+          </>
+        )}
+
+        {/* ── Registrations tab ── */}
+        {activeTab === 'registrations' && (
+          <>
             {/* ── Waitlist ── */}
-            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '40px', marginBottom: '48px' }}>
+            <div style={{ marginBottom: '48px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Waitlist ({waitlist.length})</h2>
                 <button onClick={fetchWaitlist} disabled={waitlistLoading} style={secondaryBtn}>
@@ -728,7 +736,7 @@ export default function Admin() {
             </div>
 
             {/* ── Registrations roster ── */}
-            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '40px' }}>
+            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '40px', marginTop: '8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
                 <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Registrations</h2>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
