@@ -1,16 +1,31 @@
 import { Resend } from 'resend'
+import { SITE_LEARN_TO_SAIL_URL as REGISTER_URL, DISCORD_URL, INSTAGRAM_URL } from '@/app/lib/links'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-import { SITE_CONTACT_URL as CONTACT_URL, SITE_LEARN_TO_SAIL_URL as REGISTER_URL } from '@/app/lib/links'
-
 const FROM = `CSULB Sailing <${process.env.RESEND_FROM_EMAIL || 'noreply@sailcsulb.org'}>`
+
+const SOCIAL_FOOTER = `
+        <tr>
+          <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 32px;text-align:center;">
+            <p style="font-size:12px;color:#9ca3af;margin:0 0 12px;">CSULB Sailing Association · Long Beach, CA</p>
+            <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
+              <tr>
+                <td style="padding:0 5px;">
+                  <a href="${DISCORD_URL}" target="_blank" style="display:inline-block;background:#5865F2;color:#ffffff;text-decoration:none;padding:7px 16px;border-radius:5px;font-size:12px;font-weight:700;">Discord</a>
+                </td>
+                <td style="padding:0 5px;">
+                  <a href="${INSTAGRAM_URL}" target="_blank" style="display:inline-block;background:#E1306C;color:#ffffff;text-decoration:none;padding:7px 16px;border-radius:5px;font-size:12px;font-weight:700;">Instagram</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>`
 
 /**
  * Sends a registration confirmation email to the student.
  */
 export async function sendRegistrationConfirmation({ to, name, course, sessionSummary }) {
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@sailcsulb.org'
-  const contactUrl = CONTACT_URL
 
   const sessionLines = sessionSummary
     ? sessionSummary.split(', ').join('<br/>')
@@ -71,11 +86,13 @@ export async function sendRegistrationConfirmation({ to, name, course, sessionSu
               </tr>`).join('')}
             </table>
 
-            <!-- Edit / contact note -->
+            <!-- Contact note -->
             <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:16px 20px;margin-bottom:32px;">
               <p style="font-size:14px;color:#92400e;margin:0;line-height:1.6;">
-                Need to make changes to your registration?
-                <a href="${contactUrl}" style="color:#92400e;font-weight:700;">Contact us here</a> and we'll get it sorted out.
+                Need to make changes to your registration? Reach out on
+                <a href="${DISCORD_URL}" style="color:#92400e;font-weight:700;">Discord</a> or
+                <a href="${INSTAGRAM_URL}" style="color:#92400e;font-weight:700;">Instagram</a>
+                and we'll get it sorted out.
               </p>
             </div>
 
@@ -87,15 +104,7 @@ export async function sendRegistrationConfirmation({ to, name, course, sessionSu
         </tr>
 
         <!-- Footer -->
-        <tr>
-          <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 32px;text-align:center;">
-            <p style="font-size:12px;color:#9ca3af;margin:0;">
-              CSULB Sailing Association · Long Beach, CA
-              &nbsp;·&nbsp;
-              <a href="${contactUrl}" style="color:#9ca3af;">Contact us</a>
-            </p>
-          </td>
-        </tr>
+        ${SOCIAL_FOOTER}
 
       </table>
     </td></tr>
@@ -134,7 +143,7 @@ export async function sendWaitlistConfirmation({ to, name, courseType }) {
           <td style="padding:40px 32px;">
             <p style="font-size:16px;color:#374151;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
             <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 32px;">
-              We've added you to the waitlist for the course below. We'll email you as soon as new sessions open up.
+              We've added you to the waitlist for the course below. We'll email you as soon as new sessions open up. Keep an eye on the discord for any announcements.
             </p>
             <table width="100%" cellpadding="0" cellspacing="0" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;margin-bottom:32px;">
               <tr>
@@ -150,15 +159,7 @@ export async function sendWaitlistConfirmation({ to, name, courseType }) {
             </p>
           </td>
         </tr>
-        <tr>
-          <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 32px;text-align:center;">
-            <p style="font-size:12px;color:#9ca3af;margin:0;">
-              CSULB Sailing Association · Long Beach, CA
-              &nbsp;·&nbsp;
-              <a href="${CONTACT_URL}" style="color:#9ca3af;">Contact us</a>
-            </p>
-          </td>
-        </tr>
+        ${SOCIAL_FOOTER}
       </table>
     </td></tr>
   </table>
@@ -212,15 +213,7 @@ export async function sendWaitlistNotification({ to, name, courseType }) {
             </p>
           </td>
         </tr>
-        <tr>
-          <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 32px;text-align:center;">
-            <p style="font-size:12px;color:#9ca3af;margin:0;">
-              CSULB Sailing Association · Long Beach, CA
-              &nbsp;·&nbsp;
-              <a href="${CONTACT_URL}" style="color:#9ca3af;">Contact us</a>
-            </p>
-          </td>
-        </tr>
+        ${SOCIAL_FOOTER}
       </table>
     </td></tr>
   </table>
