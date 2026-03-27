@@ -1,6 +1,9 @@
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+const FROM = `CSULB Sailing <${process.env.RESEND_FROM_EMAIL || 'noreply@sailcsulb.org'}>`
+const CONTACT_URL = 'https://sailcsulb.org/contact'
+const REGISTER_URL = 'https://sailcsulb.org/learn-to-sail'
 
 /**
  * Sends a registration confirmation email to the student.
@@ -105,6 +108,129 @@ export async function sendRegistrationConfirmation({ to, name, course, sessionSu
     from: `CSULB Sailing <${fromEmail}>`,
     to,
     subject: `Registration confirmed: ${course.name}`,
+    html,
+  })
+}
+
+/**
+ * Sends a waitlist confirmation email to the student.
+ */
+export async function sendWaitlistConfirmation({ to, name, courseType }) {
+  const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;">
+        <tr>
+          <td style="background:#1e3a5f;padding:32px;text-align:center;">
+            <p style="color:#ecaa00;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 8px;">CSULB Sailing Association</p>
+            <h1 style="color:#ffffff;font-size:24px;font-weight:700;margin:0;">You're on the Waitlist</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px 32px;">
+            <p style="font-size:16px;color:#374151;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
+            <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 32px;">
+              We've added you to the waitlist for the course below. We'll email you as soon as new sessions open up.
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;margin-bottom:32px;">
+              <tr>
+                <td style="padding:24px;">
+                  <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 6px;">Course</p>
+                  <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0;">${courseType}</h2>
+                </td>
+              </tr>
+            </table>
+            <p style="font-size:15px;color:#374151;line-height:1.7;margin:0;">
+              See you on the water,<br/>
+              <strong>CSULB Sailing Association</strong>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 32px;text-align:center;">
+            <p style="font-size:12px;color:#9ca3af;margin:0;">
+              CSULB Sailing Association · Long Beach, CA
+              &nbsp;·&nbsp;
+              <a href="${CONTACT_URL}" style="color:#9ca3af;">Contact us</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+`
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `You're on the waitlist: ${courseType}`,
+    html,
+  })
+}
+
+/**
+ * Notifies a waitlisted student that sessions for their course are now open.
+ */
+export async function sendWaitlistNotification({ to, name, courseType }) {
+  const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;">
+        <tr>
+          <td style="background:#1e3a5f;padding:32px;text-align:center;">
+            <p style="color:#ecaa00;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 8px;">CSULB Sailing Association</p>
+            <h1 style="color:#ffffff;font-size:24px;font-weight:700;margin:0;">Sessions Are Now Open!</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px 32px;">
+            <p style="font-size:16px;color:#374151;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
+            <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 32px;">
+              Good news — sessions for the course you've been waiting on are now open for registration. Spots are limited, so sign up soon!
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;margin-bottom:32px;">
+              <tr>
+                <td style="padding:24px;">
+                  <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 6px;">Course</p>
+                  <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 20px;">${courseType}</h2>
+                  <a href="${REGISTER_URL}" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:6px;font-weight:700;font-size:15px;">Register Now →</a>
+                </td>
+              </tr>
+            </table>
+            <p style="font-size:15px;color:#374151;line-height:1.7;margin:0;">
+              See you on the water,<br/>
+              <strong>CSULB Sailing Association</strong>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 32px;text-align:center;">
+            <p style="font-size:12px;color:#9ca3af;margin:0;">
+              CSULB Sailing Association · Long Beach, CA
+              &nbsp;·&nbsp;
+              <a href="${CONTACT_URL}" style="color:#9ca3af;">Contact us</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+`
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Sessions open: ${courseType} — register now`,
     html,
   })
 }
