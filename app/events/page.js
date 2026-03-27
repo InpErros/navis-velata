@@ -1,5 +1,6 @@
 import { Redis } from '@upstash/redis'
 import PageHero from '../components/PageHero'
+import { CALENDAR_EMBED_URL } from '@/app/lib/links'
 
 export const dynamic = 'force-dynamic'
 
@@ -109,7 +110,7 @@ export default async function Events() {
           border: '1px solid #e5e7eb',
         }}>
           <iframe
-            src="https://calendar.google.com/calendar/u/0/embed?src=48211216a0cec9408e4a852f7815a9b5236fce6350675de9212f4c42d817212c@group.calendar.google.com&ctz=America/Los_Angeles"
+            src={CALENDAR_EMBED_URL}
             style={{ border: 'none', width: '100%', height: '600px', display: 'block' }}
           />
         </div>

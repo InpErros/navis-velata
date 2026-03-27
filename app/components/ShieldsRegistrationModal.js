@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { CASHNET_URL } from '@/app/lib/links'
 
 export default function ShieldsRegistrationModal({ session, onClose }) {
   const [form, setForm] = useState({ name: '', email: '', discord: '' })
@@ -122,7 +123,7 @@ export default function ShieldsRegistrationModal({ session, onClose }) {
               <strong>Before registering:</strong> Complete your payment via CashNet, then upload your receipt below.
               <div style={{ marginTop: '10px' }}>
                 <a
-                  href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN"
+                  href={CASHNET_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ display: 'inline-block', backgroundColor: '#ecaa00', color: '#000', padding: '8px 16px', borderRadius: '6px', fontWeight: '700', fontSize: '13px', textDecoration: 'none' }}

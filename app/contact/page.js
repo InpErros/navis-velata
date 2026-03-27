@@ -1,4 +1,5 @@
 import PageHero from '../components/PageHero'
+import { DISCORD_URL, INSTAGRAM_URL, MAPS_URL, MAPS_EMBED_URL } from '@/app/lib/links'
 
 export default function Contact() {
   return (
@@ -13,7 +14,7 @@ export default function Contact() {
         <div className="grid-2col" style={{ marginBottom: '48px' }}>
 
           {/* Discord */}
-          <a href="https://discord.gg/DYuD3Zs4JE" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <div style={{
               backgroundColor: '#f5f3ff',
               border: '1px solid #ddd6fe',
@@ -38,7 +39,7 @@ export default function Contact() {
           </a>
 
           {/* Instagram */}
-          <a href="https://www.instagram.com/sailcsulb/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <div style={{
               backgroundColor: '#fff1f2',
               border: '1px solid #fecdd3',
@@ -90,7 +91,7 @@ export default function Contact() {
                 5437 E Ocean Blvd, Long Beach, CA 90803
               </p>
               <a
-                href="https://maps.google.com/?q=5437+E+Ocean+Blvd,+Long+Beach,+CA+90803"
+                href={MAPS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 data-external
@@ -115,7 +116,7 @@ export default function Contact() {
               border: '1px solid #e5e7eb',
             }}>
               <iframe
-                src="https://www.google.com/maps?q=5437+E+Ocean+Blvd,+Long+Beach,+CA+90803&output=embed"
+                src={MAPS_EMBED_URL}
                 width="100%"
                 height="100%"
                 style={{ border: 'none', display: 'block' }}

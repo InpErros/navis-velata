@@ -1,16 +1,16 @@
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+import { SITE_CONTACT_URL as CONTACT_URL, SITE_LEARN_TO_SAIL_URL as REGISTER_URL } from '@/app/lib/links'
+
 const FROM = `CSULB Sailing <${process.env.RESEND_FROM_EMAIL || 'noreply@sailcsulb.org'}>`
-const CONTACT_URL = 'https://sailcsulb.org/contact'
-const REGISTER_URL = 'https://sailcsulb.org/learn-to-sail'
 
 /**
  * Sends a registration confirmation email to the student.
  */
 export async function sendRegistrationConfirmation({ to, name, course, sessionSummary }) {
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@sailcsulb.org'
-  const contactUrl = 'https://sailcsulb.com/contact'
+  const contactUrl = CONTACT_URL
 
   const sessionLines = sessionSummary
     ? sessionSummary.split(', ').join('<br/>')

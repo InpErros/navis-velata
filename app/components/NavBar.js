@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import './NavBar.css'
+import { CASHNET_URL, DO_SPORTS_EASY_URL } from '@/app/lib/links'
 
 export default function NavBar() {
   const [open, setOpen]           = useState(false)
@@ -65,12 +66,12 @@ export default function NavBar() {
             Quick Links <span className="nav-dropdown-arrow">{linksOpen ? '▲' : '▼'}</span>
           </button>
           <div className={`nav-dropdown-menu${linksOpen ? ' nav-dropdown-menu-open' : ''}`}>
-            <a href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN"
+            <a href={CASHNET_URL}
                data-external target="_blank" rel="noopener noreferrer"
                onClick={close}>
               Cashnet
             </a>
-            <a href="https://csulb.dserec.com/online/clubsports"
+            <a href={DO_SPORTS_EASY_URL}
                data-external target="_blank" rel="noopener noreferrer"
                onClick={close}>
               Do Sports Easy

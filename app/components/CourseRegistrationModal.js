@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { CASHNET_URL } from '@/app/lib/links'
 
 const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3, 'Level 1 Keelboat': 2, 'Other': 1 }
 
@@ -157,7 +158,7 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
               <strong>Before registering:</strong> Complete your payment via CashNet, then upload your receipt below.
               <div style={{ marginTop: '10px' }}>
                 <a
-                  href="https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN"
+                  href={CASHNET_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ display: 'inline-block', backgroundColor: '#ecaa00', color: '#000', padding: '8px 16px', borderRadius: '6px', fontWeight: '700', fontSize: '13px', textDecoration: 'none' }}
