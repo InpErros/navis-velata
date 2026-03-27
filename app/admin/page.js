@@ -840,6 +840,8 @@ export default function Admin() {
               </div>
             </form>
 
+            <ShieldsBulkImport authHeaders={authHeaders} onImported={fetchShields} />
+
             <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
               Shields Sessions ({shieldsSessions.length})
             </h2>
@@ -1087,6 +1089,148 @@ export default function Admin() {
         )}
 
       </div>
+    </div>
+  )
+}
+
+function ShieldsBulkImport({ authHeaders, onImported }) {
+  const [open, setOpen] = useState(false)
+  const [raw, setRaw] = useState('')
+  const [preview, setPreview] = useState(null)
+  const [parseError, setParseError] = useState('')
+  const [importing, setImporting] = useState(false)
+  const [importResult, setImportResult] = useState('')
+
+  const EXAMPLE = JSON.stringify([
+    { name: 'Spring Session 1', day1Date: 'April 5, 2026', day1StartTime: '9:00 AM', day1EndTime: '3:00 PM', day2Date: 'April 12, 2026', day2StartTime: '9:00 AM', day2EndTime: '3:00 PM', spots: 12, isOpen: false },
+    { name: 'Spring Session 2', day1Date: 'April 19, 2026', day1StartTime: '9:00 AM', day1EndTime: '3:00 PM', day2Date: 'April 26, 2026', day2StartTime: '9:00 AM', day2EndTime: '3:00 PM', spots: 12, isOpen: false },
+  ], null, 2)
+
+  const handleParse = () => {
+    setParseError('')
+    setPreview(null)
+    setImportResult('')
+    try {
+      const parsed = JSON.parse(raw)
+      if (!Array.isArray(parsed)) throw new Error('JSON must be an array [ ... ]')
+      if (parsed.length === 0) throw new Error('Array is empty.')
+      for (const s of parsed) {
+        if (!s.name || !s.day1Date || !s.day2Date) throw new Error(`Each session needs at least "name", "day1Date", and "day2Date".`)
+      }
+      setPreview(parsed)
+    } catch (err) {
+      setParseError(err.message)
+    }
+  }
+
+  const handleFileLoad = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => { setRaw(ev.target.result); setPreview(null); setParseError(''); setImportResult('') }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
+
+  const handleImport = async () => {
+    if (!preview) return
+    setImporting(true)
+    setImportResult('')
+    const res = await fetch('/api/admin/shields', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify(preview),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setImportResult(`Error: ${data.error}`)
+    } else {
+      setImportResult(`✓ Imported ${data.imported} session${data.imported !== 1 ? 's' : ''} successfully.`)
+      setRaw('')
+      setPreview(null)
+      onImported()
+    }
+    setImporting(false)
+  }
+
+  return (
+    <div style={{ border: '1px solid #e5e7eb', borderRadius: '10px', marginBottom: '40px', overflow: 'hidden' }}>
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', background: '#f9fafb', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+      >
+        <span style={{ fontWeight: '700', fontSize: '15px', color: '#111827' }}>Bulk Import via JSON</span>
+        <span style={{ color: '#6b7280', fontSize: '16px', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▾</span>
+      </button>
+
+      {open && (
+        <div style={{ padding: '20px', borderTop: '1px solid #e5e7eb' }}>
+          <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '12px' }}>
+            Paste a JSON array of sessions or upload a <code>.json</code> file. Required fields per session: <code>name</code>, <code>day1Date</code>, <code>day2Date</code>.
+          </p>
+
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center' }}>
+            <label style={{ ...secondaryBtn, padding: '8px 14px', fontSize: '13px', cursor: 'pointer', display: 'inline-block' }}>
+              Upload .json file
+              <input type="file" accept=".json" onChange={handleFileLoad} style={{ display: 'none' }} />
+            </label>
+            <button type="button" onClick={() => { setRaw(EXAMPLE); setPreview(null); setParseError(''); setImportResult('') }}
+              style={{ background: 'none', border: 'none', color: '#006E90', fontSize: '13px', cursor: 'pointer', textDecoration: 'underline' }}>
+              Load example
+            </button>
+          </div>
+
+          <textarea
+            value={raw}
+            onChange={e => { setRaw(e.target.value); setPreview(null); setParseError(''); setImportResult('') }}
+            placeholder={'[\n  { "name": "...", "day1Date": "...", "day2Date": "...", "spots": 12 },\n  ...\n]'}
+            rows={8}
+            style={{ width: '100%', padding: '10px 12px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '13px', fontFamily: 'monospace', resize: 'vertical', boxSizing: 'border-box' }}
+          />
+
+          {parseError && <p style={{ color: '#dc2626', fontSize: '13px', margin: '8px 0 0' }}>{parseError}</p>}
+
+          <div style={{ display: 'flex', gap: '10px', marginTop: '12px', alignItems: 'center' }}>
+            <button type="button" onClick={handleParse} disabled={!raw.trim()}
+              style={{ ...secondaryBtn, padding: '8px 16px', fontSize: '13px' }}>
+              Validate JSON
+            </button>
+            {preview && (
+              <button type="button" onClick={handleImport} disabled={importing}
+                style={{ backgroundColor: '#16a34a', color: '#fff', border: 'none', borderRadius: '6px', padding: '8px 16px', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>
+                {importing ? 'Importing...' : `Import ${preview.length} session${preview.length !== 1 ? 's' : ''}`}
+              </button>
+            )}
+            {importResult && <span style={{ fontSize: '13px', color: importResult.startsWith('✓') ? '#16a34a' : '#dc2626', fontWeight: '600' }}>{importResult}</span>}
+          </div>
+
+          {preview && (
+            <div style={{ marginTop: '16px', overflowX: 'auto' }}>
+              <p style={{ fontSize: '13px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>Preview — {preview.length} session{preview.length !== 1 ? 's' : ''}:</p>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f3f4f6' }}>
+                    {['Name', 'Day 1', 'Day 2', 'Spots'].map(h => (
+                      <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {preview.map((s, i) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                      <td style={{ padding: '8px 12px', color: '#111827', fontWeight: '600' }}>{s.name}</td>
+                      <td style={{ padding: '8px 12px', color: '#374151' }}>{s.day1Date}{s.day1StartTime ? ` · ${s.day1StartTime}` : ''}</td>
+                      <td style={{ padding: '8px 12px', color: '#374151' }}>{s.day2Date}{s.day2StartTime ? ` · ${s.day2StartTime}` : ''}</td>
+                      <td style={{ padding: '8px 12px', color: '#374151' }}>{s.spots ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
