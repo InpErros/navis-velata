@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
  */
 export async function sendRegistrationConfirmation({ to, name, course, sessionSummary }) {
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@sailcsulb.org'
-  const contactUrl = 'https://sailcsulb.org/contact'
+  const contactUrl = 'https://sailcsulb.com/contact'
 
   const sessionLines = sessionSummary
     ? sessionSummary.split(', ').join('<br/>')
@@ -58,7 +58,7 @@ export async function sendRegistrationConfirmation({ to, name, course, sessionSu
             <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0 0 12px;">What happens next?</h3>
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
               ${[
-                ['💬', 'An officer will reach out to you on Discord to confirm your spot once your receipt is reviewed.'],
+                ['💬', 'An officer will reach out to you before your course '],
                 ['📅', 'Add the session dates to your calendar — courses start on time.'],
                 ['⛵', 'Show up ready to sail! We\'ll have everything else you need.'],
               ].map(([icon, text]) => `

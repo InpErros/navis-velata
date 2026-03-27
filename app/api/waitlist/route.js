@@ -1,5 +1,6 @@
 import { Redis } from '@upstash/redis'
 import { NextResponse } from 'next/server'
+import { sendWaitlistConfirmation } from '@/app/lib/emails'
 
 const redis = Redis.fromEnv()
 
@@ -26,5 +27,10 @@ export const POST = async (req) => {
     timestamp: new Date().toISOString(),
   }
   await redis.set('waitlist', [...waitlist, entry])
+  try {
+    await sendWaitlistConfirmation({ to: entry.email, name: entry.name, courseType: entry.courseType })
+  } catch (err) {
+    console.error('Waitlist confirmation email failed:', err)
+  }
   return NextResponse.json({ success: true })
 }

@@ -475,6 +475,7 @@ export default function Admin() {
     { id: 'shields', label: 'Shields' },
     { id: 'registrations', label: 'Registrations' },
     { id: 'audit', label: 'Audit Log' },
+    { id: 'test-email', label: 'Test Emails' },
     ...(isSuperAdmin ? [{ id: 'users', label: 'Manage Users' }] : []),
   ]
 
@@ -1038,6 +1039,11 @@ export default function Admin() {
           </>
         )}
 
+        {/* ── Test Emails tab ── */}
+        {activeTab === 'test-email' && (
+          <TestEmailPanel authHeaders={authHeaders} />
+        )}
+
         {/* ── Manage Users tab (superadmin only) ── */}
         {activeTab === 'users' && isSuperAdmin && (
           <>
@@ -1232,6 +1238,81 @@ function ShieldsBulkImport({ authHeaders, onImported }) {
         </div>
       )}
     </div>
+  )
+}
+
+function TestEmailPanel({ authHeaders }) {
+  const EMAIL_TYPES = [
+    { id: 'registration', label: 'Registration Confirmation', desc: 'Sent to students after they register for a course.' },
+    { id: 'waitlist-confirm', label: 'Waitlist Confirmation', desc: 'Sent when a student joins the waitlist.' },
+    { id: 'waitlist-notify', label: 'Waitlist Notification', desc: 'Sent to waitlist members when sessions open.' },
+  ]
+  const [to, setTo] = useState('')
+  const [sending, setSending] = useState(null)
+  const [results, setResults] = useState({})
+
+  const send = async (type) => {
+    if (!to.trim()) return
+    setSending(type)
+    setResults(r => ({ ...r, [type]: null }))
+    try {
+      const res = await fetch('/api/admin/test-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ type, to: to.trim() }),
+      })
+      const data = await res.json()
+      setResults(r => ({ ...r, [type]: res.ok ? 'Sent!' : (data.error || 'Failed.') }))
+    } catch {
+      setResults(r => ({ ...r, [type]: 'Network error.' }))
+    } finally {
+      setSending(null)
+    }
+  }
+
+  return (
+    <>
+      <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px' }}>Test Emails</h2>
+      <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '24px' }}>
+        Send a preview of each email template to any address.
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '28px' }}>
+        <label style={{ fontSize: '13px', fontWeight: '600', color: '#6b7280' }}>Send to</label>
+        <input
+          type="email"
+          placeholder="you@example.com"
+          value={to}
+          onChange={e => setTo(e.target.value)}
+          style={{ padding: '10px 14px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '15px', maxWidth: '360px' }}
+        />
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {EMAIL_TYPES.map(({ id, label, desc }) => (
+          <div key={id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <div>
+              <p style={{ fontWeight: '600', fontSize: '15px', margin: '0 0 2px' }}>{label}</p>
+              <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>{desc}</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+              {results[id] && (
+                <span style={{ fontSize: '13px', color: results[id] === 'Sent!' ? '#16a34a' : '#dc2626', fontWeight: '600' }}>
+                  {results[id]}
+                </span>
+              )}
+              <button
+                onClick={() => send(id)}
+                disabled={!to.trim() || sending === id}
+                style={{ backgroundColor: '#ecaa00', color: '#000', border: 'none', borderRadius: '6px', padding: '8px 18px', fontWeight: '700', fontSize: '14px', cursor: (!to.trim() || sending === id) ? 'default' : 'pointer', opacity: (!to.trim() || sending === id) ? 0.6 : 1 }}
+              >
+                {sending === id ? 'Sending...' : 'Send Test'}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   )
 }
 
