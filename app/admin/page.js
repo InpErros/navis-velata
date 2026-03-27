@@ -17,6 +17,18 @@ const emptyForm = {
   registrationLink: '',
 }
 
+const emptyShieldsForm = {
+  name: '',
+  day1Date: '',
+  day1StartTime: '',
+  day1EndTime: '',
+  day2Date: '',
+  day2StartTime: '',
+  day2EndTime: '',
+  spots: '',
+  isOpen: false,
+}
+
 const emptySessionForm = {
   courseType: 'Sailing A',
   programType: 'student',
@@ -56,6 +68,13 @@ export default function Admin() {
   // Waitlist state
   const [waitlist, setWaitlist] = useState([])
   const [waitlistLoading, setWaitlistLoading] = useState(false)
+
+  // Shields state
+  const [shieldsSessions, setShieldsSessions] = useState([])
+  const [shieldsForm, setShieldsForm] = useState(emptyShieldsForm)
+  const [editingShieldsId, setEditingShieldsId] = useState(null)
+  const [shieldsSaving, setShieldsSaving] = useState(false)
+  const [shieldsError, setShieldsError] = useState('')
 
   // Users state
   const [users, setUsers] = useState([])
@@ -147,6 +166,7 @@ export default function Admin() {
   const handleTabChange = (tab) => {
     setActiveTab(tab)
     if (tab === 'courses') fetchCourses()
+    if (tab === 'shields') fetchShields()
     if (tab === 'registrations') { fetchRegistrations(); fetchWaitlist() }
     if (tab === 'users') fetchUsers()
     if (tab === 'audit') fetchAuditLog()
@@ -179,6 +199,58 @@ export default function Admin() {
     setIsSuperAdmin(isSuper)
     setAuthed(true)
     fetchEvents(u, pw)
+  }
+
+  // ── Shields ───────────────────────────────────────────────────────────────────
+
+  const fetchShields = async () => {
+    const res = await fetch('/api/admin/shields', { headers: authHeaders() })
+    const data = await res.json()
+    setShieldsSessions(data)
+  }
+
+  const handleShieldsSave = async (e) => {
+    e.preventDefault()
+    setShieldsError('')
+    setShieldsSaving(true)
+    const method = editingShieldsId ? 'PUT' : 'POST'
+    const url = editingShieldsId ? `/api/shields/${editingShieldsId}` : '/api/shields'
+    const payload = { ...shieldsForm, spots: parseInt(shieldsForm.spots) || 0 }
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const data = await res.json()
+      setShieldsError(data.error || 'Failed to save session')
+    } else {
+      setShieldsForm(emptyShieldsForm)
+      setEditingShieldsId(null)
+      fetchShields()
+    }
+    setShieldsSaving(false)
+  }
+
+  const handleShieldsEdit = (session) => {
+    setShieldsForm({ ...session, spots: String(session.spots ?? '') })
+    setEditingShieldsId(session.id)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleShieldsDelete = async (id) => {
+    if (!confirm('Delete this session?')) return
+    await fetch(`/api/shields/${id}`, { method: 'DELETE', headers: authHeaders() })
+    fetchShields()
+  }
+
+  const handleShieldsToggleOpen = async (session) => {
+    await fetch(`/api/shields/${session.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ ...session, isOpen: !session.isOpen }),
+    })
+    fetchShields()
   }
 
   // ── Sessions ─────────────────────────────────────────────────────────────────
@@ -400,6 +472,7 @@ export default function Admin() {
   const tabs = [
     { id: 'events', label: 'Events' },
     { id: 'courses', label: 'Sessions' },
+    { id: 'shields', label: 'Shields' },
     { id: 'registrations', label: 'Registrations' },
     { id: 'audit', label: 'Audit Log' },
     ...(isSuperAdmin ? [{ id: 'users', label: 'Manage Users' }] : []),
@@ -680,6 +753,130 @@ export default function Admin() {
                 ))}
             </div>
 
+          </>
+        )}
+
+        {/* ── Shields tab ── */}
+        {activeTab === 'shields' && (
+          <>
+            <form onSubmit={handleShieldsSave} style={{ marginBottom: '48px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
+                {editingShieldsId ? 'Edit Session' : 'Add New Shields Session'}
+              </h2>
+              {shieldsError && <p style={{ color: '#dc2626', marginBottom: '16px', fontSize: '14px' }}>{shieldsError}</p>}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', gridColumn: '1 / -1' }}>
+                  <label style={fieldLabel}>Session Name</label>
+                  <input type="text" required placeholder="e.g. Spring Session 1" value={shieldsForm.name}
+                    onChange={e => setShieldsForm({ ...shieldsForm, name: e.target.value })} style={inputStyle} />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Spots</label>
+                  <input type="number" min="1" required placeholder="12" value={shieldsForm.spots}
+                    onChange={e => setShieldsForm({ ...shieldsForm, spots: e.target.value })} style={inputStyle} />
+                </div>
+
+                {/* Day 1 */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <p style={{ fontSize: '13px', fontWeight: '700', color: '#374151', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Day 1</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label style={fieldLabel}>Date</label>
+                      <input type="text" required placeholder="April 5, 2026" value={shieldsForm.day1Date}
+                        onChange={e => setShieldsForm({ ...shieldsForm, day1Date: e.target.value })} style={inputStyle} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label style={fieldLabel}>Start Time</label>
+                      <input type="text" placeholder="9:00 AM" value={shieldsForm.day1StartTime}
+                        onChange={e => setShieldsForm({ ...shieldsForm, day1StartTime: e.target.value })} style={inputStyle} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label style={fieldLabel}>End Time</label>
+                      <input type="text" placeholder="3:00 PM" value={shieldsForm.day1EndTime}
+                        onChange={e => setShieldsForm({ ...shieldsForm, day1EndTime: e.target.value })} style={inputStyle} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Day 2 */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <p style={{ fontSize: '13px', fontWeight: '700', color: '#374151', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Day 2</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label style={fieldLabel}>Date</label>
+                      <input type="text" required placeholder="April 12, 2026" value={shieldsForm.day2Date}
+                        onChange={e => setShieldsForm({ ...shieldsForm, day2Date: e.target.value })} style={inputStyle} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label style={fieldLabel}>Start Time</label>
+                      <input type="text" placeholder="9:00 AM" value={shieldsForm.day2StartTime}
+                        onChange={e => setShieldsForm({ ...shieldsForm, day2StartTime: e.target.value })} style={inputStyle} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label style={fieldLabel}>End Time</label>
+                      <input type="text" placeholder="3:00 PM" value={shieldsForm.day2EndTime}
+                        onChange={e => setShieldsForm({ ...shieldsForm, day2EndTime: e.target.value })} style={inputStyle} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <button type="submit" disabled={shieldsSaving} style={primaryBtn}>
+                  {shieldsSaving ? 'Saving...' : editingShieldsId ? 'Save Changes' : 'Add Session'}
+                </button>
+                {editingShieldsId && (
+                  <button type="button" onClick={() => { setShieldsForm(emptyShieldsForm); setEditingShieldsId(null) }} style={secondaryBtn}>
+                    Cancel
+                  </button>
+                )}
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#374151', marginLeft: '8px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={shieldsForm.isOpen}
+                    onChange={e => setShieldsForm({ ...shieldsForm, isOpen: e.target.checked })} />
+                  Open for registration
+                </label>
+              </div>
+            </form>
+
+            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
+              Shields Sessions ({shieldsSessions.length})
+            </h2>
+            {shieldsSessions.length === 0 && <p style={{ color: '#6b7280' }}>No sessions yet. Add one above.</p>}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {shieldsSessions.map(session => (
+                <div key={session.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                      <p style={{ fontWeight: '700', fontSize: '16px', margin: 0 }}>{session.name}</p>
+                      <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '600',
+                        backgroundColor: session.isOpen ? '#dcfce7' : '#f3f4f6',
+                        color: session.isOpen ? '#16a34a' : '#6b7280' }}>
+                        {session.isOpen ? 'Open' : 'Closed'}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 2px' }}>
+                      Day 1: {session.day1Date}{session.day1StartTime ? ` · ${session.day1StartTime}${session.day1EndTime ? `–${session.day1EndTime}` : ''}` : ''}
+                    </p>
+                    <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 4px' }}>
+                      Day 2: {session.day2Date}{session.day2StartTime ? ` · ${session.day2StartTime}${session.day2EndTime ? `–${session.day2EndTime}` : ''}` : ''}
+                    </p>
+                    <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>
+                      {session.enrolled || 0}/{session.spots} enrolled
+                    </p>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                    <button onClick={() => handleShieldsToggleOpen(session)}
+                      style={{ ...secondaryBtn, padding: '8px 14px', fontSize: '13px' }}>
+                      {session.isOpen ? 'Close' : 'Open'}
+                    </button>
+                    <button onClick={() => handleShieldsEdit(session)} style={editBtn}>Edit</button>
+                    <button onClick={() => handleShieldsDelete(session.id)} style={deleteBtn}>Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </>
         )}
 

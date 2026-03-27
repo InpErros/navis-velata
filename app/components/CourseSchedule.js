@@ -131,7 +131,6 @@ export default function CourseSchedule({ programType, courseType }) {
   if (sessions.length === 0) return null
 
   const courseTypes = COURSE_TYPE_ORDER.filter(t => sessions.some(s => s.courseType === t))
-  const inline = Boolean(courseType)
 
   return (
     <>
