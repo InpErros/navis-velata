@@ -86,6 +86,8 @@ export default function Admin() {
 
   // Audit log state
   const [auditLog, setAuditLog] = useState([])
+  const [auditPage, setAuditPage] = useState(1)
+  const AUDIT_PAGE_SIZE = 25
 
   // Change password state
   const [showChangePw, setShowChangePw] = useState(false)
@@ -130,6 +132,7 @@ export default function Admin() {
     const res = await fetch('/api/admin/audit', { headers: authHeaders() })
     const data = await res.json()
     setAuditLog(data)
+    setAuditPage(1)
   }
 
   const fetchCourses = async (u, pw) => {
@@ -1046,31 +1049,46 @@ export default function Admin() {
         )}
 
         {/* ── Audit Log tab ── */}
-        {activeTab === 'audit' && (
-          <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Audit Log</h2>
-              <button onClick={fetchAuditLog} style={secondaryBtn}>Refresh</button>
-            </div>
+        {activeTab === 'audit' && (() => {
+          const totalPages = Math.max(1, Math.ceil(auditLog.length / AUDIT_PAGE_SIZE))
+          const page = Math.min(auditPage, totalPages)
+          const pageEntries = auditLog.slice((page - 1) * AUDIT_PAGE_SIZE, page * AUDIT_PAGE_SIZE)
+          return (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>
+                  Audit Log {auditLog.length > 0 && <span style={{ fontSize: '14px', fontWeight: '400', color: '#6b7280' }}>({auditLog.length} entries)</span>}
+                </h2>
+                <button onClick={fetchAuditLog} style={secondaryBtn}>Refresh</button>
+              </div>
 
-            {auditLog.length === 0 && <p style={{ color: '#6b7280' }}>No activity recorded yet.</p>}
+              {auditLog.length === 0 && <p style={{ color: '#6b7280' }}>No activity recorded yet.</p>}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {auditLog.map((entry, i) => (
-                <div key={i} style={{ display: 'grid', gridTemplateColumns: '140px 1fr 160px', gap: '16px', alignItems: 'center', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 16px', fontSize: '14px' }}>
-                  <span style={{ fontWeight: '700', color: '#111827' }}>{entry.username}</span>
-                  <span style={{ color: '#374151' }}>
-                    <span style={{ color: '#6b7280', marginRight: '6px' }}>{entry.action}</span>
-                    {entry.detail && <strong>{entry.detail}</strong>}
-                  </span>
-                  <span style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'right' }}>
-                    {new Date(entry.timestamp).toLocaleString()}
-                  </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+                {pageEntries.map((entry, i) => (
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '140px 1fr 160px', gap: '16px', alignItems: 'center', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 16px', fontSize: '14px' }}>
+                    <span style={{ fontWeight: '700', color: '#111827' }}>{entry.username}</span>
+                    <span style={{ color: '#374151' }}>
+                      <span style={{ color: '#6b7280', marginRight: '6px' }}>{entry.action}</span>
+                      {entry.detail && <strong>{entry.detail}</strong>}
+                    </span>
+                    <span style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'right' }}>
+                      {new Date(entry.timestamp).toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
+                  <button onClick={() => setAuditPage(p => Math.max(1, p - 1))} disabled={page === 1} style={{ ...arrowBtn, opacity: page === 1 ? 0.4 : 1 }}>← Prev</button>
+                  <span style={{ fontSize: '14px', color: '#374151' }}>Page {page} of {totalPages}</span>
+                  <button onClick={() => setAuditPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={{ ...arrowBtn, opacity: page === totalPages ? 0.4 : 1 }}>Next →</button>
                 </div>
-              ))}
-            </div>
-          </>
-        )}
+              )}
+            </>
+          )
+        })()}
 
         {/* ── Test Emails tab ── */}
         {activeTab === 'test-email' && (
