@@ -35,3 +35,14 @@ export const POST = async (req) => {
   await logAction(admin.username, 'bulk imported Shields sessions', `${newSessions.length} sessions`)
   return NextResponse.json({ imported: newSessions.length })
 }
+
+// Deletes all Shields sessions
+export const DELETE = async (req) => {
+  const admin = await validateAdmin(req)
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const sessions = await redis.get('shields') || []
+  await redis.set('shields', [])
+  await logAction(admin.username, 'deleted all Shields sessions', `${sessions.length} sessions removed`)
+  return NextResponse.json({ deleted: sessions.length })
+}

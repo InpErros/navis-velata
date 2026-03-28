@@ -75,6 +75,7 @@ export default function Admin() {
   const [editingShieldsId, setEditingShieldsId] = useState(null)
   const [shieldsSaving, setShieldsSaving] = useState(false)
   const [shieldsError, setShieldsError] = useState('')
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(null) // null | 'courses' | 'shields'
 
   // Users state
   const [users, setUsers] = useState([])
@@ -241,6 +242,18 @@ export default function Admin() {
   const handleShieldsDelete = async (id) => {
     if (!confirm('Delete this session?')) return
     await fetch(`/api/shields/${id}`, { method: 'DELETE', headers: authHeaders() })
+    fetchShields()
+  }
+
+  const handleDeleteAllCourses = async () => {
+    await fetch('/api/admin/courses', { method: 'DELETE', headers: authHeaders() })
+    setConfirmDeleteAll(null)
+    fetchCourses()
+  }
+
+  const handleDeleteAllShields = async () => {
+    await fetch('/api/admin/shields', { method: 'DELETE', headers: authHeaders() })
+    setConfirmDeleteAll(null)
     fetchShields()
   }
 
@@ -709,9 +722,19 @@ export default function Admin() {
             </form>
 
             {/* ── Session list ── */}
-            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-              Sessions ({courses.length})
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Sessions ({courses.length})</h2>
+              {courses.length > 0 && confirmDeleteAll !== 'courses' && (
+                <button onClick={() => setConfirmDeleteAll('courses')} style={deleteBtn}>Delete All</button>
+              )}
+              {confirmDeleteAll === 'courses' && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontSize: '14px', color: '#dc2626', fontWeight: '600' }}>Delete all {courses.length} sessions?</span>
+                  <button onClick={handleDeleteAllCourses} style={deleteBtn}>Yes, delete all</button>
+                  <button onClick={() => setConfirmDeleteAll(null)} style={secondaryBtn}>Cancel</button>
+                </div>
+              )}
+            </div>
             {courses.length === 0 && <p style={{ color: '#6b7280' }}>No sessions yet. Add one above.</p>}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '48px' }}>
               {[...courses]
@@ -843,9 +866,19 @@ export default function Admin() {
 
             <ShieldsBulkImport authHeaders={authHeaders} onImported={fetchShields} />
 
-            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-              Shields Sessions ({shieldsSessions.length})
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Shields Sessions ({shieldsSessions.length})</h2>
+              {shieldsSessions.length > 0 && confirmDeleteAll !== 'shields' && (
+                <button onClick={() => setConfirmDeleteAll('shields')} style={deleteBtn}>Delete All</button>
+              )}
+              {confirmDeleteAll === 'shields' && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontSize: '14px', color: '#dc2626', fontWeight: '600' }}>Delete all {shieldsSessions.length} sessions?</span>
+                  <button onClick={handleDeleteAllShields} style={deleteBtn}>Yes, delete all</button>
+                  <button onClick={() => setConfirmDeleteAll(null)} style={secondaryBtn}>Cancel</button>
+                </div>
+              )}
+            </div>
             {shieldsSessions.length === 0 && <p style={{ color: '#6b7280' }}>No sessions yet. Add one above.</p>}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {shieldsSessions.map(session => (
