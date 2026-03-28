@@ -15,7 +15,7 @@ const courses = [
       'Learn tacking and jibing.',
       'Learn the basic wind compass',
     ],
-    note: 'This course will be two 8 hour days.',
+    note: '',
     color: { bg: '#f0f9ff', border: '#bae6fd', tag: '#0ea5e9' },
   },
   {
@@ -29,7 +29,7 @@ const courses = [
       'Learn upwind/downwind sailing',
       'Get more time on the water',
     ],
-    note: 'This course will be two 8 hour days.',
+    note: '',
     color: { bg: '#f0fdf4', border: '#bbf7d0', tag: '#16a34a' },
   },
   {
@@ -43,7 +43,7 @@ const courses = [
       'Tour the harbour',
       'Earn your club skipper certification',
     ],
-    note: 'This course will be two 6 hour days and 1 day of on water test',
+    note: '',
     color: { bg: '#fdf4ff', border: '#e9d5ff', tag: '#9333ea' },
   },
 ];
