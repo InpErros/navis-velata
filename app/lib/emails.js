@@ -1,5 +1,7 @@
 import { Resend } from 'resend'
-import { SITE_LEARN_TO_SAIL_URL as REGISTER_URL, DISCORD_URL, INSTAGRAM_URL } from '@/app/lib/links'
+import { SITE_STUDENT_URL, SITE_PUBLIC_URL, DISCORD_URL, INSTAGRAM_URL } from '@/app/lib/links'
+
+const COMMUNITY_COURSE_TYPES = ['Shields', 'Level 1 Keelboat']
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = `CSULB Sailing <${process.env.RESEND_FROM_EMAIL || 'noreply@sailcsulb.org'}>`
@@ -76,9 +78,9 @@ export async function sendRegistrationConfirmation({ to, name, course, sessionSu
             <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0 0 12px;">What happens next?</h3>
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
               ${[
-                ['💬', 'An officer will reach out to you before your course '],
+                ['💬', 'A coach will email you before your course with more details.'],
                 ['📅', 'Add the session dates to your calendar — courses start on time.'],
-                ['⛵', 'Show up ready to sail! We\'ll have everything else you need.'],
+                ['⛵', 'Join the discord and follow the instagram.'],
               ].map(([icon, text]) => `
               <tr>
                 <td width="32" valign="top" style="padding:8px 12px 8px 0;font-size:18px;">${icon}</td>
@@ -89,9 +91,8 @@ export async function sendRegistrationConfirmation({ to, name, course, sessionSu
             <!-- Contact note -->
             <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:16px 20px;margin-bottom:32px;">
               <p style="font-size:14px;color:#92400e;margin:0;line-height:1.6;">
-                Need to make changes to your registration? Reach out on
-                <a href="${DISCORD_URL}" style="color:#92400e;font-weight:700;">Discord</a> or
-                <a href="${INSTAGRAM_URL}" style="color:#92400e;font-weight:700;">Instagram</a>
+                Need to make changes to your registration? Reach out to an officer on
+                <a href="${DISCORD_URL}" style="color:#92400e;font-weight:700;">Discord</a>
                 and we'll get it sorted out.
               </p>
             </div>
@@ -178,6 +179,7 @@ export async function sendWaitlistConfirmation({ to, name, courseType }) {
  * Notifies a waitlisted student that sessions for their course are now open.
  */
 export async function sendWaitlistNotification({ to, name, courseType }) {
+  const registerUrl = COMMUNITY_COURSE_TYPES.includes(courseType) ? SITE_PUBLIC_URL : SITE_STUDENT_URL
   const html = `
 <!DOCTYPE html>
 <html>
@@ -196,14 +198,14 @@ export async function sendWaitlistNotification({ to, name, courseType }) {
           <td style="padding:40px 32px;">
             <p style="font-size:16px;color:#374151;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
             <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 32px;">
-              Good news — sessions for the course you've been waiting on are now open for registration. Spots are limited, so sign up soon!
+              Good news! Sessions for the course you've been waiting on are now open for registration. Spots are limited, so sign up soon!
             </p>
             <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;margin-bottom:32px;">
               <tr>
                 <td style="padding:24px;">
                   <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 6px;">Course</p>
                   <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 20px;">${courseType}</h2>
-                  <a href="${REGISTER_URL}" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:6px;font-weight:700;font-size:15px;">Register Now →</a>
+                  <a href="${registerUrl}" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:6px;font-weight:700;font-size:15px;">Register Now →</a>
                 </td>
               </tr>
             </table>

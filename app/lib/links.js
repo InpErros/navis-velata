@@ -18,5 +18,7 @@ export const MAPS_EMBED_URL = 'https://www.google.com/maps?q=5437+E+Ocean+Blvd,+
 export const CALENDAR_EMBED_URL = 'https://calendar.google.com/calendar/u/0/embed?src=48211216a0cec9408e4a852f7815a9b5236fce6350675de9212f4c42d817212c@group.calendar.google.com&ctz=America/Los_Angeles'
 
 // ── Internal pages (absolute, used in emails) ─────────────────────────────────
-export const SITE_CONTACT_URL     = 'https://sailcsulb.com/contact'
+export const SITE_CONTACT_URL       = 'https://sailcsulb.com/contact'
 export const SITE_LEARN_TO_SAIL_URL = 'https://sailcsulb.com/learn-to-sail'
+export const SITE_STUDENT_URL       = 'https://sailcsulb.com/learn-to-sail/student'
+export const SITE_PUBLIC_URL        = 'https://sailcsulb.com/learn-to-sail/public'
