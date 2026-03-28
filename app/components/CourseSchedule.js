@@ -20,8 +20,7 @@ export default function CourseSchedule({ programType, courseType }) {
     fetch('/api/courses')
       .then(r => r.json())
       .then(data => {
-        let filtered = data.filter(s => s.programType === programType)
-        if (courseType) filtered = filtered.filter(s => s.courseType === courseType)
+        const filtered = courseType ? data.filter(s => s.courseType === courseType) : data
         setSessions(filtered)
         setLoading(false)
       })

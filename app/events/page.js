@@ -60,7 +60,7 @@ export default async function Events() {
               <a href={CASHNET_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#ecaa00', fontWeight: '700', textDecoration: 'none' }}>
                 CashNet
               </a>
-              {' '}— use item code <strong>LBCS-SAILASN</strong>.
+              
             </p>
           </div>
           <div style={{ textAlign: 'right' }}>
