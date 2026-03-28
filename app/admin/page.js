@@ -172,8 +172,8 @@ export default function Admin() {
     if (tab === 'courses') fetchCourses()
     if (tab === 'shields') fetchShields()
     if (tab === 'registrations') { fetchRegistrations(); fetchWaitlist() }
-    if (tab === 'users') fetchUsers()
     if (tab === 'audit') fetchAuditLog()
+    if (tab === 'superadmin') fetchUsers()
   }
 
   const handleLogin = async (e) => {
@@ -491,8 +491,7 @@ export default function Admin() {
     { id: 'shields', label: 'Shields' },
     { id: 'registrations', label: 'Registrations' },
     { id: 'audit', label: 'Audit Log' },
-    { id: 'test-email', label: 'Test Emails' },
-    ...(isSuperAdmin ? [{ id: 'users', label: 'Manage Users' }] : []),
+    ...(isSuperAdmin ? [{ id: 'superadmin', label: 'Super Admin' }] : []),
   ]
 
   return (
@@ -1090,14 +1089,17 @@ export default function Admin() {
           )
         })()}
 
-        {/* ── Test Emails tab ── */}
-        {activeTab === 'test-email' && (
-          <TestEmailPanel authHeaders={authHeaders} />
-        )}
-
-        {/* ── Manage Users tab (superadmin only) ── */}
-        {activeTab === 'users' && isSuperAdmin && (
+        {/* ── Super Admin tab ── */}
+        {activeTab === 'superadmin' && isSuperAdmin && (
           <>
+            {/* Test Emails */}
+            <div style={{ marginBottom: '56px' }}>
+              <TestEmailPanel authHeaders={authHeaders} />
+            </div>
+
+            <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', marginBottom: '48px' }} />
+
+            {/* Manage Users */}
             <form onSubmit={handleAddUser} style={{ marginBottom: '48px' }}>
               <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>Add Admin User</h2>
               {userError && <p style={{ color: '#dc2626', marginBottom: '16px', fontSize: '14px' }}>{userError}</p>}
