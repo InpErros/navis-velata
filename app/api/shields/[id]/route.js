@@ -26,6 +26,22 @@ export const PUT = async (req, { params }) => {
   return NextResponse.json({ success: true })
 }
 
+export const PATCH = async (req, { params }) => {
+  const admin = await validateAdmin(req)
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { id } = await params
+  const sessions = await redis.get('shields') || []
+  const target = sessions.find(s => s.id === id)
+  if (!target) return NextResponse.json({ error: 'Not found.' }, { status: 404 })
+
+  const archived = await redis.get('shields_archived') || []
+  await redis.set('shields', sessions.filter(s => s.id !== id))
+  await redis.set('shields_archived', [...archived, { ...target, archivedAt: new Date().toISOString() }])
+  await logAction(admin.username, 'archived Shields session', target.name || id)
+  return NextResponse.json({ success: true })
+}
+
 export const DELETE = async (req, { params }) => {
   const admin = await validateAdmin(req)
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

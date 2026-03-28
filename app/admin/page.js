@@ -3,9 +3,8 @@
 import { useState, useEffect } from 'react'
 
 const EVENT_TYPES = ['Learn to Sail', 'Casual Sail', 'BBQ', 'Maintenance', 'Themed Event', 'Social']
-const COURSE_TYPES = ['Sailing A', 'Sailing B', 'Sailing C', 'Level 1 Keelboat', 'Other']
-const PROGRAM_TYPES = ['student', 'community']
-const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3, 'Level 1 Keelboat': 2, 'Other': 1 }
+const COURSE_TYPES = ['Sailing A', 'Sailing B', 'Sailing C']
+const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3 }
 
 const emptyForm = {
   title: '',
@@ -31,7 +30,6 @@ const emptyShieldsForm = {
 
 const emptySessionForm = {
   courseType: 'Sailing A',
-  programType: 'student',
   dayNumber: 1,
   date: '',
   startTime: '',
@@ -62,12 +60,6 @@ export default function Admin() {
 
   // Registrations state
   const [registrations, setRegistrations] = useState([])
-  const [selectedCourseFilter, setSelectedCourseFilter] = useState('')
-  const [registrationsLoading, setRegistrationsLoading] = useState(false)
-
-  // Waitlist state
-  const [waitlist, setWaitlist] = useState([])
-  const [waitlistLoading, setWaitlistLoading] = useState(false)
 
   // Shields state
   const [shieldsSessions, setShieldsSessions] = useState([])
@@ -83,6 +75,10 @@ export default function Admin() {
   const [newPassword, setNewPassword] = useState('')
   const [userError, setUserError] = useState('')
   const [userSaving, setUserSaving] = useState(false)
+
+  // Archived state
+  const [archived, setArchived] = useState({ sessions: [], shields: [], events: [] })
+  const [archivedLoading, setArchivedLoading] = useState(false)
 
   // Audit log state
   const [auditLog, setAuditLog] = useState([])
@@ -128,6 +124,39 @@ export default function Admin() {
     setUsers(data)
   }
 
+  const fetchArchived = async () => {
+    setArchivedLoading(true)
+    const res = await fetch('/api/admin/archived', { headers: authHeaders() })
+    const data = await res.json()
+    setArchived(data)
+    setArchivedLoading(false)
+  }
+
+  const handleArchiveCourse = async (id) => {
+    await fetch(`/api/courses/${id}`, { method: 'PATCH', headers: authHeaders() })
+    fetchCourses()
+    fetchRegistrations()
+  }
+
+  const handleArchiveShields = async (id) => {
+    await fetch(`/api/shields/${id}`, { method: 'PATCH', headers: authHeaders() })
+    fetchShields()
+  }
+
+  const handleArchiveEvent = async (id) => {
+    await fetch(`/api/events/${id}`, { method: 'PATCH', headers: authHeaders() })
+    fetchEvents()
+  }
+
+  const handleRestore = async (type, id) => {
+    await fetch('/api/admin/archived', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ type, id }),
+    })
+    fetchArchived()
+  }
+
   const fetchAuditLog = async () => {
     const res = await fetch('/api/admin/audit', { headers: authHeaders() })
     const data = await res.json()
@@ -142,36 +171,17 @@ export default function Admin() {
   }
 
   const fetchRegistrations = async () => {
-    setRegistrationsLoading(true)
     const res = await fetch('/api/admin/registrations', { headers: authHeaders() })
     const data = await res.json()
     setRegistrations(data)
-    setRegistrationsLoading(false)
-  }
-
-  const fetchWaitlist = async () => {
-    setWaitlistLoading(true)
-    const res = await fetch('/api/admin/waitlist', { headers: authHeaders() })
-    const data = await res.json()
-    setWaitlist(data)
-    setWaitlistLoading(false)
-  }
-
-  const removeFromWaitlist = async (id, name) => {
-    if (!confirm(`Remove ${name} from the waitlist?`)) return
-    await fetch('/api/admin/waitlist', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json', ...authHeaders() },
-      body: JSON.stringify({ id, name }),
-    })
-    fetchWaitlist()
   }
 
   const handleTabChange = (tab) => {
     setActiveTab(tab)
-    if (tab === 'courses') fetchCourses()
+    if (tab === 'events') fetchEvents()
+    if (tab === 'courses') { fetchCourses(); fetchRegistrations() }
     if (tab === 'shields') fetchShields()
-    if (tab === 'registrations') { fetchRegistrations(); fetchWaitlist() }
+    if (tab === 'archived') fetchArchived()
     if (tab === 'audit') fetchAuditLog()
     if (tab === 'superadmin') fetchUsers()
   }
@@ -489,7 +499,7 @@ export default function Admin() {
     { id: 'events', label: 'Events' },
     { id: 'courses', label: 'Sessions' },
     { id: 'shields', label: 'Shields' },
-    { id: 'registrations', label: 'Registrations' },
+    { id: 'archived', label: 'Archived' },
     { id: 'audit', label: 'Audit Log' },
     ...(isSuperAdmin ? [{ id: 'superadmin', label: 'Super Admin' }] : []),
   ]
@@ -640,6 +650,7 @@ export default function Admin() {
                     <button onClick={() => moveEvent(index, -1)} disabled={index === 0} style={arrowBtn}>↑</button>
                     <button onClick={() => moveEvent(index, 1)} disabled={index === events.length - 1} style={arrowBtn}>↓</button>
                     <button onClick={() => handleEdit(event)} style={editBtn}>Edit</button>
+                    <button onClick={() => handleArchiveEvent(event.id)} style={{ ...secondaryBtn, padding: '7px 12px', fontSize: '13px' }}>Archive</button>
                     <button onClick={() => handleDelete(event.id)} style={deleteBtn}>Delete</button>
                   </div>
                 </div>
@@ -663,14 +674,6 @@ export default function Admin() {
                   <label style={fieldLabel}>Course Type</label>
                   <select value={courseForm.courseType} onChange={e => setCourseForm({ ...courseForm, courseType: e.target.value })} style={inputStyle}>
                     {COURSE_TYPES.map(t => <option key={t}>{t}</option>)}
-                  </select>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={fieldLabel}>Program</label>
-                  <select value={courseForm.programType} onChange={e => setCourseForm({ ...courseForm, programType: e.target.value })} style={inputStyle}>
-                    <option value="student">Student</option>
-                    <option value="community">Community</option>
                   </select>
                 </div>
 
@@ -723,60 +726,84 @@ export default function Admin() {
               </div>
             </form>
 
-            {/* ── Session list ── */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Sessions ({courses.length})</h2>
-              {courses.length > 0 && confirmDeleteAll !== 'courses' && (
-                <button onClick={() => setConfirmDeleteAll('courses')} style={deleteBtn}>Delete All</button>
-              )}
-              {confirmDeleteAll === 'courses' && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ fontSize: '14px', color: '#dc2626', fontWeight: '600' }}>Delete all {courses.length} sessions?</span>
-                  <button onClick={handleDeleteAllCourses} style={deleteBtn}>Yes, delete all</button>
-                  <button onClick={() => setConfirmDeleteAll(null)} style={secondaryBtn}>Cancel</button>
-                </div>
-              )}
-            </div>
+            {/* ── Session list grouped by course type ── */}
             {courses.length === 0 && <p style={{ color: '#6b7280' }}>No sessions yet. Add one above.</p>}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '48px' }}>
-              {[...courses]
-                .sort((a, b) => {
-                  if (a.courseType !== b.courseType) return a.courseType.localeCompare(b.courseType)
-                  return (a.dayNumber || 0) - (b.dayNumber || 0)
-                })
-                .map(session => (
-                  <div key={session.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '700', backgroundColor: '#1e3a5f', color: '#fff' }}>
-                          {session.courseType}
-                        </span>
-                        <span style={{ fontSize: '12px', fontWeight: '600', color: '#374151' }}>
-                          Day {session.dayNumber}
-                        </span>
-                        <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '600',
-                          backgroundColor: session.isOpen ? '#dcfce7' : '#f3f4f6',
-                          color: session.isOpen ? '#16a34a' : '#6b7280' }}>
-                          {session.isOpen ? 'Open' : 'Closed'}
-                        </span>
-                      </div>
-                      <p style={{ fontSize: '14px', fontWeight: '600', color: '#111827', margin: '0 0 2px' }}>
-                        {session.date}{session.startTime ? ` · ${session.startTime}${session.endTime ? `–${session.endTime}` : ''}` : ''}
-                      </p>
-                      <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>
-                        {session.programType === 'student' ? 'Student' : 'Community'} · {session.enrolled || 0}/{session.spots} enrolled
-                      </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginBottom: '48px' }}>
+              {COURSE_TYPES.map(ct => {
+                const ctSessions = [...courses]
+                  .filter(s => s.courseType === ct)
+                  .sort((a, b) => (a.dayNumber || 0) - (b.dayNumber || 0))
+                if (ctSessions.length === 0) return null
+                return (
+                  <div key={ct}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                      <h3 style={{ fontSize: '17px', fontWeight: '700', margin: 0, color: '#1e3a5f' }}>
+                        {ct} <span style={{ fontSize: '13px', fontWeight: '400', color: '#6b7280' }}>({ctSessions.length} session{ctSessions.length !== 1 ? 's' : ''})</span>
+                      </h3>
+                      {confirmDeleteAll === ct ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '13px', color: '#dc2626', fontWeight: '600' }}>Delete all {ctSessions.length}?</span>
+                          <button onClick={handleDeleteAllCourses} style={{ ...deleteBtn, padding: '6px 12px', fontSize: '13px' }}>Yes</button>
+                          <button onClick={() => setConfirmDeleteAll(null)} style={{ ...secondaryBtn, padding: '6px 12px', fontSize: '13px' }}>Cancel</button>
+                        </div>
+                      ) : (
+                        <button onClick={() => setConfirmDeleteAll(ct)} style={{ ...deleteBtn, padding: '6px 12px', fontSize: '13px' }}>Delete All</button>
+                      )}
                     </div>
-                    <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                      <button onClick={() => handleCourseToggleOpen(session)}
-                        style={{ ...secondaryBtn, padding: '8px 14px', fontSize: '13px' }}>
-                        {session.isOpen ? 'Close' : 'Open'}
-                      </button>
-                      <button onClick={() => handleCourseEdit(session)} style={editBtn}>Edit</button>
-                      <button onClick={() => handleCourseDelete(session.id)} style={deleteBtn}>Delete</button>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {ctSessions.map(session => {
+                        const sessionRegs = registrations.filter(r => (r.row[6] || '').split(',').includes(session.id))
+                        return (
+                          <div key={session.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', overflow: 'hidden' }}>
+                            <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                              <div style={{ flex: 1 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
+                                  <span style={{ fontSize: '13px', fontWeight: '700', color: '#374151' }}>Day {session.dayNumber}</span>
+                                  <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '600',
+                                    backgroundColor: session.isOpen ? '#dcfce7' : '#f3f4f6',
+                                    color: session.isOpen ? '#16a34a' : '#6b7280' }}>
+                                    {session.isOpen ? 'Open' : 'Closed'}
+                                  </span>
+                                  <span style={{ fontSize: '13px', color: session.enrolled >= session.spots ? '#dc2626' : '#6b7280' }}>
+                                    {session.enrolled || 0}/{session.spots} enrolled
+                                  </span>
+                                </div>
+                                <p style={{ fontSize: '14px', fontWeight: '600', color: '#111827', margin: 0 }}>
+                                  {session.date}{session.startTime ? ` · ${session.startTime}${session.endTime ? `–${session.endTime}` : ''}` : ''}
+                                </p>
+                              </div>
+                              <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                                <button onClick={() => handleCourseToggleOpen(session)} style={{ ...secondaryBtn, padding: '7px 12px', fontSize: '13px' }}>
+                                  {session.isOpen ? 'Close' : 'Open'}
+                                </button>
+                                <button onClick={() => handleCourseEdit(session)} style={editBtn}>Edit</button>
+                                <button onClick={() => handleArchiveCourse(session.id)} style={{ ...secondaryBtn, padding: '7px 12px', fontSize: '13px' }}>Archive</button>
+                                <button onClick={() => handleCourseDelete(session.id)} style={deleteBtn}>Delete</button>
+                              </div>
+                            </div>
+                            {sessionRegs.length > 0 && (
+                              <div style={{ borderTop: '1px solid #e5e7eb', backgroundColor: '#fff', padding: '12px 20px' }}>
+                                <p style={{ fontSize: '12px', fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>
+                                  Registered ({sessionRegs.length})
+                                </p>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                  {sessionRegs.map(({ row }, i) => (
+                                    <div key={i} style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#374151' }}>
+                                      <span style={{ fontWeight: '600', minWidth: '140px' }}>{row[2]}</span>
+                                      <span style={{ color: '#6b7280' }}>{row[4]}</span>
+                                      <span style={{ color: '#6b7280' }}>@{row[5]}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
-                ))}
+                )
+              })}
             </div>
 
           </>
@@ -910,6 +937,7 @@ export default function Admin() {
                       {session.isOpen ? 'Close' : 'Open'}
                     </button>
                     <button onClick={() => handleShieldsEdit(session)} style={editBtn}>Edit</button>
+                    <button onClick={() => handleArchiveShields(session.id)} style={{ ...secondaryBtn, padding: '7px 12px', fontSize: '13px' }}>Archive</button>
                     <button onClick={() => handleShieldsDelete(session.id)} style={deleteBtn}>Delete</button>
                   </div>
                 </div>
@@ -918,131 +946,86 @@ export default function Admin() {
           </>
         )}
 
-        {/* ── Registrations tab ── */}
-        {activeTab === 'registrations' && (
+        {/* ── Archived tab ── */}
+        {activeTab === 'archived' && (
           <>
-            {/* ── Waitlist ── */}
-            <div style={{ marginBottom: '48px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Waitlist ({waitlist.length})</h2>
-                <button onClick={fetchWaitlist} disabled={waitlistLoading} style={secondaryBtn}>
-                  {waitlistLoading ? 'Loading...' : 'Refresh'}
-                </button>
-              </div>
-              {waitlist.length === 0 ? (
-                <p style={{ color: '#6b7280' }}>No waitlist entries yet.</p>
-              ) : (
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-                    <thead>
-                      <tr style={{ backgroundColor: '#f3f4f6' }}>
-                        {['Course', 'Name', 'Email', 'Discord', 'Joined', ''].map(h => (
-                          <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb' }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[...waitlist]
-                        .sort((a, b) => a.courseType.localeCompare(b.courseType) || new Date(a.timestamp) - new Date(b.timestamp))
-                        .map(entry => (
-                          <tr key={entry.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                            <td style={{ padding: '10px 14px' }}>
-                              <span style={{ fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '999px', backgroundColor: '#1e3a5f', color: '#fff' }}>
-                                {entry.courseType}
-                              </span>
-                            </td>
-                            <td style={{ padding: '10px 14px', color: '#374151', fontWeight: '600' }}>{entry.name}</td>
-                            <td style={{ padding: '10px 14px', color: '#374151' }}>{entry.email}</td>
-                            <td style={{ padding: '10px 14px', color: '#374151' }}>{entry.discord}</td>
-                            <td style={{ padding: '10px 14px', color: '#9ca3af', fontSize: '13px' }}>
-                              {entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : '—'}
-                            </td>
-                            <td style={{ padding: '10px 14px' }}>
-                              <button onClick={() => removeFromWaitlist(entry.id, entry.name)} style={deleteBtn}>
-                                Remove
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Archived</h2>
+              <button onClick={fetchArchived} disabled={archivedLoading} style={secondaryBtn}>
+                {archivedLoading ? 'Loading...' : 'Refresh'}
+              </button>
             </div>
 
-            {/* ── Registrations roster ── */}
-            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '40px', marginTop: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-                <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Registrations</h2>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <select value={selectedCourseFilter} onChange={e => setSelectedCourseFilter(e.target.value)} style={{ ...inputStyle, fontSize: '14px' }}>
-                    <option value="">All course types</option>
-                    {COURSE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                  <button onClick={fetchRegistrations} disabled={registrationsLoading} style={secondaryBtn}>
-                    {registrationsLoading ? 'Loading...' : 'Load'}
-                  </button>
-                </div>
-              </div>
+            {/* Archived Sessions */}
+            <div style={{ marginBottom: '40px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a5f', marginBottom: '12px' }}>
+                Sessions ({archived.sessions.length})
+              </h3>
+              {archived.sessions.length === 0
+                ? <p style={{ color: '#6b7280', fontSize: '14px' }}>No archived sessions.</p>
+                : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {[...archived.sessions].sort((a, b) => a.courseType.localeCompare(b.courseType) || (a.dayNumber || 0) - (b.dayNumber || 0)).map(s => (
+                      <div key={s.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                        <div>
+                          <span style={{ fontSize: '12px', fontWeight: '700', backgroundColor: '#1e3a5f', color: '#fff', padding: '2px 8px', borderRadius: '999px', marginRight: '8px' }}>{s.courseType}</span>
+                          <span style={{ fontSize: '14px', fontWeight: '600', color: '#111827' }}>Day {s.dayNumber} · {s.date}</span>
+                          <span style={{ fontSize: '12px', color: '#9ca3af', marginLeft: '10px' }}>Archived {new Date(s.archivedAt).toLocaleDateString()}</span>
+                        </div>
+                        <button onClick={() => handleRestore('sessions', s.id)} style={{ ...secondaryBtn, padding: '6px 12px', fontSize: '13px' }}>Restore</button>
+                      </div>
+                    ))}
+                  </div>
+                )
+              }
+            </div>
 
-              {registrations.length === 0 && (
-                <p style={{ color: '#6b7280' }}>Click &quot;Load&quot; to fetch registrations from Google Sheets.</p>
-              )}
+            {/* Archived Events */}
+            <div style={{ marginBottom: '40px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a5f', marginBottom: '12px' }}>
+                Events ({archived.events.length})
+              </h3>
+              {archived.events.length === 0
+                ? <p style={{ color: '#6b7280', fontSize: '14px' }}>No archived events.</p>
+                : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {archived.events.map(e => (
+                      <div key={e.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                        <div>
+                          <span style={{ fontSize: '14px', fontWeight: '600', color: '#111827' }}>{e.title}</span>
+                          <span style={{ fontSize: '13px', color: '#6b7280', marginLeft: '10px' }}>{e.date}</span>
+                          <span style={{ fontSize: '12px', color: '#9ca3af', marginLeft: '10px' }}>Archived {new Date(e.archivedAt).toLocaleDateString()}</span>
+                        </div>
+                        <button onClick={() => handleRestore('events', e.id)} style={{ ...secondaryBtn, padding: '6px 12px', fontSize: '13px' }}>Restore</button>
+                      </div>
+                    ))}
+                  </div>
+                )
+              }
+            </div>
 
-              {registrations.length > 0 && (() => {
-                const filtered = selectedCourseFilter
-                  ? registrations.filter(r => r.row[1] === selectedCourseFilter)
-                  : registrations
-                return filtered.length === 0
-                  ? <p style={{ color: '#6b7280' }}>No registrations for this course type yet.</p>
-                  : (
-                    <div style={{ overflowX: 'auto' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-                        <thead>
-                          <tr style={{ backgroundColor: '#f3f4f6' }}>
-                            {['Course Type', 'Name', 'Sessions', 'Email', 'Discord', 'Receipt', 'Submitted', ''].map(h => (
-                              <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb' }}>{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filtered.map(({ row, sheetRowIndex }) => (
-                            <tr key={sheetRowIndex} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[1]}</td>
-                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[2]}</td>
-                              <td style={{ padding: '10px 14px', color: '#374151', fontSize: '13px' }}>{row[3] || '—'}</td>
-                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[4]}</td>
-                              <td style={{ padding: '10px 14px', color: '#374151' }}>{row[5]}</td>
-                              <td style={{ padding: '10px 14px' }}>
-                                {row[7] ? <a href={row[7]} target="_blank" rel="noreferrer" style={{ color: '#006E90' }}>View</a> : '—'}
-                              </td>
-                              <td style={{ padding: '10px 14px', color: '#9ca3af', fontSize: '13px' }}>
-                                {row[0] ? new Date(row[0]).toLocaleString() : '—'}
-                              </td>
-                              <td style={{ padding: '10px 14px' }}>
-                                <button
-                                  onClick={async () => {
-                                    if (!confirm(`Remove registration for ${row[3]}?`)) return
-                                    await fetch('/api/admin/registrations', {
-                                      method: 'DELETE',
-                                      headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                                      body: JSON.stringify({ sheetRowIndex, sessionIds: row[6]?.split(',').filter(Boolean) || [], studentName: row[2] }),
-                                    })
-                                    fetchRegistrations()
-                                    fetchCourses()
-                                  }}
-                                  style={deleteBtn}
-                                >
-                                  Delete
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )
-              })()}
+            {/* Archived Shields */}
+            <div>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a5f', marginBottom: '12px' }}>
+                Shields Sessions ({archived.shields.length})
+              </h3>
+              {archived.shields.length === 0
+                ? <p style={{ color: '#6b7280', fontSize: '14px' }}>No archived Shields sessions.</p>
+                : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {archived.shields.map(s => (
+                      <div key={s.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                        <div>
+                          <span style={{ fontSize: '14px', fontWeight: '600', color: '#111827' }}>{s.name}</span>
+                          <span style={{ fontSize: '13px', color: '#6b7280', marginLeft: '10px' }}>{s.day1Date} · {s.day2Date}</span>
+                          <span style={{ fontSize: '12px', color: '#9ca3af', marginLeft: '10px' }}>Archived {new Date(s.archivedAt).toLocaleDateString()}</span>
+                        </div>
+                        <button onClick={() => handleRestore('shields', s.id)} style={{ ...secondaryBtn, padding: '6px 12px', fontSize: '13px' }}>Restore</button>
+                      </div>
+                    ))}
+                  </div>
+                )
+              }
             </div>
           </>
         )}
