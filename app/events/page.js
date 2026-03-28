@@ -1,6 +1,6 @@
 import { Redis } from '@upstash/redis'
 import PageHero from '../components/PageHero'
-import { CALENDAR_EMBED_URL } from '@/app/lib/links'
+import { CALENDAR_EMBED_URL, CASHNET_URL } from '@/app/lib/links'
 
 export const dynamic = 'force-dynamic'
 
@@ -99,6 +99,38 @@ export default async function Events() {
             )
           })}
         
+        </div>
+
+        {/* Club Membership */}
+        <div style={{
+          backgroundColor: '#64100F',
+          color: '#ffffff',
+          borderRadius: '12px',
+          padding: '32px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '48px',
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}>
+          <div>
+            <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 8px' }}>Club Membership</h2>
+            <p style={{ fontSize: '15px', color: '#fca5a5', margin: '0 0 4px' }}>
+              Required to participate in any club activities.
+            </p>
+            <p style={{ fontSize: '14px', color: '#9ca3af', margin: 0 }}>
+              Pay via{' '}
+              <a href={CASHNET_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#ecaa00', fontWeight: '700', textDecoration: 'none' }}>
+                CashNet
+              </a>
+              {' '}— use item code <strong>LBCS-SAILASN</strong>.
+            </p>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ fontSize: '36px', fontWeight: '700', margin: 0 }}>$30</p>
+            <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>per semester</p>
+          </div>
         </div>
 
         {/* Google Calendar */}

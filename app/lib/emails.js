@@ -68,8 +68,7 @@ export async function sendRegistrationConfirmation({ to, name, course, sessionSu
                   <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 6px;">${course.courseType}</p>
                   <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 16px;">${course.name}</h2>
                   <p style="font-size:13px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 8px;">Sessions</p>
-                  <p style="font-size:15px;color:#374151;line-height:1.8;margin:0 0 16px;">${sessionLines}</p>
-                  <p style="font-size:15px;color:#111827;font-weight:700;margin:0;">$${course.price} per course</p>
+                  <p style="font-size:15px;color:#374151;line-height:1.8;margin:0;">${sessionLines}</p>
                 </td>
               </tr>
             </table>
@@ -79,7 +78,7 @@ export async function sendRegistrationConfirmation({ to, name, course, sessionSu
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
               ${[
                 ['💬', 'A coach will email you before your course with more details.'],
-                ['📅', 'Add the session dates to your calendar — courses start on time.'],
+                ['📅', 'Add the session dates to your calendar, please arrive on time.'],
                 ['⛵', 'Join the discord and follow the instagram.'],
               ].map(([icon, text]) => `
               <tr>

@@ -144,30 +144,6 @@ export default function StudentProgram() {
           ))}
         </div>
 
-        {/* Membership fee banner */}
-        <div style={{
-          backgroundColor: '#64100F',
-          color: '#ffffff',
-          borderRadius: '12px',
-          padding: '32px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '48px',
-          flexWrap: 'wrap',
-          gap: '16px',
-        }}>
-          <div>
-            <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 8px' }}>Club Membership</h2>
-            <p style={{ fontSize: '15px', color: '#9ca3af', margin: 0 }}>
-              Required to participate in any club activities.
-            </p>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <p style={{ fontSize: '36px', fontWeight: '700', margin: 0 }}>$30</p>
-            <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>per semester</p>
-          </div>
-        </div>
 
         {/* CTA */}
         {/* <div style={{

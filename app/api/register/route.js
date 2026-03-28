@@ -107,7 +107,7 @@ export const POST = async (req) => {
   // Send confirmation email
   let emailError = null
   try {
-    await sendRegistrationConfirmation({ to: email, name, course: { name: courseType }, sessionSummary })
+    await sendRegistrationConfirmation({ to: email, name, course: { name: courseType, courseType: 'Student Program' }, sessionSummary })
   } catch (err) {
     console.error('Confirmation email failed:', err)
     emailError = err.message

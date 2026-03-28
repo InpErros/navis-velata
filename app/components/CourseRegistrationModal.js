@@ -131,7 +131,7 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
               </div>
             )}
             <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '32px' }}>
-              An officer will follow up with you on Discord to confirm your spot.
+              You will receive a confirmation email to confirm your registration. If you have any questions reach out to an officer on our discord.
             </p>
             <button onClick={onClose} style={primaryBtn}>Close</button>
           </div>
