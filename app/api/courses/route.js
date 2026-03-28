@@ -1,7 +1,6 @@
 import { Redis } from '@upstash/redis'
 import { NextResponse } from 'next/server'
 import { validateAdmin, logAction } from '@/app/lib/adminAuth'
-import { sendWaitlistNotification } from '@/app/lib/emails'
 
 const redis = Redis.fromEnv()
 
@@ -24,12 +23,5 @@ export const POST = async (req) => {
   }
   await redis.set('sessions', [...sessions, newSession])
   await logAction(admin.username, 'added session', `${session.courseType} Day ${session.dayNumber} – ${session.date}`)
-  if (newSession.isOpen) {
-    const waitlist = await redis.get('waitlist') || []
-    const targets = waitlist.filter(e => e.courseType === newSession.courseType)
-    await Promise.allSettled(targets.map(e =>
-      sendWaitlistNotification({ to: e.email, name: e.name, courseType: e.courseType })
-    ))
-  }
   return NextResponse.json(newSession)
 }

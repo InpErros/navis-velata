@@ -206,8 +206,7 @@ export default function Admin() {
     if (tab === 'events') fetchEvents()
     if (tab === 'courses') { fetchCourses(); fetchRegistrations() }
     if (tab === 'shields') fetchShields()
-    if (tab === 'registrations') fetchRegistrations()
-    if (tab === 'waitlist') fetchWaitlist()
+    if (tab === 'registrations') { fetchRegistrations(); fetchWaitlist() }
     if (tab === 'archived') fetchArchived()
     if (tab === 'audit') fetchAuditLog()
     if (tab === 'superadmin') fetchUsers()
@@ -527,7 +526,6 @@ export default function Admin() {
     { id: 'courses', label: 'Sessions' },
     { id: 'shields', label: 'Shields' },
     { id: 'registrations', label: 'Registrations' },
-    { id: 'waitlist', label: 'Waitlist' },
     { id: 'archived', label: 'Archived' },
     { id: 'audit', label: 'Audit Log' },
     ...(isSuperAdmin ? [{ id: 'superadmin', label: 'Super Admin' }] : []),
@@ -975,98 +973,105 @@ export default function Admin() {
           </>
         )}
 
-        {/* ── Registrations tab ── */}
+        {/* ── Registrations & Waitlist tab ── */}
         {activeTab === 'registrations' && (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Registrations ({registrations.length})</h2>
-              <button onClick={fetchRegistrations} disabled={registrationsLoading} style={secondaryBtn}>
-                {registrationsLoading ? 'Loading...' : 'Refresh'}
+              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Registrations &amp; Waitlist</h2>
+              <button onClick={() => { fetchRegistrations(); fetchWaitlist() }} disabled={registrationsLoading || waitlistLoading} style={secondaryBtn}>
+                {registrationsLoading || waitlistLoading ? 'Loading...' : 'Refresh'}
               </button>
             </div>
-            {registrationsLoading
-              ? <p style={{ color: '#6b7280' }}>Loading...</p>
-              : registrations.length === 0
-                ? <p style={{ color: '#6b7280' }}>No registrations yet.</p>
-                : COURSE_TYPES.map(ct => {
-                    const ctRegs = registrations.filter(r => r.row[1] === ct)
-                    if (ctRegs.length === 0) return null
-                    return (
-                      <div key={ct} style={{ marginBottom: '40px' }}>
-                        <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a5f', marginBottom: '12px' }}>
-                          {ct} <span style={{ fontSize: '13px', fontWeight: '400', color: '#6b7280' }}>({ctRegs.length})</span>
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          {ctRegs.map(({ row, sheetRowIndex }, i) => (
-                            <div key={i} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
-                              <div style={{ flex: 1 }}>
-                                <p style={{ fontWeight: '700', fontSize: '15px', margin: '0 0 2px', color: '#111827' }}>{row[2]}</p>
-                                <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 2px' }}>{row[4]} · @{row[5]}</p>
-                                <p style={{ fontSize: '12px', color: '#9ca3af', margin: 0 }}>{row[3]}</p>
-                              </div>
-                              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
-                                {row[7] && (
-                                  <a href={row[7]} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#006E90', textDecoration: 'none', fontWeight: '600' }}>Receipt</a>
-                                )}
-                                <button
-                                  onClick={async () => {
-                                    if (!confirm(`Delete registration for ${row[2]}?`)) return
-                                    await fetch('/api/admin/registrations', {
-                                      method: 'DELETE',
-                                      headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                                      body: JSON.stringify({ sheetRowIndex, sessionIds: (row[6] || '').split(',').filter(Boolean), studentName: row[2] }),
-                                    })
-                                    fetchRegistrations()
-                                  }}
-                                  style={deleteBtn}
-                                >Delete</button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )
-                  })
-            }
-          </>
-        )}
+            {COURSE_TYPES.map(ct => {
+              const ctRegs = registrations.filter(r => r.row[1] === ct)
+              const ctWaitlist = waitlist.filter(e => e.courseType === ct)
+              if (ctRegs.length === 0 && ctWaitlist.length === 0) return null
+              return (
+                <div key={ct} style={{ marginBottom: '48px' }}>
+                  <h3 style={{ fontSize: '17px', fontWeight: '700', color: '#1e3a5f', margin: '0 0 20px', borderBottom: '2px solid #e5e7eb', paddingBottom: '10px' }}>{ct}</h3>
 
-        {/* ── Waitlist tab ── */}
-        {activeTab === 'waitlist' && (
-          <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Waitlist ({waitlist.length})</h2>
-              <button onClick={fetchWaitlist} disabled={waitlistLoading} style={secondaryBtn}>
-                {waitlistLoading ? 'Loading...' : 'Refresh'}
-              </button>
-            </div>
-            {waitlistLoading
-              ? <p style={{ color: '#6b7280' }}>Loading...</p>
-              : waitlist.length === 0
-                ? <p style={{ color: '#6b7280' }}>Waitlist is empty.</p>
-                : COURSE_TYPES.map(ct => {
-                    const ctEntries = waitlist.filter(e => e.courseType === ct)
-                    if (ctEntries.length === 0) return null
-                    return (
-                      <div key={ct} style={{ marginBottom: '40px' }}>
-                        <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a5f', marginBottom: '12px' }}>
-                          {ct} <span style={{ fontSize: '13px', fontWeight: '400', color: '#6b7280' }}>({ctEntries.length})</span>
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          {ctEntries.map(entry => (
-                            <div key={entry.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
-                              <div>
-                                <p style={{ fontWeight: '700', fontSize: '15px', margin: '0 0 2px', color: '#111827' }}>{entry.name}</p>
-                                <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>{entry.email} · @{entry.discord}</p>
-                              </div>
-                              <button onClick={() => removeFromWaitlist(entry.id, entry.name)} style={deleteBtn}>Remove</button>
+                  {/* Registrations */}
+                  <p style={{ fontSize: '13px', fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>
+                    Registrations ({ctRegs.length})
+                  </p>
+                  {ctRegs.length === 0
+                    ? <p style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '20px' }}>No registrations yet.</p>
+                    : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+                        {ctRegs.map(({ row, sheetRowIndex }, i) => (
+                          <div key={i} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ flex: 1 }}>
+                              <p style={{ fontWeight: '700', fontSize: '15px', margin: '0 0 2px', color: '#111827' }}>{row[2]}</p>
+                              <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 2px' }}>{row[4]} · @{row[5]}</p>
+                              <p style={{ fontSize: '12px', color: '#9ca3af', margin: 0 }}>{row[3]}</p>
                             </div>
-                          ))}
-                        </div>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+                              {row[7] && (
+                                <a href={row[7]} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#006E90', textDecoration: 'none', fontWeight: '600' }}>Receipt</a>
+                              )}
+                              <button
+                                onClick={async () => {
+                                  if (!confirm(`Delete registration for ${row[2]}?`)) return
+                                  await fetch('/api/admin/registrations', {
+                                    method: 'DELETE',
+                                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                                    body: JSON.stringify({ sheetRowIndex, sessionIds: (row[6] || '').split(',').filter(Boolean), studentName: row[2] }),
+                                  })
+                                  fetchRegistrations()
+                                }}
+                                style={deleteBtn}
+                              >Delete</button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )
-                  })
-            }
+                  }
+
+                  {/* Waitlist */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <p style={{ fontSize: '13px', fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
+                      Waitlist ({ctWaitlist.length})
+                    </p>
+                    {ctWaitlist.length > 0 && (
+                      <button
+                        onClick={async () => {
+                          const res = await fetch('/api/admin/waitlist/notify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                            body: JSON.stringify({ courseType: ct }),
+                          })
+                          const data = await res.json()
+                          alert(`Sent ${data.sent} of ${data.total} notifications for ${ct}.`)
+                        }}
+                        style={{ ...secondaryBtn, padding: '6px 14px', fontSize: '13px' }}
+                      >
+                        Notify Waitlist
+                      </button>
+                    )}
+                  </div>
+                  {ctWaitlist.length === 0
+                    ? <p style={{ fontSize: '14px', color: '#9ca3af' }}>No one on the waitlist.</p>
+                    : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {ctWaitlist.map(entry => (
+                          <div key={entry.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                            <div>
+                              <p style={{ fontWeight: '700', fontSize: '15px', margin: '0 0 2px', color: '#111827' }}>{entry.name}</p>
+                              <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>{entry.email} · @{entry.discord}</p>
+                            </div>
+                            <button onClick={() => removeFromWaitlist(entry.id, entry.name)} style={deleteBtn}>Remove</button>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  }
+                </div>
+              )
+            })}
+            {registrations.length === 0 && waitlist.length === 0 && !registrationsLoading && !waitlistLoading && (
+              <p style={{ color: '#6b7280' }}>No registrations or waitlist entries yet.</p>
+            )}
           </>
         )}
 
