@@ -54,7 +54,7 @@ export default function PublicProgram() {
         color: '#111827',
       }}>
 
-        <PageHero title="Community Program" imageSrc='shields2.avif'/>
+        <PageHero title="Community Program" imageSrc='/shields2.avif'/>
 
         <div className="page-content">
 
