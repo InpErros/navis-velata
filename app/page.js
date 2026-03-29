@@ -63,7 +63,7 @@ export default function Home() {
       </div>
 
       {/* Photo collage divider */}
-      <div style={{ display: 'flex', height: '420px', gap: '4px', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', height: '580px', gap: '4px', overflow: 'hidden' }}>
         {collagePhotos.map((photo, i) => (
           <div key={i} style={{ flex: 1, position: 'relative', overflow: 'hidden', backgroundColor: '#1e3a5f' }}>
             {photo.src ? (
