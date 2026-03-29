@@ -474,7 +474,7 @@ export default function Admin() {
 
           {/* Logo + title */}
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <img src="/logo-borderless.png" alt="CSULB Sailing" style={{ width: '56px', height: '56px', objectFit: 'contain', marginBottom: '16px' }} />
+            <img src="/logo-borderless.svg" alt="CSULB Sailing" style={{ width: '56px', height: '56px', objectFit: 'contain', marginBottom: '16px' }} />
             <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>CSULB Sailing Association</h1>
             <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>Admin Portal</p>
           </div>

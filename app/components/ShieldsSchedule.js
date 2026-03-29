@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import ShieldsRegistrationModal from './ShieldsRegistrationModal'
 
-export default function ShieldsSchedule() {
+export default function ShieldsSchedule({ courseType }) {
   const [sessions, setSessions] = useState([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
@@ -15,9 +15,13 @@ export default function ShieldsSchedule() {
   useEffect(() => {
     fetch('/api/shields')
       .then(r => r.json())
-      .then(data => { setSessions(data); setLoading(false) })
+      .then(data => {
+        const filtered = courseType ? data.filter(s => s.courseType === courseType) : data
+        setSessions(filtered)
+        setLoading(false)
+      })
       .catch(() => setLoading(false))
-  }, [])
+  }, [courseType])
 
   const handleWaitlistSubmit = async (e) => {
     e.preventDefault()
@@ -27,7 +31,7 @@ export default function ShieldsSchedule() {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ courseType: 'Shields', ...waitlistForm }),
+        body: JSON.stringify({ courseType: courseType || 'Shields', ...waitlistForm }),
       })
       const data = await res.json()
       if (!res.ok) {

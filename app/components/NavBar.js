@@ -28,7 +28,7 @@ export default function NavBar() {
   return (
     <nav className="navbar">
       <Link href="/" className="nav-logo" onClick={close}>
-        <Image src="/logo-borderless.png" alt="CSULB Sailing Association" width={48} height={48} style={{ objectFit: 'contain' }} />
+        <Image src="/logo-borderless.svg" alt="CSULB Sailing Association" width={48} height={48} style={{ objectFit: 'contain' }} />
         <span style={{
           fontFamily: "'Farro', sans-serif",
           fontWeight: '700',

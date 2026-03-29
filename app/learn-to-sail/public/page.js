@@ -5,16 +5,40 @@ import ShieldsSchedule from '../../components/ShieldsSchedule';
 // ─── Update community program course info here ────────────────────────────────
 const courses = [
   {
-    title: 'Level 1 Keelboat',
-    price: '$TBD',
-    tagline: 'Introduction to Keelboat Sailing working title',
+    title: 'Keelboat 1',
+    price: 'TBD',
+    tagline: 'Introduction to Keelboat Sailing',
     perks: [
-      'BUllet 1',
-      'Bullet 2',
-      'BUllet 3',
+      'Learn the parts of the boat',
+      'Learn to rig and derig',
+      'Basic sailing maneuvers',
     ],
-    note: 'This is a note',
+    note: '',
     color: { bg: '#f0fdf4', border: '#bbf7d0', tag: '#16a34a' },
+  },
+  {
+    title: 'Keelboat 2',
+    price: 'TBD',
+    tagline: 'Building on the Basics',
+    perks: [
+      'Expand on Keelboat 1 skills',
+      'Upwind and downwind sailing',
+      'Right of way rules',
+    ],
+    note: '',
+    color: { bg: '#f0f9ff', border: '#bae6fd', tag: '#0ea5e9' },
+  },
+  {
+    title: 'Keelboat 3',
+    price: 'TBD',
+    tagline: 'Advanced Keelboat Sailing',
+    perks: [
+      'Advanced sail trim',
+      'Crew coordination',
+      'On-the-water assessment',
+    ],
+    note: '',
+    color: { bg: '#fdf4ff', border: '#e9d5ff', tag: '#9333ea' },
   },
 ];
 
@@ -80,57 +104,57 @@ export default function PublicProgram() {
           </div>
         </div> */}
 
-        {/* Courses */}
+        {/* Courses + inline session schedules */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '64px' }}>
           {courses.map((course, index) => (
-            <div key={index} style={{
-              backgroundColor: course.color.bg,
-              border: `1px solid ${course.color.border}`,
-              borderRadius: '12px',
-              padding: '32px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              gap: '24px',
-              flexWrap: 'wrap',
-            }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                  <span style={{
-                    backgroundColor: course.color.tag,
-                    color: '#ffffff',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    padding: '4px 10px',
-                    borderRadius: '999px',
-                  }}>
-                    {course.title}
-                  </span>
+            <div key={index}>
+              <div style={{
+                backgroundColor: course.color.bg,
+                border: `1px solid ${course.color.border}`,
+                borderRadius: '12px',
+                padding: '32px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                gap: '24px',
+                flexWrap: 'wrap',
+              }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                    <span style={{
+                      backgroundColor: course.color.tag,
+                      color: '#ffffff',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      padding: '4px 10px',
+                      borderRadius: '999px',
+                    }}>
+                      {course.title}
+                    </span>
+                  </div>
+                  <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 12px', color: '#111827' }}>
+                    {course.tagline}
+                  </h2>
+                  <ul style={{ margin: '0 0 16px', paddingLeft: '20px' }}>
+                    {course.perks.map((perk, i) => (
+                      <li key={i} style={{ fontSize: '15px', color: '#374151', lineHeight: '1.8' }}>{perk}</li>
+                    ))}
+                  </ul>
+                  {course.note && (
+                    <p style={{ fontSize: '14px', color: '#6b7280', margin: 0, fontStyle: 'italic' }}>{course.note}</p>
+                  )}
                 </div>
-                <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 12px', color: '#111827' }}>
-                  {course.tagline}
-                </h2>
-                <ul style={{ margin: '0 0 16px', paddingLeft: '20px' }}>
-                  {course.perks.map((perk, i) => (
-                    <li key={i} style={{ fontSize: '15px', color: '#374151', lineHeight: '1.8' }}>{perk}</li>
-                  ))}
-                </ul>
-                <p style={{ fontSize: '14px', color: '#6b7280', margin: 0, fontStyle: 'italic' }}>
-                  {course.note}
-                </p>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <p style={{ fontSize: '36px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>
+                    {course.price}
+                  </p>
+                  <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>per course</p>
+                </div>
               </div>
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                <p style={{ fontSize: '36px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>
-                  {course.price}
-                </p>
-                <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>per course</p>
-              </div>
+              <ShieldsSchedule courseType={course.title} />
             </div>
           ))}
         </div>
-
-        {/* Dynamic course schedule + registration */}
-        <ShieldsSchedule />
 
         {/* CTA */}
         <div style={{

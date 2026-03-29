@@ -41,7 +41,7 @@ export default function RootLayout({ children }) {
           position: 'relative',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Image src="/logo-borderless.png" alt="CSULB Sailing Association" width={36} height={36} style={{ objectFit: 'contain' }} />
+            <Image src="/logo-borderless.svg" alt="CSULB Sailing Association" width={36} height={36} style={{ objectFit: 'contain' }} />
             <span style={{
               fontFamily: "'Farro', sans-serif",
               fontWeight: '700',
