@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 
 const EVENT_TYPES = ['Learn to Sail', 'Casual Sail', 'BBQ', 'Maintenance', 'Themed Event', 'Social']
 const COURSE_TYPES = ['Sailing A', 'Sailing B', 'Sailing C']
+const SHIELDS_COURSE_TYPES = ['Keelboat 1', 'Keelboat 2', 'Keelboat 3']
 const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3 }
 
 const emptyForm = {
@@ -17,6 +18,7 @@ const emptyForm = {
 }
 
 const emptyShieldsForm = {
+  courseType: 'Keelboat 1',
   name: '',
   day1Date: '',
   day1StartTime: '',
@@ -846,7 +848,14 @@ export default function Admin() {
               {shieldsError && <p style={{ color: '#dc2626', marginBottom: '16px', fontSize: '14px' }}>{shieldsError}</p>}
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', gridColumn: '1 / -1' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Course Type</label>
+                  <select value={shieldsForm.courseType} onChange={e => setShieldsForm({ ...shieldsForm, courseType: e.target.value })} style={inputStyle}>
+                    {SHIELDS_COURSE_TYPES.map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <label style={fieldLabel}>Session Name</label>
                   <input type="text" required placeholder="e.g. Spring Session 1" value={shieldsForm.name}
                     onChange={e => setShieldsForm({ ...shieldsForm, name: e.target.value })} style={inputStyle} />
@@ -936,39 +945,51 @@ export default function Admin() {
               )}
             </div>
             {shieldsSessions.length === 0 && <p style={{ color: '#6b7280' }}>No sessions yet. Add one above.</p>}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {shieldsSessions.map(session => (
-                <div key={session.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
-                      <p style={{ fontWeight: '700', fontSize: '16px', margin: 0 }}>{session.name}</p>
-                      <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '600',
-                        backgroundColor: session.isOpen ? '#dcfce7' : '#f3f4f6',
-                        color: session.isOpen ? '#16a34a' : '#6b7280' }}>
-                        {session.isOpen ? 'Open' : 'Closed'}
-                      </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              {SHIELDS_COURSE_TYPES.map(ct => {
+                const ctSessions = shieldsSessions.filter(s => s.courseType === ct)
+                if (ctSessions.length === 0) return null
+                return (
+                  <div key={ct}>
+                    <h3 style={{ fontSize: '17px', fontWeight: '700', margin: '0 0 12px', color: '#1e3a5f' }}>
+                      {ct} <span style={{ fontSize: '13px', fontWeight: '400', color: '#6b7280' }}>({ctSessions.length} session{ctSessions.length !== 1 ? 's' : ''})</span>
+                    </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {ctSessions.map(session => (
+                          <div key={session.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                                <p style={{ fontWeight: '700', fontSize: '16px', margin: 0 }}>{session.name}</p>
+                                <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '600',
+                                  backgroundColor: session.isOpen ? '#dcfce7' : '#f3f4f6',
+                                  color: session.isOpen ? '#16a34a' : '#6b7280' }}>
+                                  {session.isOpen ? 'Open' : 'Closed'}
+                                </span>
+                              </div>
+                              <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 2px' }}>
+                                Day 1: {session.day1Date}{session.day1StartTime ? ` · ${session.day1StartTime}${session.day1EndTime ? `–${session.day1EndTime}` : ''}` : ''}
+                              </p>
+                              <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 4px' }}>
+                                Day 2: {session.day2Date}{session.day2StartTime ? ` · ${session.day2StartTime}${session.day2EndTime ? `–${session.day2EndTime}` : ''}` : ''}
+                              </p>
+                              <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>
+                                {session.enrolled || 0}/{session.spots} enrolled
+                              </p>
+                            </div>
+                            <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                              <button onClick={() => handleShieldsToggleOpen(session)} style={{ ...secondaryBtn, padding: '8px 14px', fontSize: '13px' }}>
+                                {session.isOpen ? 'Close' : 'Open'}
+                              </button>
+                              <button onClick={() => handleShieldsEdit(session)} style={editBtn}>Edit</button>
+                              <button onClick={() => handleArchiveShields(session.id)} style={{ ...secondaryBtn, padding: '7px 12px', fontSize: '13px' }}>Archive</button>
+                              <button onClick={() => handleShieldsDelete(session.id)} style={deleteBtn}>Delete</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 2px' }}>
-                      Day 1: {session.day1Date}{session.day1StartTime ? ` · ${session.day1StartTime}${session.day1EndTime ? `–${session.day1EndTime}` : ''}` : ''}
-                    </p>
-                    <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 4px' }}>
-                      Day 2: {session.day2Date}{session.day2StartTime ? ` · ${session.day2StartTime}${session.day2EndTime ? `–${session.day2EndTime}` : ''}` : ''}
-                    </p>
-                    <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>
-                      {session.enrolled || 0}/{session.spots} enrolled
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                    <button onClick={() => handleShieldsToggleOpen(session)}
-                      style={{ ...secondaryBtn, padding: '8px 14px', fontSize: '13px' }}>
-                      {session.isOpen ? 'Close' : 'Open'}
-                    </button>
-                    <button onClick={() => handleShieldsEdit(session)} style={editBtn}>Edit</button>
-                    <button onClick={() => handleArchiveShields(session.id)} style={{ ...secondaryBtn, padding: '7px 12px', fontSize: '13px' }}>Archive</button>
-                    <button onClick={() => handleShieldsDelete(session.id)} style={deleteBtn}>Delete</button>
-                  </div>
-                </div>
-              ))}
+                  )
+                })}
             </div>
           </>
         )}
