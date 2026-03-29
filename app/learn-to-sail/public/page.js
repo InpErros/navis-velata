@@ -54,7 +54,7 @@ export default function PublicProgram() {
         color: '#111827',
       }}>
 
-        <PageHero title="Community Program" />
+        <PageHero title="Community Program" imageSrc='shield2.avif'/>
 
         <div className="page-content">
 
@@ -158,32 +158,8 @@ export default function PublicProgram() {
           ))}
         </div>
 
-        {/* CTA */}
-        <div style={{
-          backgroundColor: '#f9fafb',
-          borderRadius: '12px',
-          padding: '48px 24px',
-          textAlign: 'center',
-        }}>
-          <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '12px' }}>Interested in joining?</h2>
-          <p style={{ fontSize: '17px', color: '#6b7280', marginBottom: '32px', lineHeight: '1.8' }}>
-            Check our course schedule and register today!
-          </p>
-          <Link href="/contact" style={{
-            backgroundColor: '#16a34a',
-            color: '#ffffff',
-            padding: '14px 32px',
-            borderRadius: '6px',
-            textDecoration: 'none',
-            fontSize: '16px',
-            fontWeight: '600',
-            display: 'inline-block',
-          }}>
-            Contact Us
-          </Link>
-        </div>
 
-        </div>{/* end padding */}
+</div>{/* end padding */}
       </div>{/* end page-card */}
     </div>
   );
