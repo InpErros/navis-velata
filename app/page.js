@@ -28,7 +28,7 @@ export default function Home() {
           src="/hero-main.jpg"
           alt="CSULB Sailing Association"
           fill
-          style={{ objectFit: 'cover', zIndex: -1 }}
+          style={{ objectFit: 'cover', objectPosition: 'center bottom', zIndex: -1 }}
           priority
         />
         <div style={{
@@ -63,7 +63,7 @@ export default function Home() {
       </div>
 
       {/* Photo collage divider */}
-      <div style={{ display: 'flex', height: '280px', gap: '4px', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', height: '420px', gap: '4px', overflow: 'hidden' }}>
         {collagePhotos.map((photo, i) => (
           <div key={i} style={{ flex: 1, position: 'relative', overflow: 'hidden', backgroundColor: '#1e3a5f' }}>
             {photo.src ? (

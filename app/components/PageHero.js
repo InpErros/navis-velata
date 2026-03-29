@@ -7,7 +7,7 @@ export default function PageHero({ title, imageSrc, imageAlt = '' }) {
   return (
     <div style={{
       position: 'relative',
-      height: '220px',
+      height: '320px',
       backgroundColor: '#1e3a5f',
       display: 'flex',
       alignItems: 'flex-end',

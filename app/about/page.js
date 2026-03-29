@@ -48,7 +48,7 @@ const boats = [
     count: 3,
     description:
       'Our Hobie Catamarans are twin-hulled boats known for their speed and stability. These boats come with us on our yearly trip to Mission Bay.',
-    photos: ['hobie1.avif', 'hobie2.avif'],
+    photos: ['hobie1.jpg', 'hobie2.jpg'],
   },
   {
     name: 'Shields',
