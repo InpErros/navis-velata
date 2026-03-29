@@ -1,6 +1,7 @@
 import { Redis } from '@upstash/redis'
 import { NextResponse } from 'next/server'
 import { validateAdmin, logAction } from '@/app/lib/adminAuth'
+import { getSheetRows } from '@/app/lib/googleApi'
 
 const redis = Redis.fromEnv()
 
@@ -26,9 +27,36 @@ export const PATCH = async (req, { params }) => {
   const target = sessions.find(s => s.id === id)
   if (!target) return NextResponse.json({ error: 'Not found.' }, { status: 404 })
 
+  const archivedAt = new Date().toISOString()
+
+  // Archive the session
   const archived = await redis.get('sessions_archived') || []
   await redis.set('sessions', sessions.filter(s => s.id !== id))
-  await redis.set('sessions_archived', [...archived, { ...target, archivedAt: new Date().toISOString() }])
+  await redis.set('sessions_archived', [...archived, { ...target, archivedAt }])
+
+  // Archive registrations that include this session
+  const spreadsheetId = process.env.GOOGLE_SHEETS_ID
+  if (spreadsheetId) {
+    try {
+      const allRows = await getSheetRows(spreadsheetId)
+      const matching = allRows.filter(({ row }) =>
+        (row[6] || '').split(',').includes(id)
+      )
+      if (matching.length > 0) {
+        const regArchived = await redis.get('registrations_archived') || []
+        const newEntries = matching.map(({ row, sheetRowIndex }) => ({
+          id: `${sheetRowIndex}_${Date.now()}`,
+          row,
+          courseType: row[1],
+          archivedAt,
+        }))
+        await redis.set('registrations_archived', [...regArchived, ...newEntries])
+      }
+    } catch (err) {
+      console.error('Failed to archive registrations:', err)
+    }
+  }
+
   await logAction(admin.username, 'archived session', `${target.courseType} Day ${target.dayNumber} – ${target.date}`)
   return NextResponse.json({ success: true })
 }

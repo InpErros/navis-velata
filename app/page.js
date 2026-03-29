@@ -6,9 +6,9 @@ import { CASHNET_URL } from '@/app/lib/links'
 // Drop images into /public and update the src values below.
 // Leave src as null to keep the placeholder.
 const collagePhotos = [
-  { src: null, alt: 'Sailing on the water' },
-  { src: null, alt: 'Club members at the dock' },
-  { src: null, alt: 'Racing on the bay' },
+  { src: 'collage1.avif', alt: 'Students learning the shields' },
+  { src: 'collage2.avif', alt: 'Club members at the dock' },
+  { src: 'collage3.avif', alt: 'Racing on the bay' },
 ]
 
 export default function Home() {
@@ -25,7 +25,7 @@ export default function Home() {
         textAlign: 'center',
       }}>
         <Image
-          src="/hero.jpg"
+          src="/hero-main.jpg"
           alt="CSULB Sailing Association"
           fill
           style={{ objectFit: 'cover', zIndex: -1 }}

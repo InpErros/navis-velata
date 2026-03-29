@@ -9,15 +9,19 @@ export const GET = async (req) => {
   const admin = await validateAdmin(req)
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const [sessions, shields, events] = await Promise.all([
+  const [sessions, shields, events, registrations, waitlist] = await Promise.all([
     redis.get('sessions_archived'),
     redis.get('shields_archived'),
     redis.get('events_archived'),
+    redis.get('registrations_archived'),
+    redis.get('waitlist_archived'),
   ])
   return NextResponse.json({
     sessions: sessions || [],
     shields: shields || [],
     events: events || [],
+    registrations: registrations || [],
+    waitlist: waitlist || [],
   })
 }
 

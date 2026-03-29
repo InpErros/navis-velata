@@ -20,11 +20,11 @@ const boardMembers = [
 const coaches = [
   { role: '', name: 'Kyle Henneberque', photo: '/kyle-h.jpg', focalPoint: 'center' },
   { role: '', name: 'Mike Burke',       photo: null, focalPoint: 'center' },
-  { role: '', name: 'Camille Hambly',   photo: '/camille-h.png', focalPoint: 'center' },
+  { role: '', name: 'Camille Hambly',   photo: '/camille-h.jpg', focalPoint: 'center' },
   { role: '', name: 'Keith Cares',      photo: null, focalPoint: 'center' },
   { role: '', name: 'Lucas Demchik',    photo: null, focalPoint: 'center' },
   { role: '', name: 'Mossy Kennedy',    photo: null, focalPoint: 'center' },
-  { role: '', name: 'Dennis Trombley',  photo: null, focalPoint: 'center' },
+  { role: '', name: 'Dennis Trombley',  photo: 'dennis.jpg', focalPoint: 'center' },
 ];
 
 // ─── Update boat fleet info here ──────────────────────────────────────────────
@@ -34,28 +34,28 @@ const boats = [
     count: 5,
     description:
       'The RS Quest is a beginner-friendly dinghy used as the primary teaching boat for our beginner sailing courses. Fast, sleek, and fun to sail, these boats are an amazing sail.',
-    photos: [null, null],
+    photos: ['quest1.avif', 'quest2.avif'],
   },
   {
     name: 'Laser',
     count: 13,
     description:
       'The Laser is a single-handed, high-performance dinghy and one of the most popular racing classes in the world. We use Lasers for events and races where our sailors can sail solo.',
-    photos: [null, null],
+    photos: ['laser1.avif', 'laser2.avif'],
   },
   {
     name: 'Hobie Catamaran',
     count: 3,
     description:
       'Our Hobie Catamarans are twin-hulled boats known for their speed and stability. These boats come with us on our yearly trip to Mission Bay.',
-    photos: [null, null],
+    photos: ['hobie1.avif', 'hobie2.avif'],
   },
   {
     name: 'Shields',
     count: 4,
     description:
       'The Shields are a beautiful classic one-design keelboat raced competitively across the country. Our classic fleet gives members the opportunity to learn keelboat sailing and appreciate boating history.',
-    photos: [null, null],
+    photos: ['shields1.avif', 'shields2.avif'],
   },
 ];
 
@@ -233,7 +233,7 @@ export default function About() {
         color: '#111827',
       }}>
 
-        <PageHero title="Meet the Club" />
+        <PageHero title="Meet the Club" imageSrc='hero-about.avif'/>
 
         <div className="page-content">
 

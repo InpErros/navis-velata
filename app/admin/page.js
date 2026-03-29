@@ -1134,7 +1134,7 @@ export default function Admin() {
             </div>
 
             {/* Archived Shields */}
-            <div>
+            <div style={{ marginBottom: '40px' }}>
               <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a5f', marginBottom: '12px' }}>
                 Shields Sessions ({archived.shields.length})
               </h3>
@@ -1154,6 +1154,67 @@ export default function Admin() {
                     ))}
                   </div>
                 )
+              }
+            </div>
+
+            {/* Archived Registrations */}
+            <div style={{ marginBottom: '40px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a5f', marginBottom: '12px' }}>
+                Registrations ({(archived.registrations || []).length})
+              </h3>
+              {(archived.registrations || []).length === 0
+                ? <p style={{ color: '#6b7280', fontSize: '14px' }}>No archived registrations.</p>
+                : COURSE_TYPES.map(ct => {
+                    const ctRegs = (archived.registrations || []).filter(r => r.courseType === ct)
+                    if (ctRegs.length === 0) return null
+                    return (
+                      <div key={ct} style={{ marginBottom: '20px' }}>
+                        <p style={{ fontSize: '13px', fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{ct} ({ctRegs.length})</p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          {ctRegs.map(r => (
+                            <div key={r.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                              <div>
+                                <span style={{ fontSize: '14px', fontWeight: '600', color: '#111827' }}>{r.row[2]}</span>
+                                <span style={{ fontSize: '13px', color: '#6b7280', marginLeft: '10px' }}>{r.row[4]} · @{r.row[5]}</span>
+                                <span style={{ fontSize: '12px', color: '#9ca3af', marginLeft: '10px' }}>Archived {new Date(r.archivedAt).toLocaleDateString()}</span>
+                              </div>
+                              {r.row[7] && (
+                                <a href={r.row[7]} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#006E90', textDecoration: 'none', fontWeight: '600', flexShrink: 0 }}>Receipt</a>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })
+              }
+            </div>
+
+            {/* Archived Waitlist */}
+            <div>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a5f', marginBottom: '12px' }}>
+                Waitlist ({(archived.waitlist || []).length})
+              </h3>
+              {(archived.waitlist || []).length === 0
+                ? <p style={{ color: '#6b7280', fontSize: '14px' }}>No archived waitlist entries.</p>
+                : COURSE_TYPES.map(ct => {
+                    const ctEntries = (archived.waitlist || []).filter(e => e.courseType === ct)
+                    if (ctEntries.length === 0) return null
+                    return (
+                      <div key={ct} style={{ marginBottom: '20px' }}>
+                        <p style={{ fontSize: '13px', fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{ct} ({ctEntries.length})</p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          {ctEntries.map(entry => (
+                            <div key={entry.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 16px' }}>
+                              <span style={{ fontSize: '14px', fontWeight: '600', color: '#111827' }}>{entry.name}</span>
+                              <span style={{ fontSize: '13px', color: '#6b7280', marginLeft: '10px' }}>{entry.email} · @{entry.discord}</span>
+                              <span style={{ fontSize: '12px', color: '#9ca3af', marginLeft: '10px' }}>Removed {new Date(entry.archivedAt).toLocaleDateString()}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })
               }
             </div>
           </>
