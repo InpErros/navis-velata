@@ -21,11 +21,14 @@ const courses = [
   {
     title: 'Keelboat 2',
     price: 'TBD',
-    tagline: 'Classic Keelboat Riggint & Handling',
+    tagline: 'Classic Keelboat Rigging & Handling',
     perks: [
-      'TBD',
-      'TBD',
-      'TBD',
+      'Learn rigging & down-rigging',
+      'Learn undocking & docking',
+      'Learn steering & speed control',
+      'Learn tacking & jibing',
+      'Learn points of sail and upwind & downwind sailing',
+      'Learn anchoring for safety',
     ],
     note: '',
     color: { bg: '#f0f9ff', border: '#bae6fd', tag: '#0ea5e9' },
@@ -33,7 +36,7 @@ const courses = [
   {
     title: 'Keelboat 3',
     price: 'TBD',
-    tagline: 'Achieving Competancy with Classic Keelboats',
+    tagline: 'Achieving Classic Keelboats Competency',
     perks: [
       'TBD',
       'TBD',

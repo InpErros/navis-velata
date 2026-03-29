@@ -990,6 +990,43 @@ export default function Admin() {
                     </div>
                   )
                 })}
+              {(() => {
+                const uncategorized = shieldsSessions.filter(s => !SHIELDS_COURSE_TYPES.includes(s.courseType))
+                if (uncategorized.length === 0) return null
+                return (
+                  <div>
+                    <h3 style={{ fontSize: '17px', fontWeight: '700', margin: '0 0 12px', color: '#dc2626' }}>
+                      Uncategorized <span style={{ fontSize: '13px', fontWeight: '400', color: '#6b7280' }}>({uncategorized.length}) — edit these to assign a course type</span>
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {uncategorized.map(session => (
+                        <div key={session.id} style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '10px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                              <p style={{ fontWeight: '700', fontSize: '16px', margin: 0 }}>{session.name}</p>
+                              <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: '600',
+                                backgroundColor: session.isOpen ? '#dcfce7' : '#f3f4f6',
+                                color: session.isOpen ? '#16a34a' : '#6b7280' }}>
+                                {session.isOpen ? 'Open' : 'Closed'}
+                              </span>
+                            </div>
+                            <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 2px' }}>
+                              Day 1: {session.day1Date}{session.day1StartTime ? ` · ${session.day1StartTime}${session.day1EndTime ? `–${session.day1EndTime}` : ''}` : ''}
+                            </p>
+                            <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>
+                              Day 2: {session.day2Date}{session.day2StartTime ? ` · ${session.day2StartTime}${session.day2EndTime ? `–${session.day2EndTime}` : ''}` : ''}
+                            </p>
+                          </div>
+                          <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                            <button onClick={() => handleShieldsEdit(session)} style={editBtn}>Edit</button>
+                            <button onClick={() => handleShieldsDelete(session.id)} style={deleteBtn}>Delete</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })()}
             </div>
           </>
         )}
@@ -1353,6 +1390,7 @@ function ShieldsBulkImport({ authHeaders, onImported }) {
   const [parseError, setParseError] = useState('')
   const [importing, setImporting] = useState(false)
   const [importResult, setImportResult] = useState('')
+  const [importCourseType, setImportCourseType] = useState('Keelboat 1')
 
   const EXAMPLE = JSON.stringify([
     { name: 'Spring Session 1', day1Date: 'April 5, 2026', day1StartTime: '9:00 AM', day1EndTime: '3:00 PM', day2Date: 'April 12, 2026', day2StartTime: '9:00 AM', day2EndTime: '3:00 PM', spots: 12, isOpen: false },
@@ -1392,7 +1430,7 @@ function ShieldsBulkImport({ authHeaders, onImported }) {
     const res = await fetch('/api/admin/shields', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...authHeaders() },
-      body: JSON.stringify(preview),
+      body: JSON.stringify(preview.map(s => ({ ...s, courseType: s.courseType || importCourseType }))),
     })
     const data = await res.json()
     if (!res.ok) {
@@ -1422,6 +1460,13 @@ function ShieldsBulkImport({ authHeaders, onImported }) {
           <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '12px' }}>
             Paste a JSON array of sessions or upload a <code>.json</code> file. Required fields per session: <code>name</code>, <code>day1Date</code>, <code>day2Date</code>.
           </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px', maxWidth: '200px' }}>
+            <label style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280' }}>Course Type</label>
+            <select value={importCourseType} onChange={e => setImportCourseType(e.target.value)} style={inputStyle}>
+              {SHIELDS_COURSE_TYPES.map(t => <option key={t}>{t}</option>)}
+            </select>
+          </div>
 
           <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center' }}>
             <label style={{ ...secondaryBtn, padding: '8px 14px', fontSize: '13px', cursor: 'pointer', display: 'inline-block' }}>
