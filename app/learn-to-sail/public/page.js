@@ -7,7 +7,7 @@ const courses = [
   {
     title: 'Keelboat 1',
     price: 'TBD',
-    tagline: 'Introduction to Keelboat Sailing',
+    tagline: 'Introduction to Classic Keelboat Sailing',
     perks: [
       'Learn personal preparation & safety',
       'Learn the language of sailing & parts of the boat',
@@ -21,7 +21,7 @@ const courses = [
   {
     title: 'Keelboat 2',
     price: 'TBD',
-    tagline: 'Building on the Basics',
+    tagline: 'Classic Keelboat Riggint & Handling',
     perks: [
       'TBD',
       'TBD',
@@ -33,7 +33,7 @@ const courses = [
   {
     title: 'Keelboat 3',
     price: 'TBD',
-    tagline: 'Advanced Competancy with Keelboats',
+    tagline: 'Achieving Competancy with Classic Keelboats',
     perks: [
       'TBD',
       'TBD',
