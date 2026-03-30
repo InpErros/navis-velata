@@ -1,75 +1,49 @@
 import { Redis } from '@upstash/redis'
 import { NextResponse } from 'next/server'
-import { put } from '@vercel/blob'
 import { appendToSheet } from '@/app/lib/googleApi'
-import { sendRegistrationConfirmation } from '@/app/lib/emails'
+import { sendShieldsRegistrationConfirmation } from '@/app/lib/emails'
 
 const redis = Redis.fromEnv()
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'application/pdf']
-const MAX_SIZE = 10 * 1024 * 1024
-
 export const POST = async (req) => {
-  const spreadsheetId = process.env.GOOGLE_SHEETS_ID
+  const spreadsheetId = process.env.GOOGLE_SHIELDS_SHEETS_ID
   const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON
   if (!spreadsheetId || !serviceAccountJson) {
-    const missing = [!serviceAccountJson && 'GOOGLE_SERVICE_ACCOUNT_JSON', !spreadsheetId && 'GOOGLE_SHEETS_ID'].filter(Boolean).join(', ')
-    console.error('Missing env vars:', missing)
     return NextResponse.json({ error: 'Registration is not configured yet.' }, { status: 503 })
   }
 
-  let formData
+  let body
   try {
-    formData = await req.formData()
+    body = await req.json()
   } catch {
-    return NextResponse.json({ error: 'Invalid form data.' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
   }
 
-  const sessionId = formData.get('sessionId')
-  const name = formData.get('name')?.trim()
-  const email = formData.get('email')?.trim()
-  const discord = formData.get('discord')?.trim()
-  const receiptFile = formData.get('receipt')
+  const { sessionId, name, email, phone, password } = body
 
-  if (!sessionId || !name || !email || !discord) {
+  if (!sessionId || !name || !email || !phone || !password) {
     return NextResponse.json({ error: 'All fields are required.' }, { status: 400 })
   }
-  if (!receiptFile || typeof receiptFile === 'string') {
-    return NextResponse.json({ error: 'Payment receipt file is required.' }, { status: 400 })
-  }
-  if (!ALLOWED_TYPES.includes(receiptFile.type)) {
-    return NextResponse.json({ error: 'Receipt must be a JPG, PNG, or PDF.' }, { status: 400 })
-  }
 
-  const buffer = Buffer.from(await receiptFile.arrayBuffer())
-  if (buffer.byteLength > MAX_SIZE) {
-    return NextResponse.json({ error: 'Receipt file must be under 10 MB.' }, { status: 400 })
+  // Validate registration password
+  const regPasswords = await redis.get('shields_reg_passwords') || []
+  const validPassword = regPasswords.some(p => p.password === password)
+  if (!validPassword) {
+    return NextResponse.json({ error: 'Invalid registration password.' }, { status: 403 })
   }
 
   const sessions = await redis.get('shields') || []
   const session = sessions.find(s => s.id === sessionId)
   if (!session) return NextResponse.json({ error: 'Session not found.' }, { status: 404 })
   if (!session.isOpen) return NextResponse.json({ error: 'This session is closed.' }, { status: 409 })
-  if (session.enrolled >= session.spots) return NextResponse.json({ error: 'This session is full.' }, { status: 409 })
+  if ((session.enrolled || 0) >= session.spots) return NextResponse.json({ error: 'This session is full.' }, { status: 409 })
 
   const timestamp = new Date().toISOString()
-  const ext = receiptFile.type === 'application/pdf' ? 'pdf' : receiptFile.type === 'image/png' ? 'png' : 'jpg'
-  const blobPath = `receipts/Shields - ${name} - ${Date.now()}.${ext}`
-
-  let receiptUrl
-  try {
-    const blob = await put(blobPath, buffer, { access: 'public', contentType: receiptFile.type })
-    receiptUrl = blob.url
-  } catch (err) {
-    console.error('Blob upload failed:', err)
-    return NextResponse.json({ error: `Blob upload failed: ${err.message}` }, { status: 500 })
-  }
-
   const sessionDetail = `Day 1: ${session.day1Date} · Day 2: ${session.day2Date}`
 
-  // Columns: Timestamp | Course Type | Name | Session Detail | Email | Discord | Session ID | Receipt URL
+  // Columns: Timestamp | Course Type | Name | Session Detail | Email | Phone | Session ID
   try {
-    await appendToSheet(spreadsheetId, [timestamp, 'Shields', name, sessionDetail, email, discord, sessionId, receiptUrl])
+    await appendToSheet(spreadsheetId, [timestamp, session.courseType || 'Shields', name, sessionDetail, email, phone, sessionId])
   } catch (err) {
     console.error('Sheets append failed:', err)
     return NextResponse.json({ error: `Sheets append failed: ${err.message}` }, { status: 500 })
@@ -82,7 +56,7 @@ export const POST = async (req) => {
 
   let emailError = null
   try {
-    await sendRegistrationConfirmation({ to: email, name, course: { name: session.name, courseType: 'Community Program' }, sessionSummary: sessionDetail })
+    await sendShieldsRegistrationConfirmation({ to: email, name, session })
   } catch (err) {
     console.error('Confirmation email failed:', err)
     emailError = err.message

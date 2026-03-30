@@ -83,6 +83,13 @@ export default function Admin() {
   const [userError, setUserError] = useState('')
   const [userSaving, setUserSaving] = useState(false)
 
+  // Registration passwords state
+  const [regPasswords, setRegPasswords] = useState([])
+  const [newRegPwLabel, setNewRegPwLabel] = useState('')
+  const [newRegPwValue, setNewRegPwValue] = useState('')
+  const [regPwError, setRegPwError] = useState('')
+  const [regPwSaving, setRegPwSaving] = useState(false)
+
   // Archived state
   const [archived, setArchived] = useState({ sessions: [], shields: [], events: [] })
   const [archivedLoading, setArchivedLoading] = useState(false)
@@ -129,6 +136,42 @@ export default function Admin() {
     const res = await fetch('/api/admin/users', { headers: authHeaders() })
     const data = await res.json()
     setUsers(data)
+  }
+
+  const fetchRegPasswords = async () => {
+    const res = await fetch('/api/admin/reg-passwords', { headers: authHeaders() })
+    const data = await res.json()
+    setRegPasswords(data)
+  }
+
+  const handleAddRegPassword = async (e) => {
+    e.preventDefault()
+    setRegPwError('')
+    setRegPwSaving(true)
+    const res = await fetch('/api/admin/reg-passwords', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ label: newRegPwLabel, password: newRegPwValue }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setRegPwError(data.error || 'Failed to add password.')
+    } else {
+      setNewRegPwLabel('')
+      setNewRegPwValue('')
+      fetchRegPasswords()
+    }
+    setRegPwSaving(false)
+  }
+
+  const handleDeleteRegPassword = async (id) => {
+    if (!confirm('Remove this registration password?')) return
+    await fetch('/api/admin/reg-passwords', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ id }),
+    })
+    fetchRegPasswords()
   }
 
   const fetchArchived = async () => {
@@ -211,7 +254,7 @@ export default function Admin() {
     if (tab === 'registrations') { fetchRegistrations(); fetchWaitlist() }
     if (tab === 'archived') fetchArchived()
     if (tab === 'audit') fetchAuditLog()
-    if (tab === 'superadmin') fetchUsers()
+    if (tab === 'superadmin') { fetchUsers(); fetchRegPasswords() }
   }
 
   const handleLogin = async (e) => {
@@ -1372,6 +1415,58 @@ export default function Admin() {
                 <div key={u.username} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontWeight: '600', fontSize: '15px' }}>{u.username}</span>
                   <button onClick={() => handleDeleteUser(u.username)} style={deleteBtn}>Remove</button>
+                </div>
+              ))}
+            </div>
+
+            <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '48px 0' }} />
+
+            {/* Registration Passwords */}
+            <form onSubmit={handleAddRegPassword} style={{ marginBottom: '48px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px' }}>Registration Passwords</h2>
+              <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '20px' }}>
+                Users must enter one of these passwords to register for a Shields / community course.
+              </p>
+              {regPwError && <p style={{ color: '#dc2626', marginBottom: '16px', fontSize: '14px' }}>{regPwError}</p>}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Label</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Spring 2026"
+                    value={newRegPwLabel}
+                    onChange={e => setNewRegPwLabel(e.target.value)}
+                    style={inputStyle}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={fieldLabel}>Password</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. SAIL2026"
+                    value={newRegPwValue}
+                    onChange={e => setNewRegPwValue(e.target.value)}
+                    style={inputStyle}
+                  />
+                </div>
+              </div>
+              <button type="submit" disabled={regPwSaving} style={primaryBtn}>
+                {regPwSaving ? 'Adding...' : 'Add Password'}
+              </button>
+            </form>
+
+            {regPasswords.length === 0 && (
+              <p style={{ color: '#6b7280', fontSize: '14px' }}>No registration passwords set. Add one above to allow registrations.</p>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {regPasswords.map(p => (
+                <div key={p.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
+                  <div>
+                    <p style={{ fontWeight: '600', fontSize: '15px', margin: '0 0 2px' }}>{p.label}</p>
+                    <p style={{ fontSize: '13px', color: '#6b7280', margin: 0, fontFamily: 'monospace' }}>{p.password}</p>
+                  </div>
+                  <button onClick={() => handleDeleteRegPassword(p.id)} style={deleteBtn}>Remove</button>
                 </div>
               ))}
             </div>
