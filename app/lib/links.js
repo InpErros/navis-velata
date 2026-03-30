@@ -9,6 +9,7 @@ export const GOOGLE_FORM_URL   = 'https://docs.google.com/forms/d/e/1FAIpQLSd8Q-
 // ── Social ────────────────────────────────────────────────────────────────────
 export const DISCORD_URL   = 'https://discord.gg/DYuD3Zs4JE'
 export const INSTAGRAM_URL = 'https://www.instagram.com/sailcsulb/'
+export const FACEBOOK_URL  = 'https://www.facebook.com/sailCSULB'
 
 // ── Location ──────────────────────────────────────────────────────────────────
 export const MAPS_URL       = 'https://maps.google.com/?q=5437+E+Ocean+Blvd,+Long+Beach,+CA+90803'

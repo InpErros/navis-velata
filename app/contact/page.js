@@ -1,5 +1,5 @@
 import PageHero from '../components/PageHero'
-import { DISCORD_URL, INSTAGRAM_URL, MAPS_URL, MAPS_EMBED_URL } from '@/app/lib/links'
+import { DISCORD_URL, INSTAGRAM_URL, FACEBOOK_URL, MAPS_URL, MAPS_EMBED_URL } from '@/app/lib/links'
 
 export default function Contact() {
   return (
@@ -60,6 +60,31 @@ export default function Contact() {
                 Follow us for photos, event updates, and life on the water.
               </p>
               <span style={{ backgroundColor: '#E1306C', color: '#ffffff', padding: '10px 24px', borderRadius: '6px', fontSize: '15px', fontWeight: '600' }}>
+                Follow us
+              </span>
+            </div>
+          </a>
+
+          {/* Facebook */}
+          <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+            <div style={{
+              backgroundColor: '#eff6ff',
+              border: '1px solid #bfdbfe',
+              borderRadius: '12px',
+              padding: '32px',
+              textAlign: 'center',
+              height: '100%',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#1877F2">
+                  <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+                </svg>
+              </div>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: '0 0 8px', color: '#111827' }}>Facebook</h2>
+              <p style={{ fontSize: '15px', color: '#6b7280', margin: '0 0 24px', lineHeight: '1.7' }}>
+                Like our page for events, updates, and club news.
+              </p>
+              <span style={{ backgroundColor: '#1877F2', color: '#ffffff', padding: '10px 24px', borderRadius: '6px', fontSize: '15px', fontWeight: '600' }}>
                 Follow us
               </span>
             </div>
