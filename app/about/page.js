@@ -25,6 +25,7 @@ const coaches = [
   { role: '', name: 'Lucas Demchik',    photo: null, focalPoint: 'center' },
   { role: '', name: 'Mossy Kennedy',    photo: null, focalPoint: 'center' },
   { role: '', name: 'Dennis Trombley',  photo: 'dennis.jpg', focalPoint: 'center' },
+  { role: '', name: 'Andrea Calabrese',  photo: null, focalPoint: 'center' },
 ];
 
 // ─── Update boat fleet info here ──────────────────────────────────────────────

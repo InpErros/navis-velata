@@ -15,9 +15,7 @@ export default async function Events() {
 
   
     const typeColors = {
-      'Learn to Sail': { bg: '#f0f9ff', border: '#bae6fd', tag: '#0ea5e9' },
       'Casual Sail':   { bg: '#f0fdf4', border: '#bbf7d0', tag: '#16a34a' },
-      'BBQ':           { bg: '#fff7ed', border: '#fed7aa', tag: '#ea580c' },
       'Maintenance':   { bg: '#fafafa', border: '#e5e7eb', tag: '#6b7280' },
       'Themed Event':  { bg: '#fdf4ff', border: '#e9d5ff', tag: '#9333ea' },
       'Social':        { bg: '#fff1f2', border: '#fecdd3', tag: '#e11d48' },
