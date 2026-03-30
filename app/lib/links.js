@@ -3,6 +3,7 @@
 
 // ── External services ─────────────────────────────────────────────────────────
 export const CASHNET_URL       = 'https://commerce.cashnet.com/csulbclubsports?itemcode=LBCS-SAILASN'
+export const DONATE_URL        = 'https://commerce.cashnet.com/lbsu-clubsports-donations'
 export const DO_SPORTS_EASY_URL = 'https://csulb.dserec.com/online/clubsports'
 export const GOOGLE_FORM_URL   = 'https://docs.google.com/forms/d/e/1FAIpQLSd8Q-eq43asuP8dyQhquOTLeZ6-beN5OgTNveyFOTD7eaBvPA/viewform?usp=sharing&ouid=114493447945086633847'
 

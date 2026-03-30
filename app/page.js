@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import ExternalLink from './components/ExternalLinkModal'
-import { CASHNET_URL } from '@/app/lib/links'
+import { DONATE_URL } from '@/app/lib/links'
 
 // ─── Collage photos ───────────────────────────────────────────────────────────
 // Drop images into /public and update the src values below.
@@ -46,7 +46,7 @@ export default function Home() {
           </p>
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
             <a href="/learn-to-sail" style={primaryBtn}>Learn to Sail</a>
-            <a href={CASHNET_URL} data-external style={secondaryBtn}>Donate</a>
+            <a href={DONATE_URL} data-external style={secondaryBtn}>Donate</a>
           </div>
         </div>
       </div>

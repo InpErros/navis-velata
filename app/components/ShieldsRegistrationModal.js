@@ -77,7 +77,7 @@ export default function ShieldsRegistrationModal({ session, onClose }) {
               </p>
             </div>
             <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '32px' }}>
-              A confirmation email has been sent. An officer will reach out with payment details.
+              A confirmation email has been sent!
             </p>
             <button onClick={onClose} style={primaryBtn}>Close</button>
           </div>
@@ -103,7 +103,7 @@ export default function ShieldsRegistrationModal({ session, onClose }) {
             {/* Payment notice */}
             <div style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '14px 16px', marginBottom: '24px' }}>
               <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 10px', lineHeight: '1.6' }}>
-                Payment will be collected separately. An officer will contact you with payment instructions after you register.
+                Payments are disabled until the full program launches in June!
               </p>
               <button
                 disabled
@@ -137,10 +137,10 @@ export default function ShieldsRegistrationModal({ session, onClose }) {
               </div>
               <div style={fieldWrap}>
                 <label style={fieldLabel}>Registration Password</label>
-                <input type="password" required placeholder="Enter the registration password"
+                <input type="password" required placeholder="Enter a registration password"
                   value={form.password} onChange={set('password')} style={inputStyle} />
                 <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0' }}>
-                  Provided by your instructor or club officer.
+                  Provided by a Sailing Association Representative
                 </p>
               </div>
               <button type="submit" disabled={status === 'submitting'} style={{ ...primaryBtn, width: '100%', marginTop: '8px' }}>

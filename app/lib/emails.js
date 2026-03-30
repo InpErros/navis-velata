@@ -205,7 +205,7 @@ export async function sendShieldsRegistrationConfirmation({ to, name, session })
           <td style="padding:40px 32px;">
             <p style="font-size:16px;color:#374151;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
             <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 32px;">
-              You're registered for the community sailing course below. An officer will reach out with payment details and any additional information before your session.
+              You're registered for the community sailing course below:
             </p>
 
             <!-- Course card -->
@@ -223,9 +223,9 @@ export async function sendShieldsRegistrationConfirmation({ to, name, session })
             <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0 0 12px;">What happens next?</h3>
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
               ${[
-                ['💳', 'An officer will contact you with payment instructions.'],
+                ['☀️', 'Don\'t forget to bring lunch and sun protection.'],
                 ['📅', 'Add the session dates to your calendar and plan to arrive on time.'],
-                ['⛵', 'Come ready to learn — all equipment is provided.'],
+                ['⛵', 'Come ready to learn, all equipment will be provided.'],
               ].map(([icon, text]) => `
               <tr>
                 <td width="32" valign="top" style="padding:8px 12px 8px 0;font-size:18px;">${icon}</td>
@@ -236,7 +236,7 @@ export async function sendShieldsRegistrationConfirmation({ to, name, session })
             <!-- Contact note -->
             <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:16px 20px;margin-bottom:32px;">
               <p style="font-size:14px;color:#92400e;margin:0;line-height:1.6;">
-                Questions or need to make changes? Reply to this email or reach out via
+                Questions or need to make changes? Reach out via
                 <a href="${DISCORD_URL}" style="color:#92400e;font-weight:700;">Discord</a>.
               </p>
             </div>
