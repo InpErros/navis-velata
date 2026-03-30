@@ -1,5 +1,5 @@
 import { Resend } from 'resend'
-import { SITE_STUDENT_URL, SITE_PUBLIC_URL, DISCORD_URL, INSTAGRAM_URL } from '@/app/lib/links'
+import { SITE_STUDENT_URL, SITE_PUBLIC_URL, DISCORD_URL, INSTAGRAM_URL, FACEBOOK_URL } from '@/app/lib/links'
 
 const COMMUNITY_COURSE_TYPES = ['Shields', 'Level 1 Keelboat']
 
@@ -12,11 +12,14 @@ const SOCIAL_FOOTER = `
             <p style="font-size:12px;color:#9ca3af;margin:0 0 12px;">CSULB Sailing Association · Long Beach, CA</p>
             <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
               <tr>
-                <td style="padding:0 5px;">
-                  <a href="${DISCORD_URL}" target="_blank" style="display:inline-block;background:#5865F2;color:#ffffff;text-decoration:none;padding:7px 16px;border-radius:5px;font-size:12px;font-weight:700;">Discord</a>
+                <td style="padding:0 6px;">
+                  <a href="${DISCORD_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;background:#5865F2;border-radius:50%;text-align:center;line-height:36px;color:#ffffff;font-size:18px;font-weight:900;text-decoration:none;">D</a>
                 </td>
-                <td style="padding:0 5px;">
-                  <a href="${INSTAGRAM_URL}" target="_blank" style="display:inline-block;background:#E1306C;color:#ffffff;text-decoration:none;padding:7px 16px;border-radius:5px;font-size:12px;font-weight:700;">Instagram</a>
+                <td style="padding:0 6px;">
+                  <a href="${INSTAGRAM_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;background:#E1306C;border-radius:50%;text-align:center;line-height:36px;color:#ffffff;font-size:18px;font-weight:900;text-decoration:none;">&#x1F4F7;</a>
+                </td>
+                <td style="padding:0 6px;">
+                  <a href="${FACEBOOK_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;background:#1877F2;border-radius:50%;text-align:center;line-height:36px;color:#ffffff;font-size:20px;font-weight:900;text-decoration:none;">f</a>
                 </td>
               </tr>
             </table>
@@ -143,7 +146,7 @@ export async function sendWaitlistConfirmation({ to, name, courseType }) {
           <td style="padding:40px 32px;">
             <p style="font-size:16px;color:#374151;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
             <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 32px;">
-              We've added you to the waitlist for the course below. We'll email you as soon as new sessions open up. Keep an eye on the discord for any announcements.
+              We've added you to the waitlist for the course below. We'll email you as soon as new sessions open up. Keep an eye on the instagram or facebook for any announcements.
             </p>
             <table width="100%" cellpadding="0" cellspacing="0" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;margin-bottom:32px;">
               <tr>
