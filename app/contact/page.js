@@ -11,7 +11,7 @@ export default function Contact() {
         <div className="page-content">
 
         {/* Social cards */}
-        <div className="grid-2col" style={{ marginBottom: '48px' }}>
+        <div className="grid-2col" style={{ marginBottom: '48px', gridTemplateColumns: 'repeat(3, 1fr)' }}>
 
           {/* Discord */}
           <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
