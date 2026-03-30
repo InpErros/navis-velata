@@ -568,7 +568,7 @@ export default function Admin() {
 
   const tabs = [
     { id: 'events', label: 'Events' },
-    { id: 'courses', label: 'Sessions' },
+    { id: 'courses', label: 'Dinghy' },
     { id: 'shields', label: 'Shields' },
     { id: 'registrations', label: 'Registrations' },
     { id: 'archived', label: 'Archived' },
