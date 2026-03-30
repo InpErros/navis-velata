@@ -7,7 +7,7 @@ const courses = [
   {
     level: 'Sailing A',
     price: '$80',
-    tagline: 'Our beginner course, recommened for all new members!',
+    tagline: 'Introduction to Sailing, Recommened for ALL New Members!',
     perks: [
       'Learn to rig the boat',
       'Learn the parts of the boat',
@@ -21,7 +21,7 @@ const courses = [
   {
     level: 'Sailing B',
     price: '$80',
-    tagline: 'A part two of the beginner course!',
+    tagline: 'Introduction to Sailing Part 2',
     perks: [
       'Learn to use the jib',
       'Learn basic right of way',
@@ -35,7 +35,7 @@ const courses = [
   {
     level: 'Sailing C',
     price: '$50',
-    tagline: 'The last course required to become a club certified skipper.',
+    tagline: 'Achieving Competancy in Small Boat Sailing',
     perks: [
       'Learn the detailed sail compass',
       'Practice everything you have learned',
