@@ -39,11 +39,10 @@ export const POST = async (req) => {
   if ((session.enrolled || 0) >= session.spots) return NextResponse.json({ error: 'This session is full.' }, { status: 409 })
 
   const timestamp = new Date().toISOString()
-  const sessionDetail = `Day 1: ${session.day1Date} · Day 2: ${session.day2Date}`
 
-  // Columns: Timestamp | Course Type | Name | Session Detail | Email | Phone | Session ID
+  // Columns: Timestamp | Course Type | Name | Session Name | Email | Phone | Session ID
   try {
-    await appendToSheet(spreadsheetId, [timestamp, session.courseType || 'Shields', name, sessionDetail, email, phone, sessionId])
+    await appendToSheet(spreadsheetId, [timestamp, session.courseType || 'Shields', name, session.name, email, phone, sessionId])
   } catch (err) {
     console.error('Sheets append failed:', err)
     return NextResponse.json({ error: `Sheets append failed: ${err.message}` }, { status: 500 })
