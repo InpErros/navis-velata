@@ -1073,7 +1073,7 @@ export default function Admin() {
                                   await fetch('/api/admin/registrations', {
                                     method: 'DELETE',
                                     headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                                    body: JSON.stringify({ sheetRowIndex, sessionIds: (row[6] || '').split(',').filter(Boolean), studentName: row[2] }),
+                                    body: JSON.stringify({ sheetRowIndex, sessionIds: (row[6] || '').split(',').filter(Boolean), studentName: row[2], receiptUrl: row[7] }),
                                   })
                                   fetchRegistrations()
                                 }}

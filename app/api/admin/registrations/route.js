@@ -2,6 +2,7 @@ import { Redis } from '@upstash/redis'
 import { NextResponse } from 'next/server'
 import { validateAdmin, logAction } from '@/app/lib/adminAuth'
 import { getSheetRows, deleteSheetRow } from '@/app/lib/googleApi'
+import { del } from '@vercel/blob'
 
 const redis = Redis.fromEnv()
 
@@ -32,7 +33,7 @@ export const DELETE = async (req) => {
     return NextResponse.json({ error: 'GOOGLE_SHEETS_ID is not configured.' }, { status: 503 })
   }
 
-  const { sheetRowIndex, sessionIds, studentName } = await req.json()
+  const { sheetRowIndex, sessionIds, studentName, receiptUrl } = await req.json()
   if (sheetRowIndex == null) {
     return NextResponse.json({ error: 'sheetRowIndex is required.' }, { status: 400 })
   }
@@ -42,6 +43,14 @@ export const DELETE = async (req) => {
   } catch (err) {
     console.error('Failed to delete registration row:', err)
     return NextResponse.json({ error: 'Failed to delete registration.' }, { status: 500 })
+  }
+
+  if (receiptUrl) {
+    try {
+      await del(receiptUrl)
+    } catch (err) {
+      console.error('Failed to delete receipt blob:', err)
+    }
   }
 
   // Decrement enrolled on each selected session
