@@ -3,7 +3,7 @@
 //   <PageHero title="Events" imageSrc="/heroes/events.jpg" imageAlt="Boats on the water" />
 // Leave imageSrc undefined to show a placeholder until a photo is ready.
 
-export default function PageHero({ title, imageSrc, imageAlt = '' }) {
+export default function PageHero({ title, imageSrc, imageAlt = '', objectPosition = 'center center' }) {
   return (
     <div style={{
       position: 'relative',
@@ -19,7 +19,7 @@ export default function PageHero({ title, imageSrc, imageAlt = '' }) {
           style={{
             position: 'absolute', inset: 0,
             width: '100%', height: '100%',
-            objectFit: 'cover', opacity: 0.55,
+            objectFit: 'cover', objectPosition, opacity: 0.55,
           }}
         />
       ) : (

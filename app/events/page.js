@@ -31,7 +31,7 @@ export default async function Events() {
           color: '#111827',
         }}>
 
-        <PageHero title="Events" imageSrc='/events-hero.avif'/>
+        <PageHero title="Events" imageSrc='/events-hero.avif' objectPosition='center bottom'/>
 
         <div className="page-content">
 
