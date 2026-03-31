@@ -226,7 +226,7 @@ export async function sendShieldsRegistrationConfirmation({ to, name, session })
             <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0 0 12px;">What happens next?</h3>
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
               ${[
-                ['☀️', 'Don\'t forget to bring lunch and sun protection.'],
+                ['💬', 'A coach will email you before your course with more details.'],
                 ['📅', 'Add the session dates to your calendar and plan to arrive on time.'],
                 ['⛵', 'Come ready to learn, all equipment will be provided.'],
               ].map(([icon, text]) => `
