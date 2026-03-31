@@ -42,6 +42,15 @@ a:hover {
 }
 
 @media (max-width: 680px) {
+  .collage {
+    flex-direction: column !important;
+    height: auto !important;
+  }
+  .collage > div {
+    height: 220px !important;
+    flex: none !important;
+  }
+
   .hero-title  { font-size: 32px !important; }
   .hero-subtitle { font-size: 17px !important; }
 
