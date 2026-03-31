@@ -58,7 +58,7 @@ export default function StudentProgram() {
         color: '#111827',
       }}>
 
-        <PageHero title="Student Program" />
+        <PageHero title="Student Program" imageSrc='/hero-student.avif'/>
 
         <div className="page-content">
 

@@ -6,7 +6,7 @@ export default function Contact() {
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 24px' }}>
       <div className="page-card" style={{ backgroundColor: '#ffffff', borderRadius: '16px', overflow: 'hidden', color: '#111827' }}>
 
-        <PageHero title="Contact Us" />
+        <PageHero title="Contact Us" imageSrc='/hero-contact.avif'/>
 
         <div className="page-content">
 

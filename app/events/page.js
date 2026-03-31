@@ -31,7 +31,7 @@ export default async function Events() {
           color: '#111827',
         }}>
 
-        <PageHero title="Events" />
+        <PageHero title="Events" iamgeSrc='/events-hero.avif'/>
 
         <div className="page-content">
 

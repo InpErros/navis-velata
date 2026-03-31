@@ -13,7 +13,7 @@ export default function LearnToSail() {
         color: '#111827',
       }}>
 
-        <PageHero title="Learn to Sail" />
+        <PageHero title="Learn to Sail" imageSrc='hero-learntosail.avif'/>
 
         <div className="page-content">
 
