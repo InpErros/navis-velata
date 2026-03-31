@@ -9,7 +9,7 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
   const dayCount = COURSE_DAY_COUNT[courseType] || 1
   const requiredDays = Array.from({ length: dayCount }, (_, i) => i + 1)
 
-  const [selectedSessions, setSelectedSessions] = useState({}) // { dayNumber: sessionId }
+  const [selectedSessions, setSelectedSessions] = useState({})
   const [form, setForm] = useState({ name: '', email: '', discord: '' })
   const [receipt, setReceipt] = useState(null)
   const [receiptError, setReceiptError] = useState('')
@@ -37,7 +37,6 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Validate all days selected
     for (const day of requiredDays) {
       if (!selectedSessions[day]) {
         setErrorMsg(`Please select a Day ${day} session.`)
@@ -51,8 +50,6 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
     }
 
     const sessionIds = requiredDays.map(d => selectedSessions[d])
-
-    // Build human-readable summary
     const sessionSummary = requiredDays.map(d => {
       const s = sessions.find(x => x.id === selectedSessions[d])
       if (!s) return null
@@ -85,7 +82,6 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
     }
   }
 
-  // Build success summary
   const successSummary = requiredDays.map(d => {
     const s = sessions.find(x => x.id === selectedSessions[d])
     if (!s) return null
@@ -106,7 +102,6 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
         width: '100%', maxWidth: '520px', position: 'relative',
         maxHeight: '90vh', overflowY: 'auto',
       }}>
-        {/* Close button */}
         <button
           onClick={onClose}
           style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: '20px', lineHeight: 1 }}
@@ -131,7 +126,7 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
               </div>
             )}
             <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '32px' }}>
-              You will receive a confirmation email to confirm your registration. If you have any questions reach out to an officer on our discord.
+              You will receive a confirmation email. If you have any questions reach out to an officer on Discord.
             </p>
             <button onClick={onClose} style={primaryBtn}>Close</button>
           </div>
@@ -148,123 +143,130 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
                 {courseType}
               </span>
               <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#111827', margin: '0 0 4px' }}>Register for {courseType}</h2>
-              <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>
-                Select one session per day below.
-              </p>
+              <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>Complete all three steps below.</p>
             </div>
 
-            {/* Payment steps */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
-              {[
-                { number: 1, title: 'Pay via CashNet', description: 'Complete payment for your course on CashNet. Save your receipt — you\'ll need to attach it below.', label: 'Go to CashNet', href: CASHNET_URL },
-                { number: 2, title: 'Register on Do Sports Easy', description: 'Required to participate in any club activities on the water.', label: 'Go to Do Sports Easy', href: DO_SPORTS_EASY_URL },
-              ].map(step => (
-                <div key={step.number} style={{ border: '1px solid #e5e7eb', borderRadius: '10px', padding: '16px 20px', backgroundColor: '#f9fafb' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <span style={{ backgroundColor: '#1e3a5f', color: '#fff', fontSize: '11px', fontWeight: '700', padding: '2px 8px', borderRadius: '999px' }}>
-                      Step {step.number}
-                    </span>
-                    <p style={{ fontWeight: '700', fontSize: '14px', margin: 0, color: '#111827' }}>{step.title}</p>
-                  </div>
-                  <p style={{ fontSize: '13px', color: '#6b7280', margin: '4px 0 8px', lineHeight: '1.6' }}>{step.description}</p>
-                  <a href={step.href} data-external target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: '13px', fontWeight: '600', color: '#0ea5e9', textDecoration: 'none' }}>
-                    {step.label} →
-                  </a>
-                </div>
-              ))}
-            </div>
-
-            {/* Error banner */}
             {status === 'error' && (
               <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '12px 16px', marginBottom: '20px', fontSize: '14px', color: '#dc2626' }}>
                 {errorMsg}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
 
-              {/* Day session selectors */}
-              {requiredDays.map(dayNum => {
-                const daySessions = sessions.filter(s => s.dayNumber === dayNum)
-                return (
-                  <div key={dayNum} style={fieldWrap}>
-                    <label style={fieldLabel}>Day {dayNum} — choose a session</label>
-                    {daySessions.length === 0 ? (
-                      <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>No sessions available for Day {dayNum}.</p>
-                    ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {daySessions.map(s => {
-                          const spotsLeft = s.spots - (s.enrolled || 0)
-                          const full = spotsLeft <= 0
-                          const selected = selectedSessions[dayNum] === s.id
-                          const label = [s.date, s.startTime && `${s.startTime}${s.endTime ? `–${s.endTime}` : ''}`].filter(Boolean).join(' · ')
-                          return (
-                            <label key={s.id} style={{
-                              display: 'flex', alignItems: 'center', gap: '10px',
-                              padding: '10px 14px', borderRadius: '8px',
-                              cursor: full ? 'not-allowed' : 'pointer',
-                              border: `2px solid ${selected ? '#ecaa00' : '#e5e7eb'}`,
-                              backgroundColor: selected ? '#fffbeb' : full ? '#fafafa' : '#fff',
-                              fontSize: '14px', color: full ? '#9ca3af' : '#111827',
-                              fontWeight: selected ? '600' : '400',
-                              opacity: full ? 0.6 : 1,
-                            }}>
-                              <input
-                                type="radio"
-                                name={`day-${dayNum}`}
-                                disabled={full}
-                                checked={selected}
-                                onChange={() => !full && setSelectedSessions(p => ({ ...p, [dayNum]: s.id }))}
-                                style={{ accentColor: '#ecaa00' }}
-                              />
-                              <span style={{ flex: 1 }}>{label || `Session ${s.id}`}</span>
-                              <span style={{
-                                fontSize: '12px', fontWeight: '600', flexShrink: 0,
-                                color: full ? '#dc2626' : spotsLeft <= 3 ? '#d97706' : '#16a34a',
-                              }}>
-                                {full ? 'Full' : `${spotsLeft} left`}
-                              </span>
-                            </label>
-                          )
-                        })}
+              {/* Step 1 — CashNet */}
+              <div style={stepCard}>
+                <div style={stepHeader}>
+                  <span style={stepBadge}>Step 1</span>
+                  <p style={stepTitle}>Pay via CashNet</p>
+                </div>
+                <p style={stepDesc}>Complete payment for your course on CashNet. Save your receipt — you&apos;ll need to attach it in step 2.</p>
+                <a href={CASHNET_URL} data-external target="_blank" rel="noopener noreferrer" style={stepLink}>
+                  Go to CashNet →
+                </a>
+              </div>
+
+              {/* Step 2 — Registration form */}
+              <div style={stepCard}>
+                <div style={stepHeader}>
+                  <span style={stepBadge}>Step 2</span>
+                  <p style={stepTitle}>Fill out your registration</p>
+                </div>
+                <p style={stepDesc}>Select your sessions, enter your details, and attach your CashNet payment receipt.</p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '14px' }}>
+                  {/* Day session selectors */}
+                  {requiredDays.map(dayNum => {
+                    const daySessions = sessions.filter(s => s.dayNumber === dayNum)
+                    return (
+                      <div key={dayNum} style={fieldWrap}>
+                        <label style={fieldLabel}>Day {dayNum} — choose a session</label>
+                        {daySessions.length === 0 ? (
+                          <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>No sessions available for Day {dayNum}.</p>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            {daySessions.map(s => {
+                              const spotsLeft = s.spots - (s.enrolled || 0)
+                              const full = spotsLeft <= 0
+                              const selected = selectedSessions[dayNum] === s.id
+                              const label = [s.date, s.startTime && `${s.startTime}${s.endTime ? `–${s.endTime}` : ''}`].filter(Boolean).join(' · ')
+                              return (
+                                <label key={s.id} style={{
+                                  display: 'flex', alignItems: 'center', gap: '10px',
+                                  padding: '10px 14px', borderRadius: '8px',
+                                  cursor: full ? 'not-allowed' : 'pointer',
+                                  border: `2px solid ${selected ? '#ecaa00' : '#e5e7eb'}`,
+                                  backgroundColor: selected ? '#fffbeb' : full ? '#fafafa' : '#fff',
+                                  fontSize: '14px', color: full ? '#9ca3af' : '#111827',
+                                  fontWeight: selected ? '600' : '400',
+                                  opacity: full ? 0.6 : 1,
+                                }}>
+                                  <input
+                                    type="radio"
+                                    name={`day-${dayNum}`}
+                                    disabled={full}
+                                    checked={selected}
+                                    onChange={() => !full && setSelectedSessions(p => ({ ...p, [dayNum]: s.id }))}
+                                    style={{ accentColor: '#ecaa00' }}
+                                  />
+                                  <span style={{ flex: 1 }}>{label || `Session ${s.id}`}</span>
+                                  <span style={{ fontSize: '12px', fontWeight: '600', flexShrink: 0, color: full ? '#dc2626' : spotsLeft <= 3 ? '#d97706' : '#16a34a' }}>
+                                    {full ? 'Full' : `${spotsLeft} left`}
+                                  </span>
+                                </label>
+                              )
+                            })}
+                          </div>
+                        )}
                       </div>
-                    )}
+                    )
+                  })}
+
+                  <div style={fieldWrap}>
+                    <label style={fieldLabel}>Full Name</label>
+                    <input type="text" required placeholder="Jane Smith"
+                      value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
+                      style={inputStyle} />
                   </div>
-                )
-              })}
 
-              <div style={fieldWrap}>
-                <label style={fieldLabel}>Full Name</label>
-                <input type="text" required placeholder="Jane Smith"
-                  value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  style={inputStyle} />
+                  <div style={fieldWrap}>
+                    <label style={fieldLabel}>Email</label>
+                    <input type="email" required placeholder="jane@csulb.edu"
+                      value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
+                      style={inputStyle} />
+                  </div>
+
+                  <div style={fieldWrap}>
+                    <label style={fieldLabel}>Discord Username</label>
+                    <input type="text" required placeholder="e.g. sailorjane"
+                      value={form.discord} onChange={e => setForm({ ...form, discord: e.target.value })}
+                      style={inputStyle} />
+                  </div>
+
+                  <div style={fieldWrap}>
+                    <label style={fieldLabel}>Payment Receipt (JPG, PNG, or PDF)</label>
+                    <input type="file" accept=".jpg,.jpeg,.png,.pdf"
+                      onChange={handleFileChange}
+                      style={{ fontSize: '14px', color: '#374151' }} />
+                    {receiptError && <p style={{ color: '#dc2626', fontSize: '13px', margin: '4px 0 0' }}>{receiptError}</p>}
+                    {receipt && !receiptError && <p style={{ color: '#16a34a', fontSize: '13px', margin: '4px 0 0' }}>{receipt.name}</p>}
+                  </div>
+                </div>
               </div>
 
-              <div style={fieldWrap}>
-                <label style={fieldLabel}>Email</label>
-                <input type="email" required placeholder="jane@csulb.edu"
-                  value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                  style={inputStyle} />
+              {/* Step 3 — Do Sports Easy */}
+              <div style={stepCard}>
+                <div style={stepHeader}>
+                  <span style={stepBadge}>Step 3</span>
+                  <p style={stepTitle}>Register on Do Sports Easy</p>
+                </div>
+                <p style={stepDesc}>Required to participate in any club activities on the water.</p>
+                <a href={DO_SPORTS_EASY_URL} data-external target="_blank" rel="noopener noreferrer" style={stepLink}>
+                  Go to Do Sports Easy →
+                </a>
               </div>
 
-              <div style={fieldWrap}>
-                <label style={fieldLabel}>Discord Username</label>
-                <input type="text" required placeholder="e.g. sailorjane"
-                  value={form.discord} onChange={e => setForm({ ...form, discord: e.target.value })}
-                  style={inputStyle} />
-              </div>
-
-              <div style={fieldWrap}>
-                <label style={fieldLabel}>Payment Receipt (JPG, PNG, or PDF)</label>
-                <input type="file" accept=".jpg,.jpeg,.png,.pdf"
-                  onChange={handleFileChange}
-                  style={{ fontSize: '14px', color: '#374151' }} />
-                {receiptError && <p style={{ color: '#dc2626', fontSize: '13px', margin: '4px 0 0' }}>{receiptError}</p>}
-                {receipt && !receiptError && <p style={{ color: '#16a34a', fontSize: '13px', margin: '4px 0 0' }}>{receipt.name}</p>}
-              </div>
-
-              <button type="submit" disabled={status === 'submitting'} style={{ ...primaryBtn, width: '100%', marginTop: '8px' }}>
+              <button type="submit" disabled={status === 'submitting'} style={{ ...primaryBtn, width: '100%', marginTop: '4px' }}>
                 {status === 'submitting' ? 'Submitting...' : 'Submit Registration'}
               </button>
             </form>
@@ -275,7 +277,13 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
   )
 }
 
+const stepCard = { border: '1px solid #e5e7eb', borderRadius: '10px', padding: '18px 20px', backgroundColor: '#f9fafb' }
+const stepHeader = { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }
+const stepBadge = { backgroundColor: '#1e3a5f', color: '#fff', fontSize: '11px', fontWeight: '700', padding: '2px 8px', borderRadius: '999px', flexShrink: 0 }
+const stepTitle = { fontWeight: '700', fontSize: '15px', margin: 0, color: '#111827' }
+const stepDesc = { fontSize: '13px', color: '#6b7280', margin: '4px 0 8px', lineHeight: '1.6' }
+const stepLink = { fontSize: '13px', fontWeight: '600', color: '#0ea5e9', textDecoration: 'none' }
 const fieldWrap = { display: 'flex', flexDirection: 'column', gap: '6px' }
 const fieldLabel = { fontSize: '13px', fontWeight: '600', color: '#6b7280' }
-const inputStyle = { padding: '10px 14px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '15px' }
+const inputStyle = { padding: '10px 14px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '15px', backgroundColor: '#fff' }
 const primaryBtn = { backgroundColor: '#ecaa00', color: '#000', padding: '12px 24px', borderRadius: '6px', fontWeight: '700', fontSize: '15px', border: 'none', cursor: 'pointer' }
