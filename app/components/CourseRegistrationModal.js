@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CASHNET_URL } from '@/app/lib/links'
+import { CASHNET_URL, DO_SPORTS_EASY_URL } from '@/app/lib/links'
 
 const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3, 'Level 1 Keelboat': 2, 'Other': 1 }
 
@@ -153,19 +153,26 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
               </p>
             </div>
 
-            {/* Payment note */}
-            <div style={{ backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: '8px', padding: '12px 16px', marginBottom: '24px', fontSize: '13px', color: '#92400e', lineHeight: '1.6' }}>
-              <strong>Before registering:</strong> Complete your payment via CashNet, then upload your receipt below.
-              <div style={{ marginTop: '10px' }}>
-                <a
-                  href={CASHNET_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ display: 'inline-block', backgroundColor: '#ecaa00', color: '#000', padding: '8px 16px', borderRadius: '6px', fontWeight: '700', fontSize: '13px', textDecoration: 'none' }}
-                >
-                  Pay on CashNet →
-                </a>
-              </div>
+            {/* Payment steps */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
+              {[
+                { number: 1, title: 'Pay via CashNet', description: 'Complete payment for your course on CashNet. Save your receipt — you\'ll need to attach it below.', label: 'Go to CashNet', href: CASHNET_URL },
+                { number: 2, title: 'Register on Do Sports Easy', description: 'Required to participate in any club activities on the water.', label: 'Go to Do Sports Easy', href: DO_SPORTS_EASY_URL },
+              ].map(step => (
+                <div key={step.number} style={{ border: '1px solid #e5e7eb', borderRadius: '10px', padding: '16px 20px', backgroundColor: '#f9fafb' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <span style={{ backgroundColor: '#1e3a5f', color: '#fff', fontSize: '11px', fontWeight: '700', padding: '2px 8px', borderRadius: '999px' }}>
+                      Step {step.number}
+                    </span>
+                    <p style={{ fontWeight: '700', fontSize: '14px', margin: 0, color: '#111827' }}>{step.title}</p>
+                  </div>
+                  <p style={{ fontSize: '13px', color: '#6b7280', margin: '4px 0 8px', lineHeight: '1.6' }}>{step.description}</p>
+                  <a href={step.href} data-external target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize: '13px', fontWeight: '600', color: '#0ea5e9', textDecoration: 'none' }}>
+                    {step.label} →
+                  </a>
+                </div>
+              ))}
             </div>
 
             {/* Error banner */}
