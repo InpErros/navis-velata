@@ -27,8 +27,8 @@ export const POST = async (req) => {
 
   // Validate registration password
   const regPasswords = await redis.get('shields_reg_passwords') || []
-  const validPassword = regPasswords.some(p => p.password === password)
-  if (!validPassword) {
+  const matchedPassword = regPasswords.find(p => p.password === password)
+  if (!matchedPassword) {
     return NextResponse.json({ error: 'Invalid registration password.' }, { status: 403 })
   }
 
@@ -52,6 +52,12 @@ export const POST = async (req) => {
     s.id === sessionId ? { ...s, enrolled: (s.enrolled || 0) + 1 } : s
   )
   await redis.set('shields', updatedSessions)
+
+  // Increment usage count on the matched password
+  const updatedPasswords = regPasswords.map(p =>
+    p.id === matchedPassword.id ? { ...p, usageCount: (p.usageCount || 0) + 1 } : p
+  )
+  await redis.set('shields_reg_passwords', updatedPasswords)
 
   let emailError = null
   try {

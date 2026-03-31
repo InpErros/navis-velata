@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react'
 const EVENT_TYPES = ['Learn to Sail', 'Casual Sail', 'BBQ', 'Maintenance', 'Themed Event', 'Social']
 const COURSE_TYPES = ['Sailing A', 'Sailing B', 'Sailing C']
 const SHIELDS_COURSE_TYPES = ['Keelboat 1', 'Keelboat 2', 'Keelboat 3']
-const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3 }
 
 const emptyForm = {
   title: '',
@@ -1462,10 +1461,13 @@ export default function Admin() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {regPasswords.map(p => (
                 <div key={p.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
-                  <div>
+                  <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: '600', fontSize: '15px', margin: '0 0 2px' }}>{p.label}</p>
                     <p style={{ fontSize: '13px', color: '#6b7280', margin: 0, fontFamily: 'monospace' }}>{p.password}</p>
                   </div>
+                  <span style={{ fontSize: '13px', color: '#6b7280', whiteSpace: 'nowrap' }}>
+                    Used <strong style={{ color: '#111827' }}>{p.usageCount || 0}</strong> time{(p.usageCount || 0) !== 1 ? 's' : ''}
+                  </span>
                   <button onClick={() => handleDeleteRegPassword(p.id)} style={deleteBtn}>Remove</button>
                 </div>
               ))}
