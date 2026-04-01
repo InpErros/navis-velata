@@ -1169,6 +1169,54 @@ export default function Admin() {
                 </div>
               )
             })}
+            {/* Shields / Community Waitlist */}
+            {(() => {
+              const shieldsWaitlist = waitlist.filter(e => SHIELDS_COURSE_TYPES.includes(e.courseType))
+              if (shieldsWaitlist.length === 0) return null
+              return (
+                <>
+                  <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '8px 0 32px' }} />
+                  <h3 style={{ fontSize: '17px', fontWeight: '700', color: '#1e3a5f', margin: '0 0 20px' }}>Community Program Waitlist</h3>
+                  {SHIELDS_COURSE_TYPES.map(ct => {
+                    const ctWaitlist = shieldsWaitlist.filter(e => e.courseType === ct)
+                    if (ctWaitlist.length === 0) return null
+                    return (
+                      <div key={ct} style={{ marginBottom: '32px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: '2px solid #e5e7eb', paddingBottom: '10px' }}>
+                          <h4 style={{ fontSize: '15px', fontWeight: '700', color: '#374151', margin: 0 }}>{ct} — Waitlist ({ctWaitlist.length})</h4>
+                          <button
+                            onClick={async () => {
+                              const res = await fetch('/api/admin/waitlist/notify', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                                body: JSON.stringify({ courseType: ct }),
+                              })
+                              const data = await res.json()
+                              alert(`Sent ${data.sent} of ${data.total} notifications for ${ct}.`)
+                            }}
+                            style={{ ...secondaryBtn, padding: '6px 14px', fontSize: '13px' }}
+                          >
+                            Notify Waitlist
+                          </button>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {ctWaitlist.map(entry => (
+                            <div key={entry.id} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                              <div>
+                                <p style={{ fontWeight: '700', fontSize: '15px', margin: '0 0 2px', color: '#111827' }}>{entry.name}</p>
+                                <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>{entry.email}{entry.discord ? ` · @${entry.discord}` : ''}</p>
+                              </div>
+                              <button onClick={() => removeFromWaitlist(entry.id, entry.name)} style={deleteBtn}>Remove</button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </>
+              )
+            })()}
+
             {registrations.length === 0 && waitlist.length === 0 && !registrationsLoading && !waitlistLoading && (
               <p style={{ color: '#6b7280' }}>No registrations or waitlist entries yet.</p>
             )}
