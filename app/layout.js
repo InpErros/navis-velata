@@ -9,7 +9,7 @@ import SiteBanner from './components/SiteBanner'
 // ─── Site-wide banner message ─────────────────────────────────────────────────
 // Set to a string to show a dismissible banner at the bottom of every page.
 // Set to null to hide it.
-const SITE_BANNER = 'ATTENTION!!! WEBSITE IS UNDER CONSTRUCTION - Some Pictures and other functionality may not work!!!'
+const SITE_BANNER = null
 // Example: const SITE_BANNER = '🌊 Spring sailing courses are now open — register today!'
 
 export const metadata = {
