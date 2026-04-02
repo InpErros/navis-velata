@@ -8,7 +8,7 @@ export const DO_SPORTS_EASY_URL = 'https://csulb.dserec.com/online/clubsports'
 export const GOOGLE_FORM_URL   = 'https://docs.google.com/forms/d/e/1FAIpQLSd8Q-eq43asuP8dyQhquOTLeZ6-beN5OgTNveyFOTD7eaBvPA/viewform?usp=sharing&ouid=114493447945086633847'
 
 // ── Social ────────────────────────────────────────────────────────────────────
-export const DISCORD_URL   = 'https://discord.gg/DYuD3Zs4JE'
+export const DISCORD_URL   = 'https://discord.gg/k9apgZRJeT'
 export const INSTAGRAM_URL = 'https://www.instagram.com/sailcsulb/'
 export const FACEBOOK_URL  = 'https://www.facebook.com/sailCSULB'
 
