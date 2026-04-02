@@ -5,7 +5,7 @@ import { CASHNET_URL, DO_SPORTS_EASY_URL } from '@/app/lib/links'
 
 const COURSE_DAY_COUNT = { 'Sailing A': 2, 'Sailing B': 2, 'Sailing C': 3, 'Level 1 Keelboat': 2, 'Other': 1 }
 
-export default function CourseRegistrationModal({ courseType, sessions, onClose }) {
+export default function CourseRegistrationModal({ courseType, sessions, onClose, onSuccess }) {
   const dayCount = COURSE_DAY_COUNT[courseType] || 1
   const requiredDays = Array.from({ length: dayCount }, (_, i) => i + 1)
 
@@ -75,6 +75,7 @@ export default function CourseRegistrationModal({ courseType, sessions, onClose 
       } else {
         if (data.emailError) console.warn('Email failed:', data.emailError)
         setStatus('success')
+        if (onSuccess) onSuccess()
       }
     } catch {
       setErrorMsg('Network error. Please check your connection and try again.')

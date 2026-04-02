@@ -16,7 +16,7 @@ export default function CourseSchedule({ programType, courseType }) {
   const [waitlistStatus, setWaitlistStatus] = useState('idle') // idle | submitting | success | error
   const [waitlistError, setWaitlistError] = useState('')
 
-  useEffect(() => {
+  const fetchSessions = () => {
     fetch('/api/courses')
       .then(r => r.json())
       .then(data => {
@@ -25,6 +25,10 @@ export default function CourseSchedule({ programType, courseType }) {
         setLoading(false)
       })
       .catch(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchSessions()
   }, [programType, courseType])
 
   const toggleSection = (type) => {
@@ -308,6 +312,7 @@ export default function CourseSchedule({ programType, courseType }) {
           courseType={registering.courseType}
           sessions={registering.sessions}
           onClose={() => setRegistering(null)}
+          onSuccess={() => fetchSessions()}
         />
       )}
     </>

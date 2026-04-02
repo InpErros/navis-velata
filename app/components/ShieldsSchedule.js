@@ -13,7 +13,7 @@ export default function ShieldsSchedule({ courseType }) {
   const [waitlistStatus, setWaitlistStatus] = useState('idle')
   const [waitlistError, setWaitlistError] = useState('')
 
-  useEffect(() => {
+  const fetchSessions = () => {
     fetch('/api/shields')
       .then(r => r.json())
       .then(data => {
@@ -22,6 +22,10 @@ export default function ShieldsSchedule({ courseType }) {
         setLoading(false)
       })
       .catch(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchSessions()
   }, [courseType])
 
   const handleWaitlistSubmit = async (e) => {
@@ -254,6 +258,7 @@ export default function ShieldsSchedule({ courseType }) {
         <ShieldsRegistrationModal
           session={selected}
           onClose={() => setSelected(null)}
+          onSuccess={() => fetchSessions()}
         />
       )}
     </>

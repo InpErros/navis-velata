@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-export default function ShieldsRegistrationModal({ session, onClose }) {
+export default function ShieldsRegistrationModal({ session, onClose, onSuccess }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '' })
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
   const [errorMsg, setErrorMsg] = useState('')
@@ -32,6 +32,7 @@ export default function ShieldsRegistrationModal({ session, onClose }) {
       } else {
         if (data.emailError) console.warn('Email failed:', data.emailError)
         setStatus('success')
+        if (onSuccess) onSuccess()
       }
     } catch {
       setErrorMsg('Network error. Please check your connection and try again.')
