@@ -1,7 +1,6 @@
 import { Resend } from 'resend'
-import { SITE_STUDENT_URL, SITE_PUBLIC_URL, SITE_CONTACT_URL } from '@/app/lib/links'
+import { SITE_LEARN_TO_SAIL_URL, SITE_CONTACT_URL } from '@/app/lib/links'
 
-const COMMUNITY_COURSE_TYPES = ['Shields', 'Level 1 Keelboat']
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = `CSULB Sailing <${process.env.RESEND_FROM_EMAIL || 'noreply@sailcsulb.org'}>`
@@ -134,7 +133,7 @@ export async function sendWaitlistConfirmation({ to, name, courseType }) {
           <td style="padding:40px 32px;">
             <p style="font-size:16px;color:#374151;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
             <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 32px;">
-              We've added you to the waitlist for the course below. We'll email you as soon as new sessions open up. Keep an eye on the instagram or facebook for any announcements.
+              We've added you to the waitlist for the course below. We'll email you as soon as new sessions open up. Keep an eye on our socials for any announcements about upcoming sessions and events.
             </p>
             <table width="100%" cellpadding="0" cellspacing="0" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;margin-bottom:32px;">
               <tr>
@@ -262,7 +261,7 @@ export async function sendShieldsRegistrationConfirmation({ to, name, session })
  * Notifies a waitlisted student that sessions for their course are now open.
  */
 export async function sendWaitlistNotification({ to, name, courseType }) {
-  const registerUrl = COMMUNITY_COURSE_TYPES.includes(courseType) ? SITE_PUBLIC_URL : SITE_STUDENT_URL
+  const registerUrl = SITE_LEARN_TO_SAIL_URL
   const html = `
 <!DOCTYPE html>
 <html>
