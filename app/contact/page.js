@@ -82,7 +82,7 @@ export default function Contact() {
               </div>
               <h2 style={{ fontSize: '20px', fontWeight: '700', margin: '0 0 8px', color: '#111827' }}>Facebook</h2>
               <p style={{ fontSize: '15px', color: '#6b7280', margin: '0 0 24px', lineHeight: '1.7' }}>
-                Follow our page if instagram isn't your thing.
+                Follow our page if instagram just isn't your thing.
               </p>
               <span style={{ backgroundColor: '#1877F2', color: '#ffffff', padding: '10px 24px', borderRadius: '6px', fontSize: '15px', fontWeight: '600' }}>
                 Follow us
