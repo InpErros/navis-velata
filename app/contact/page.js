@@ -134,7 +134,7 @@ export default function Contact() {
               </a>
             </div>
 
-            <div style={{
+            <div className="contact-map" style={{
               height: '220px',
               borderRadius: '10px',
               overflow: 'hidden',

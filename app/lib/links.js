@@ -17,6 +17,7 @@ export const MAPS_URL       = 'https://maps.google.com/?q=5437+E+Ocean+Blvd,+Lon
 export const MAPS_EMBED_URL = 'https://www.google.com/maps?q=5437+E+Ocean+Blvd,+Long+Beach,+CA+90803&output=embed'
 
 // ── Calendar ──────────────────────────────────────────────────────────────────
+export const CALENDAR_URL       = 'https://calendar.google.com/calendar/u/0/r?src=48211216a0cec9408e4a852f7815a9b5236fce6350675de9212f4c42d817212c@group.calendar.google.com&ctz=America/Los_Angeles'
 export const CALENDAR_EMBED_URL = 'https://calendar.google.com/calendar/u/0/embed?src=48211216a0cec9408e4a852f7815a9b5236fce6350675de9212f4c42d817212c@group.calendar.google.com&ctz=America/Los_Angeles'
 
 // ── Internal pages (absolute, used in emails) ─────────────────────────────────

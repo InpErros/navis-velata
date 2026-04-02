@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
         </main>
 
         {/* Footer */}
-        <footer style={{
+        <footer className="site-footer" style={{
           backgroundColor: '#ffffff',
           padding: '40px 32px',
           marginTop: '64px',
@@ -56,7 +56,7 @@ export default function RootLayout({ children }) {
             © {new Date().getFullYear()} CSULB Sailing Association. All rights reserved.
           </p>
 
-          <a href="/admin" style={{ color: '#9ca3af', display: 'flex', alignItems: 'center' }}>
+          <a href="/admin" className="footer-admin-link" style={{ color: '#9ca3af', display: 'flex', alignItems: 'center' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>

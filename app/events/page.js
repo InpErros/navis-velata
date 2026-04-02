@@ -1,6 +1,6 @@
 import { Redis } from '@upstash/redis'
 import PageHero from '../components/PageHero'
-import { CALENDAR_EMBED_URL, CASHNET_URL } from '@/app/lib/links'
+import { CALENDAR_URL, CALENDAR_EMBED_URL, CASHNET_URL } from '@/app/lib/links'
 
 export const dynamic = 'force-dynamic'
 
@@ -133,7 +133,7 @@ export default async function Events() {
 
         {/* Google Calendar */}
         <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '24px' }}>Club Calendar</h2>
-        <div style={{
+        <div className="calendar-iframe-wrapper" style={{
           borderRadius: '12px',
           overflow: 'hidden',
           marginBottom: '64px',
@@ -143,6 +143,25 @@ export default async function Events() {
             src={CALENDAR_EMBED_URL}
             style={{ border: 'none', width: '100%', height: '600px', display: 'block' }}
           />
+        </div>
+        <div className="calendar-button-wrapper" style={{ display: 'none', marginBottom: '64px' }}>
+          <a
+            href={CALENDAR_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-block',
+              backgroundColor: '#1e3a5f',
+              color: '#ffffff',
+              padding: '12px 28px',
+              borderRadius: '8px',
+              fontSize: '15px',
+              fontWeight: '700',
+              textDecoration: 'none',
+            }}
+          >
+            View Club Calendar →
+          </a>
         </div>
         </div>{/* end padding */}
         </div>{/* end page-card */}
