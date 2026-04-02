@@ -1,5 +1,5 @@
 import { Resend } from 'resend'
-import { SITE_STUDENT_URL, SITE_PUBLIC_URL, DISCORD_URL, INSTAGRAM_URL, FACEBOOK_URL } from '@/app/lib/links'
+import { SITE_STUDENT_URL, SITE_PUBLIC_URL, SITE_CONTACT_URL } from '@/app/lib/links'
 
 const COMMUNITY_COURSE_TYPES = ['Shields', 'Level 1 Keelboat']
 
@@ -10,19 +10,7 @@ const SOCIAL_FOOTER = `
         <tr>
           <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 32px;text-align:center;">
             <p style="font-size:12px;color:#9ca3af;margin:0 0 12px;">CSULB Sailing Association · Long Beach, CA</p>
-            <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
-              <tr>
-                <td style="padding:0 6px;">
-                  <a href="${DISCORD_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;background:#5865F2;border-radius:50%;text-align:center;line-height:36px;color:#ffffff;font-size:18px;font-weight:900;text-decoration:none;">D</a>
-                </td>
-                <td style="padding:0 6px;">
-                  <a href="${INSTAGRAM_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;background:#E1306C;border-radius:50%;text-align:center;line-height:36px;color:#ffffff;font-size:18px;font-weight:900;text-decoration:none;">&#x1F4F7;</a>
-                </td>
-                <td style="padding:0 6px;">
-                  <a href="${FACEBOOK_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;background:#1877F2;border-radius:50%;text-align:center;line-height:36px;color:#ffffff;font-size:20px;font-weight:900;text-decoration:none;">f</a>
-                </td>
-              </tr>
-            </table>
+            <a href="${SITE_CONTACT_URL}" target="_blank" style="display:inline-block;background:#1e3a5f;color:#ffffff;text-decoration:none;padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700;">Contact Us</a>
           </td>
         </tr>`
 

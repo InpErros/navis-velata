@@ -9,7 +9,7 @@ export default function ShieldsSchedule({ courseType }) {
   const [selected, setSelected] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
   const [waitlistOpen, setWaitlistOpen] = useState(false)
-  const [waitlistForm, setWaitlistForm] = useState({ name: '', email: '', discord: '' })
+  const [waitlistForm, setWaitlistForm] = useState({ name: '', email: '' })
   const [waitlistStatus, setWaitlistStatus] = useState('idle')
   const [waitlistError, setWaitlistError] = useState('')
 
@@ -84,11 +84,10 @@ export default function ShieldsSchedule({ courseType }) {
           <div style={{ backgroundColor: '#fff', padding: '20px 28px' }}>
             {waitlistError && <p style={{ fontSize: '13px', color: '#dc2626', marginBottom: '12px' }}>{waitlistError}</p>}
             <form onSubmit={handleWaitlistSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 {[
                   { key: 'name', label: 'Full Name', placeholder: 'Jane Smith', type: 'text' },
                   { key: 'email', label: 'Email', placeholder: 'jane@example.com', type: 'email' },
-                  { key: 'discord', label: 'Discord', placeholder: 'sailorjane', type: 'text' },
                 ].map(({ key, label, placeholder, type }) => (
                   <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <label style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280' }}>{label}</label>
@@ -222,12 +221,11 @@ export default function ShieldsSchedule({ courseType }) {
                 <div style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '16px' }}>
                   {waitlistError && <p style={{ fontSize: '13px', color: '#dc2626', marginBottom: '10px' }}>{waitlistError}</p>}
                   <form onSubmit={handleWaitlistSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                       {[
                         { key: 'name', label: 'Full Name', placeholder: 'Jane Smith', type: 'text' },
                         { key: 'email', label: 'Email', placeholder: 'jane@example.com', type: 'email' },
-                        { key: 'discord', label: 'Discord', placeholder: 'sailorjane', type: 'text' },
-                      ].map(({ key, label, placeholder, type }) => (
+                            ].map(({ key, label, placeholder, type }) => (
                         <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <label style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280' }}>{label}</label>
                           <input type={type} required placeholder={placeholder} value={waitlistForm[key]}

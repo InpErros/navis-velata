@@ -12,7 +12,7 @@ export default function CourseSchedule({ programType, courseType }) {
   const [registering, setRegistering] = useState(null) // { courseType, sessions }
   const [openSections, setOpenSections] = useState({})
   const [waitlistOpen, setWaitlistOpen] = useState(false)
-  const [waitlistForm, setWaitlistForm] = useState({ name: '', email: '', discord: '' })
+  const [waitlistForm, setWaitlistForm] = useState({ name: '', email: '' })
   const [waitlistStatus, setWaitlistStatus] = useState('idle') // idle | submitting | success | error
   const [waitlistError, setWaitlistError] = useState('')
 
@@ -97,7 +97,7 @@ export default function CourseSchedule({ programType, courseType }) {
               <p style={{ fontSize: '13px', color: '#dc2626', marginBottom: '12px' }}>{waitlistError}</p>
             )}
             <form onSubmit={handleWaitlistSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <label style={wlLabel}>Full Name</label>
                   <input type="text" required placeholder="Jane Smith" value={waitlistForm.name}
@@ -107,11 +107,6 @@ export default function CourseSchedule({ programType, courseType }) {
                   <label style={wlLabel}>Email</label>
                   <input type="email" required placeholder="jane@csulb.edu" value={waitlistForm.email}
                     onChange={e => setWaitlistForm(f => ({ ...f, email: e.target.value }))} style={wlInput} />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <label style={wlLabel}>Discord</label>
-                  <input type="text" required placeholder="sailorjane" value={waitlistForm.discord}
-                    onChange={e => setWaitlistForm(f => ({ ...f, discord: e.target.value }))} style={wlInput} />
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -271,12 +266,11 @@ export default function CourseSchedule({ programType, courseType }) {
                         <div style={{ marginTop: '12px', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '16px' }}>
                           {waitlistError && <p style={{ fontSize: '13px', color: '#dc2626', marginBottom: '10px' }}>{waitlistError}</p>}
                           <form onSubmit={handleWaitlistSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                               {[
                                 { key: 'name', label: 'Full Name', placeholder: 'Jane Smith', type: 'text' },
                                 { key: 'email', label: 'Email', placeholder: 'jane@csulb.edu', type: 'email' },
-                                { key: 'discord', label: 'Discord', placeholder: 'sailorjane', type: 'text' },
-                              ].map(({ key, label, placeholder, type: t }) => (
+                                ].map(({ key, label, placeholder, type: t }) => (
                                 <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                   <label style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280' }}>{label}</label>
                                   <input type={t} required placeholder={placeholder} value={waitlistForm[key]}
