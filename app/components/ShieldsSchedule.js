@@ -198,6 +198,53 @@ export default function ShieldsSchedule({ courseType }) {
                   </div>
                 )
               })}
+
+              {/* Waitlist note */}
+              {waitlistStatus !== 'success' && !waitlistOpen && (
+                <div
+                  onClick={() => setWaitlistOpen(true)}
+                  style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '10px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <span style={{ fontSize: '13px', color: '#1d4ed8' }}>None of these dates work for you?</span>
+                  <span style={{ fontSize: '13px', fontWeight: '700', color: '#1d4ed8', textDecoration: 'underline' }}>Join the waitlist</span>
+                </div>
+              )}
+              {waitlistStatus === 'success' && (
+                <p style={{ fontSize: '13px', fontWeight: '600', color: '#16a34a', margin: 0 }}>
+                  ✓ You&apos;re on the waitlist! We&apos;ll email you when new sessions are added.
+                </p>
+              )}
+              {waitlistOpen && waitlistStatus !== 'success' && (
+                <div style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '16px' }}>
+                  {waitlistError && <p style={{ fontSize: '13px', color: '#dc2626', marginBottom: '10px' }}>{waitlistError}</p>}
+                  <form onSubmit={handleWaitlistSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                      {[
+                        { key: 'name', label: 'Full Name', placeholder: 'Jane Smith', type: 'text' },
+                        { key: 'email', label: 'Email', placeholder: 'jane@example.com', type: 'email' },
+                        { key: 'discord', label: 'Discord', placeholder: 'sailorjane', type: 'text' },
+                      ].map(({ key, label, placeholder, type }) => (
+                        <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <label style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280' }}>{label}</label>
+                          <input type={type} required placeholder={placeholder} value={waitlistForm[key]}
+                            onChange={e => setWaitlistForm(f => ({ ...f, [key]: e.target.value }))}
+                            style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '14px' }} />
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <button type="submit" disabled={waitlistStatus === 'submitting'}
+                        style={{ backgroundColor: '#16a34a', color: '#fff', border: 'none', borderRadius: '6px', padding: '8px 18px', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>
+                        {waitlistStatus === 'submitting' ? 'Submitting...' : 'Submit'}
+                      </button>
+                      <button type="button" onClick={() => setWaitlistOpen(false)}
+                        style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '13px', cursor: 'pointer' }}>
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
             </div>
           </div>
         )}
