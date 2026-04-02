@@ -61,6 +61,7 @@ export default function Admin() {
 
   // Registrations state
   const [registrations, setRegistrations] = useState([])
+  const [shieldsRegistrations, setShieldsRegistrations] = useState([])
   const [registrationsLoading, setRegistrationsLoading] = useState(false)
 
   // Waitlist state
@@ -223,7 +224,8 @@ export default function Admin() {
     setRegistrationsLoading(true)
     const res = await fetch('/api/admin/registrations', { headers: authHeaders() })
     const data = await res.json()
-    setRegistrations(data)
+    setRegistrations(data.student || [])
+    setShieldsRegistrations(data.shields || [])
     setRegistrationsLoading(false)
   }
 
@@ -1169,6 +1171,46 @@ export default function Admin() {
                 </div>
               )
             })}
+            {/* Shields / Community Registrations */}
+            {shieldsRegistrations.length > 0 && (
+              <>
+                <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '8px 0 32px' }} />
+                <h3 style={{ fontSize: '17px', fontWeight: '700', color: '#1e3a5f', margin: '0 0 20px' }}>Community Program Registrations</h3>
+                {SHIELDS_COURSE_TYPES.map(ct => {
+                  const ctRegs = shieldsRegistrations.filter(r => r.row[1] === ct)
+                  if (ctRegs.length === 0) return null
+                  return (
+                    <div key={ct} style={{ marginBottom: '32px' }}>
+                      <h4 style={{ fontSize: '15px', fontWeight: '700', color: '#374151', margin: '0 0 12px', borderBottom: '2px solid #e5e7eb', paddingBottom: '10px' }}>{ct} ({ctRegs.length})</h4>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {ctRegs.map(({ row, sheetRowIndex }, i) => (
+                          <div key={i} style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ flex: 1 }}>
+                              <p style={{ fontWeight: '700', fontSize: '15px', margin: '0 0 2px', color: '#111827' }}>{row[2]}</p>
+                              <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 2px' }}>{row[4]} · {row[5]}</p>
+                              <p style={{ fontSize: '12px', color: '#9ca3af', margin: 0 }}>{row[3]}</p>
+                            </div>
+                            <button
+                              onClick={async () => {
+                                if (!confirm(`Delete registration for ${row[2]}?`)) return
+                                await fetch('/api/admin/registrations', {
+                                  method: 'DELETE',
+                                  headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                                  body: JSON.stringify({ sheetRowIndex, sessionIds: [row[6]].filter(Boolean), studentName: row[2], source: 'shields' }),
+                                })
+                                fetchRegistrations()
+                              }}
+                              style={deleteBtn}
+                            >Delete</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
+              </>
+            )}
+
             {/* Shields / Community Waitlist */}
             {(() => {
               const shieldsWaitlist = waitlist.filter(e => SHIELDS_COURSE_TYPES.includes(e.courseType))
@@ -1217,7 +1259,7 @@ export default function Admin() {
               )
             })()}
 
-            {registrations.length === 0 && waitlist.length === 0 && !registrationsLoading && !waitlistLoading && (
+            {registrations.length === 0 && shieldsRegistrations.length === 0 && waitlist.length === 0 && !registrationsLoading && !waitlistLoading && (
               <p style={{ color: '#6b7280' }}>No registrations or waitlist entries yet.</p>
             )}
           </>
