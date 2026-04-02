@@ -7,11 +7,12 @@ import PageHero from '../components/PageHero';
 // photo: path relative to /public, e.g. '/profiles/gabe-auge.jpg'
 // focalPoint: CSS object-position to control crop, e.g. 'center 30%'
 const boardMembers = [
-  { role: 'President',      name: 'Gabe Auge',     photo: '/gabe-auge.jpg', focalPoint: 'center 30%' },
+  { role: 'President',      name: 'Gabe Auge',     photo: '/gabe-auge.jpg'},
   { role: 'Vice President', name: 'James Flores',  photo: null },
   { role: 'Secretary',      name: 'Rosalie Ahern', photo: null },
   { role: 'Treasurer',      name: 'Alison Curd',   photo: null },
-  { role: 'Event Chair',    name: 'Carter Jepsen', photo: null },
+  { role: 'Social Chair',    name: 'Carter Jepsen', photo: null },
+  { role: 'Social Chair',    name: 'Micah Gober', photo: null },
 ];
 
 // ─── Update coaches here ──────────────────────────────────────────────────────
