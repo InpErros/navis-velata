@@ -36,7 +36,7 @@ const courses = [
   {
     title: 'Keelboat 3',
     price: 'TBD',
-    tagline: 'Achieving Classic Keelboats Competency',
+    tagline: 'Achieving Classic Keelboat Competency',
     perks: [
       'Learn about weather & currents',
       'Learn Right of Way on the water',
