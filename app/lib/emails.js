@@ -1,5 +1,5 @@
 import { Resend } from 'resend'
-import { SITE_LEARN_TO_SAIL_URL, SITE_CONTACT_URL } from '@/app/lib/links'
+import { DISCORD_URL, SITE_LEARN_TO_SAIL_URL, SITE_CONTACT_URL } from '@/app/lib/links'
 
 
 const resend = new Resend(process.env.RESEND_API_KEY)
