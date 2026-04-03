@@ -84,7 +84,7 @@ export default function PublicProgram() {
           </span>
           <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Community Program</h1>
           <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '650px', margin: '0 auto' }}>
-            Our community sailing program is open to adults of all ages! Learn to sail about our classic fleet of Shields with instruction from our US Sailing certified coaches.
+            Our community sailing program is open to adults of all ages! Learn to sail aboard our classic fleet of Shields with instruction from our US Sailing certified coaches.
           </p>
         </div>
 
