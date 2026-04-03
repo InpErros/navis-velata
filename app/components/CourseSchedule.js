@@ -17,7 +17,7 @@ export default function CourseSchedule({ programType, courseType }) {
   const [waitlistError, setWaitlistError] = useState('')
 
   const fetchSessions = () => {
-    fetch('/api/courses')
+    fetch('/api/courses', { cache: 'no-store' })
       .then(r => r.json())
       .then(data => {
         const filtered = courseType ? data.filter(s => s.courseType === courseType) : data

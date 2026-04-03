@@ -4,6 +4,8 @@ import { validateAdmin, logAction } from '@/app/lib/adminAuth'
 
 const redis = Redis.fromEnv()
 
+export const dynamic = 'force-dynamic'
+
 export const GET = async () => {
   const sessions = await redis.get('sessions') || []
   return NextResponse.json(sessions.filter(s => s.isOpen))
