@@ -235,7 +235,7 @@ export default function About() {
         color: '#111827',
       }}>
 
-        <PageHero title="Meet the Club" imageSrc='about-hero.avif'/>
+        <PageHero title="Meet the Club" imageSrc='/about-hero.avif'/>
 
         <div className="page-content">
 

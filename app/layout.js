@@ -15,6 +15,9 @@ const SITE_BANNER = null
 export const metadata = {
   title: 'CSULB Sailing Association',
   description: 'The official website of the CSULB Sailing Association',
+  icons: {
+    icon: '/logo-borderless.png',
+  },
 }
 
 export default function RootLayout({ children }) {
