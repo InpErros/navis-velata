@@ -20,6 +20,8 @@ export default function Maintenance() {
       <Image
         src="/logo2026.png"
         alt="CSULB Sailing Association"
+        width={200}
+        height={303}
         style={{ marginBottom: '32px', opacity: 0.9 }}
       />
       <h1 style={{ fontSize: '36px', fontWeight: '700', margin: '0 0 16px', fontFamily: "'Farro', sans-serif" }}>
