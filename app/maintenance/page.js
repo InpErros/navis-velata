@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 export const metadata = {
-  title: 'Be Right Back — CSULB Sailing Association',
+  title: 'Site Unavailable',
 }
 
 export default function Maintenance() {
@@ -18,7 +18,7 @@ export default function Maintenance() {
       textAlign: 'center',
     }}>
       <Image
-        src="/logo-borderless.svg"
+        src="/logo2026.png"
         alt="CSULB Sailing Association"
         width={80}
         height={80}
@@ -28,7 +28,7 @@ export default function Maintenance() {
         Be Right Back
       </h1>
       <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', maxWidth: '480px', lineHeight: '1.7', margin: 0 }}>
-        The CSULB Sailing Association website is temporarily down for maintenance.
+        The CSULB Sailing Association website is temporarily unavailable.
         Check back soon!
       </p>
     </div>
