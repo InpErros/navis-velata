@@ -25,7 +25,7 @@ export default function Maintenance() {
         style={{ marginBottom: '32px', opacity: 0.9 }}
       />
       <h1 style={{ fontSize: '36px', fontWeight: '700', margin: '0 0 16px', fontFamily: "'Farro', sans-serif" }}>
-        Be Right Back
+        Site Unavailable
       </h1>
       <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', maxWidth: '480px', lineHeight: '1.7', margin: 0 }}>
         The CSULB Sailing Association website is temporarily unavailable.
