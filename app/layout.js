@@ -15,9 +15,6 @@ const SITE_BANNER = null
 export const metadata = {
   title: 'CSULB Sailing Association',
   description: 'The official website of the CSULB Sailing Association',
-  icons: {
-    icon: '/favicon.ico',
-  },
 }
 
 export default function RootLayout({ children }) {
