@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 
+const MAINTENANCE_MODE = false // Set to true to lock the site
+
 export function middleware(request) {
+  if (!MAINTENANCE_MODE) return NextResponse.next()
   const { pathname } = request.nextUrl
 
   // Allow the maintenance page and static assets through
