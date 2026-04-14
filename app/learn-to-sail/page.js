@@ -55,7 +55,7 @@ export default function LearnToSail() {
                 color: '#0ea5e9', fontWeight: '600', fontSize: '15px',
                 display: 'flex', alignItems: 'center', gap: '6px',
               }}>
-                View student courses →
+                View student program →
               </span>
             </div>
           </Link>
@@ -95,7 +95,7 @@ export default function LearnToSail() {
                 color: '#16a34a', fontWeight: '600', fontSize: '15px',
                 display: 'flex', alignItems: 'center', gap: '6px',
               }}>
-                View Shields courses →
+                View community program →
               </span>
             </div>
           </Link>
