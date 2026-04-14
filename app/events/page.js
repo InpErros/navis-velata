@@ -36,14 +36,11 @@ export default async function Events() {
         <div className="page-content">
 
         {/* Requirements */}
-        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '12px' }}>
-          Both are required to participate in club activities.
-        </p>
         <div style={{
           border: '1px solid #e5e7eb',
           borderRadius: '12px',
           overflow: 'hidden',
-          marginBottom: '48px',
+          marginBottom: '12px',
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
         }}>
@@ -63,6 +60,9 @@ export default async function Events() {
             </a>
           </div>
         </div>
+        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '48px' }}>
+          Both are required to participate in club activities.
+        </p>
 
         {/* Events list */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
