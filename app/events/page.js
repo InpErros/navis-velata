@@ -36,6 +36,9 @@ export default async function Events() {
         <div className="page-content">
 
         {/* Requirements */}
+        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '12px' }}>
+          Both are required to participate in club activities.
+        </p>
         <div style={{
           border: '1px solid #e5e7eb',
           borderRadius: '12px',
@@ -45,23 +48,17 @@ export default async function Events() {
           gridTemplateColumns: '1fr 1fr',
         }}>
           {/* Club Membership */}
-          <div style={{ backgroundColor: '#64100F', color: '#ffffff', padding: '28px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '12px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Club Membership</h2>
-            <p style={{ fontSize: '14px', color: '#fca5a5', margin: 0, lineHeight: '1.5' }}>
-              Required to participate in any club activities.
-            </p>
-            <a href={CASHNET_URL} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#ecaa00', color: '#000', fontWeight: '700', textDecoration: 'none', fontSize: '15px', padding: '10px 24px', borderRadius: '6px', display: 'inline-block' }}>
+          <div style={{ backgroundColor: '#64100F', color: '#ffffff', padding: '20px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '10px' }}>
+            <h2 style={{ fontSize: '17px', fontWeight: '700', margin: 0 }}>Club Membership</h2>
+            <a href={CASHNET_URL} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#ecaa00', color: '#000', fontWeight: '700', textDecoration: 'none', fontSize: '15px', padding: '9px 22px', borderRadius: '6px', display: 'inline-block' }}>
               $30 / semester
             </a>
           </div>
 
           {/* Do Sports Easy */}
-          <div style={{ backgroundColor: '#1e3a5f', color: '#ffffff', padding: '28px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '12px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Do Sports Easy</h2>
-            <p style={{ fontSize: '14px', color: '#93c5fd', margin: 0, lineHeight: '1.5' }}>
-              Required to participate in any club activities on the water.
-            </p>
-            <a href={DO_SPORTS_EASY_URL} target="_blank" rel="noopener noreferrer" data-external style={{ backgroundColor: '#ecaa00', color: '#000', fontWeight: '700', textDecoration: 'none', fontSize: '15px', padding: '10px 24px', borderRadius: '6px', display: 'inline-block' }}>
+          <div style={{ backgroundColor: '#1e3a5f', color: '#ffffff', padding: '20px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '10px' }}>
+            <h2 style={{ fontSize: '17px', fontWeight: '700', margin: 0 }}>Do Sports Easy</h2>
+            <a href={DO_SPORTS_EASY_URL} target="_blank" rel="noopener noreferrer" data-external style={{ backgroundColor: '#ecaa00', color: '#000', fontWeight: '700', textDecoration: 'none', fontSize: '15px', padding: '9px 22px', borderRadius: '6px', display: 'inline-block' }}>
               Register
             </a>
           </div>
