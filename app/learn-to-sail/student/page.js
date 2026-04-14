@@ -82,7 +82,7 @@ export default function StudentProgram() {
           </span>
           <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '16px' }}>Student Sailing Program</h1>
           <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.8', maxWidth: '650px', margin: '0 auto' }}>
-            Taught by US Sailing certified instructors, our courses teach students the basics of small boat sailing.
+            Run by US Sailing certified instructors, our trainings teach students the basics of small boat sailing.
             Take as many levels as you wish.
           </p>
         </div>

@@ -48,7 +48,7 @@ export default function LearnToSail() {
                 Student Program
               </h2>
               <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.7', marginBottom: '24px', flex: 1 }}>
-                For current CSULB students. Progress through Sailing A, B, and C courses
+                For current CSULB students. Progress through Sailing A, B, and C trainings
                 using our dinghy fleet, and learn the basics of sailing!
               </p>
               <span style={{

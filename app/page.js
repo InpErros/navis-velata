@@ -56,8 +56,8 @@ export default function Home() {
         <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Who We Are</h2>
         <p style={{ fontSize: '18px', color: '#cce8f0', lineHeight: '1.8', marginBottom: '32px' }}>
           The CSULB Sailing Association is a student-run sailing club at California State University Long Beach.
-          We welcome sailors of all skill levels, from complete beginners to seasoned sailors.
-          Whether you want to learn the basics or skipper a boat solo.
+          We welcome Long Beach students of all skill levels to join the club and get out on the water with us.
+          Our student board organizes events throughout the school semester for club members to get active in sailing and fall in love with the sport.
         </p>
         <a href="/about" style={primaryBtn}>Learn More About Us</a>
       </div>
@@ -82,14 +82,41 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Events preview */}
+      {/* What you can do */}
       <div style={{ backgroundColor: 'rgba(0,0,0,0.25)', padding: '80px 24px' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Upcoming Events</h2>
-          <p style={{ fontSize: '18px', color: '#cce8f0', marginBottom: '32px' }}>
-            From casual sails to competitive regattas, there's always something happening on the water.
-          </p>
-          <a href="/events" style={primaryBtn}>See All Events</a>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>What You Can Do</h2>
+            <p style={{ fontSize: '18px', color: '#cce8f0' }}>
+              There&apos;s always something happening on the water — here&apos;s a taste of what club membership gets you.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px', marginBottom: '40px' }}>
+            {[
+              { icon: '⛵', text: 'Zip around Alamitos Bay on a Laser.' },
+              { icon: '🛥️', text: 'Sail out into the harbor aboard a Shields.' },
+              { icon: '🌊', text: 'Take a Quest around the bay.' },
+              { icon: '🏆', text: 'Compete against your fellow club members for the Weasel Cup.' },
+              { icon: '🗺️', text: 'Join us in San Diego for our annual trip to Mission Bay.' },
+              { icon: '🎉', text: 'Socialize with other club members at our various events!' },
+            ].map(({ icon, text }, i) => (
+              <div key={i} style={{
+                backgroundColor: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '12px',
+                padding: '24px',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '14px',
+              }}>
+                <span style={{ fontSize: '28px', lineHeight: 1, flexShrink: 0 }}>{icon}</span>
+                <p style={{ fontSize: '15px', color: '#e2f4f8', margin: 0, lineHeight: '1.6' }}>{text}</p>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <a href="/events" style={primaryBtn}>See All Events</a>
+          </div>
         </div>
       </div>
 
