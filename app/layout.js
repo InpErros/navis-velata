@@ -76,7 +76,7 @@ export default async function RootLayout({ children }) {
             display: 'flex', alignItems: 'center', gap: '10px',
             fontSize: '13px', fontWeight: '600', boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
           }}>
-            <span style={{ opacity: 0.7 }}>Staff access</span>
+            <span style={{ opacity: 0.7 }}>Temp access</span>
             <a href="/api/maintenance-logout" style={{
               backgroundColor: '#dc2626', color: '#fff',
               padding: '4px 12px', borderRadius: '6px',

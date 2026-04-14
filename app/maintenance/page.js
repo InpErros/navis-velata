@@ -61,7 +61,7 @@ export default function Maintenance() {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%', maxWidth: '280px' }}>
         <input
           type="password"
-          placeholder="Staff access password"
+          placeholder="Enter access password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           style={{
