@@ -1,6 +1,6 @@
 import { Redis } from '@upstash/redis'
 import PageHero from '../components/PageHero'
-import { CALENDAR_URL, CALENDAR_EMBED_URL, CASHNET_URL } from '@/app/lib/links'
+import { CALENDAR_URL, CALENDAR_EMBED_URL, CASHNET_URL, DO_SPORTS_EASY_URL } from '@/app/lib/links'
 
 export const dynamic = 'force-dynamic'
 
@@ -64,6 +64,37 @@ export default async function Events() {
           <div style={{ textAlign: 'right' }}>
             <p style={{ fontSize: '36px', fontWeight: '700', margin: 0 }}>$30</p>
             <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>per semester</p>
+          </div>
+        </div>
+
+        {/* Do Sports Easy */}
+        <div style={{
+          backgroundColor: '#1e3a5f',
+          color: '#ffffff',
+          borderRadius: '12px',
+          padding: '32px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '48px',
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}>
+          <div>
+            <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 8px' }}>Do Sports Easy</h2>
+            <p style={{ fontSize: '15px', color: '#93c5fd', margin: '0 0 4px' }}>
+              Required to participate in any club activities on the water.
+            </p>
+            <p style={{ fontSize: '14px', color: '#9ca3af', margin: 0 }}>
+              Register at{' '}
+              <a href={DO_SPORTS_EASY_URL} target="_blank" rel="noopener noreferrer" data-external style={{ color: '#ecaa00', fontWeight: '700', textDecoration: 'none' }}>
+                Do Sports Easy
+              </a>
+            </p>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ fontSize: '36px', fontWeight: '700', margin: 0 }}>Free</p>
+            <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>one-time signup</p>
           </div>
         </div>
 
