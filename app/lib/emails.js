@@ -252,7 +252,7 @@ export async function sendShieldsRegistrationConfirmation({ to, name, session })
   await resend.emails.send({
     from: `CSULB Sailing <${fromEmail}>`,
     to,
-    subject: `Registration confirmed: ${session.name}`,
+    subject: `RSVP confirmed: ${session.name}`,
     html,
   })
 }
