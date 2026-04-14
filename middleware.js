@@ -6,9 +6,15 @@ export function middleware(request) {
   if (!MAINTENANCE_MODE) return NextResponse.next()
   const { pathname } = request.nextUrl
 
-  // Allow the maintenance page and static assets through
+  // Allow staff with the access cookie through
+  if (request.cookies.get('maintenance_access')?.value === 'unlocked') {
+    return NextResponse.next()
+  }
+
+  // Allow the maintenance page, auth API, and static assets through
   if (
     pathname.startsWith('/maintenance') ||
+    pathname.startsWith('/api/maintenance-auth') ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon') ||
     pathname.startsWith('/logo')

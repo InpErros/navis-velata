@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { appendToSheet } from '@/app/lib/googleApi'
 import { sendRegistrationConfirmation } from '@/app/lib/emails'
+import { logError } from '@/app/lib/errorLog'
 
 const redis = Redis.fromEnv()
 
@@ -80,6 +81,7 @@ export const POST = async (req) => {
     receiptUrl = blob.url
   } catch (err) {
     console.error('Blob upload failed:', err)
+    await logError('Receipt Upload', `Blob upload failed for ${name} (${courseType})`, err.message)
     return NextResponse.json({ error: `Blob upload failed: ${err.message}` }, { status: 500 })
   }
 
@@ -95,6 +97,7 @@ export const POST = async (req) => {
     await appendToSheet(spreadsheetId, [timestamp, courseType, name, sessionDetail, email, discord, sessionIds.join(','), receiptUrl])
   } catch (err) {
     console.error('Sheets append failed:', err)
+    await logError('Google Sheets', `Sheet append failed for ${name} (${courseType})`, err.message)
     return NextResponse.json({ error: `Sheets append failed: ${err.message}` }, { status: 500 })
   }
 
@@ -111,6 +114,7 @@ export const POST = async (req) => {
   } catch (err) {
     console.error('Confirmation email failed:', err)
     emailError = err.message
+    await logError('Email', `Confirmation email failed for ${name} <${email}> (${courseType})`, err.message)
   }
 
   return NextResponse.json({ success: true, emailError })

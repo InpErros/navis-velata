@@ -99,6 +99,10 @@ export default function Admin() {
   const [auditPage, setAuditPage] = useState(1)
   const AUDIT_PAGE_SIZE = 25
 
+  // Error log state
+  const [errorLog, setErrorLog] = useState([])
+  const [errorLogLoading, setErrorLogLoading] = useState(false)
+
   // Change password state
   const [showChangePw, setShowChangePw] = useState(false)
   const [newPw, setNewPw] = useState('')
@@ -214,6 +218,20 @@ export default function Admin() {
     setAuditPage(1)
   }
 
+  const fetchErrorLog = async () => {
+    setErrorLogLoading(true)
+    const res = await fetch('/api/admin/errors', { headers: authHeaders() })
+    const data = await res.json()
+    setErrorLog(data)
+    setErrorLogLoading(false)
+  }
+
+  const clearErrorLog = async () => {
+    if (!confirm('Clear all errors from the log?')) return
+    await fetch('/api/admin/errors', { method: 'DELETE', headers: authHeaders() })
+    setErrorLog([])
+  }
+
   const fetchCourses = async (u, pw) => {
     const res = await fetch('/api/admin/courses', { headers: authHeaders(u, pw) })
     const data = await res.json()
@@ -255,6 +273,7 @@ export default function Admin() {
     if (tab === 'registrations') { fetchRegistrations(); fetchWaitlist() }
     if (tab === 'archived') fetchArchived()
     if (tab === 'audit') fetchAuditLog()
+    if (tab === 'errors') fetchErrorLog()
     if (tab === 'superadmin') { fetchUsers(); fetchRegPasswords() }
   }
 
@@ -574,6 +593,7 @@ export default function Admin() {
     { id: 'registrations', label: 'Registrations' },
     { id: 'archived', label: 'Archived' },
     { id: 'audit', label: 'Audit Log' },
+    { id: 'errors', label: 'Error Log' },
     ...(isSuperAdmin ? [{ id: 'superadmin', label: 'Super Admin' }] : []),
   ]
 
@@ -1391,6 +1411,49 @@ export default function Admin() {
             </>
           )
         })()}
+
+        {/* ── Error Log tab ── */}
+        {activeTab === 'errors' && (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>Error Log</h2>
+              {errorLog.length > 0 && (
+                <button onClick={clearErrorLog} style={deleteBtn}>Clear All</button>
+              )}
+            </div>
+
+            {errorLogLoading && <p style={{ color: '#6b7280' }}>Loading...</p>}
+
+            {!errorLogLoading && errorLog.length === 0 && (
+              <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '24px', textAlign: 'center' }}>
+                <p style={{ color: '#16a34a', fontWeight: '600', margin: 0 }}>No errors logged.</p>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {errorLog.map(entry => (
+                <div key={entry.id} style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '10px', padding: '16px 20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', marginBottom: '6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ backgroundColor: '#dc2626', color: '#fff', fontSize: '11px', fontWeight: '700', padding: '2px 8px', borderRadius: '999px' }}>
+                        {entry.type}
+                      </span>
+                      <span style={{ fontSize: '14px', fontWeight: '600', color: '#111827' }}>{entry.message}</span>
+                    </div>
+                    <span style={{ fontSize: '12px', color: '#9ca3af', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                      {new Date(entry.timestamp).toLocaleString()}
+                    </span>
+                  </div>
+                  {entry.details && (
+                    <p style={{ fontSize: '12px', color: '#6b7280', margin: 0, fontFamily: 'monospace', wordBreak: 'break-all' }}>
+                      {entry.details}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
         {/* ── Super Admin tab ── */}
         {activeTab === 'superadmin' && isSuperAdmin && (

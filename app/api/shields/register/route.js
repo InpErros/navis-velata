@@ -2,6 +2,7 @@ import { Redis } from '@upstash/redis'
 import { NextResponse } from 'next/server'
 import { appendToSheet } from '@/app/lib/googleApi'
 import { sendShieldsRegistrationConfirmation } from '@/app/lib/emails'
+import { logError } from '@/app/lib/errorLog'
 
 const redis = Redis.fromEnv()
 
@@ -45,6 +46,7 @@ export const POST = async (req) => {
     await appendToSheet(spreadsheetId, [timestamp, session.courseType || 'Shields', name, session.name, email, phone, sessionId])
   } catch (err) {
     console.error('Sheets append failed:', err)
+    await logError('Google Sheets', `Sheet append failed for ${name} (${session.courseType || 'Shields'})`, err.message)
     return NextResponse.json({ error: `Sheets append failed: ${err.message}` }, { status: 500 })
   }
 
@@ -65,6 +67,7 @@ export const POST = async (req) => {
   } catch (err) {
     console.error('Confirmation email failed:', err)
     emailError = err.message
+    await logError('Email', `Confirmation email failed for ${name} <${email}> (${session.courseType || 'Shields'})`, err.message)
   }
 
   return NextResponse.json({ success: true, emailError })
