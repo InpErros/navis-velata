@@ -45,32 +45,24 @@ export default async function Events() {
           gridTemplateColumns: '1fr 1fr',
         }}>
           {/* Club Membership */}
-          <div style={{ backgroundColor: '#64100F', color: '#ffffff', padding: '28px 32px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: '700', margin: '0 0 6px' }}>Club Membership</h2>
-            <p style={{ fontSize: '14px', color: '#fca5a5', margin: '0 0 12px', lineHeight: '1.5' }}>
+          <div style={{ backgroundColor: '#64100F', color: '#ffffff', padding: '28px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '12px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Club Membership</h2>
+            <p style={{ fontSize: '14px', color: '#fca5a5', margin: 0, lineHeight: '1.5' }}>
               Required to participate in any club activities.
             </p>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '12px' }}>
-              <span style={{ fontSize: '28px', fontWeight: '700' }}>$30</span>
-              <span style={{ fontSize: '13px', color: '#9ca3af' }}>per semester</span>
-            </div>
-            <a href={CASHNET_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#ecaa00', fontWeight: '700', textDecoration: 'none', fontSize: '14px' }}>
-              Pay on CashNet →
+            <a href={CASHNET_URL} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#ecaa00', color: '#000', fontWeight: '700', textDecoration: 'none', fontSize: '15px', padding: '10px 24px', borderRadius: '6px', display: 'inline-block' }}>
+              $30 / semester
             </a>
           </div>
 
           {/* Do Sports Easy */}
-          <div style={{ backgroundColor: '#1e3a5f', color: '#ffffff', padding: '28px 32px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: '700', margin: '0 0 6px' }}>Do Sports Easy</h2>
-            <p style={{ fontSize: '14px', color: '#93c5fd', margin: '0 0 12px', lineHeight: '1.5' }}>
+          <div style={{ backgroundColor: '#1e3a5f', color: '#ffffff', padding: '28px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '12px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Do Sports Easy</h2>
+            <p style={{ fontSize: '14px', color: '#93c5fd', margin: 0, lineHeight: '1.5' }}>
               Required to participate in any club activities on the water.
             </p>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '12px' }}>
-              <span style={{ fontSize: '28px', fontWeight: '700' }}>Free</span>
-              <span style={{ fontSize: '13px', color: '#9ca3af' }}>one-time signup</span>
-            </div>
-            <a href={DO_SPORTS_EASY_URL} target="_blank" rel="noopener noreferrer" data-external style={{ color: '#ecaa00', fontWeight: '700', textDecoration: 'none', fontSize: '14px' }}>
-              Register on Do Sports Easy →
+            <a href={DO_SPORTS_EASY_URL} target="_blank" rel="noopener noreferrer" data-external style={{ backgroundColor: '#ecaa00', color: '#000', fontWeight: '700', textDecoration: 'none', fontSize: '15px', padding: '10px 24px', borderRadius: '6px', display: 'inline-block' }}>
+              Register
             </a>
           </div>
         </div>
