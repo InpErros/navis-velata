@@ -7,7 +7,7 @@ import PageHero from '../components/PageHero';
 // photo: path relative to /public, e.g. '/profiles/gabe-auge.jpg'
 // focalPoint: CSS object-position to control crop, e.g. 'center 30%'
 const boardMembers = [
-  { role: 'President',      name: 'Gabe Auge',     photo: '/gabe-auge.jpg'},
+  { role: 'President',      name: 'Gabe Auge',     photo: null},
   { role: 'Vice President', name: 'James Flores',  photo: null },
   { role: 'Secretary',      name: 'Rosalie Ahern', photo: null },
   { role: 'Treasurer',      name: 'Alison Curd',   photo: null },
@@ -64,22 +64,22 @@ const boats = [
 const goals = [
   {
     title: 'Teaching Students to Sail',
-    description: 'We offer structured sailing instruction at low cost to CSULB students through our various sailing courses.',
+    description: 'Our club organizes training each semester for CSULB students to learn the basics of sailing at low cost.',
     icon: '🎓',
   },
   {
     title: 'Running Events',
-    description: 'From casual sails to themed events, our board plans exciting events to ensure our members have a chance to sail outside of class.',
+    description: 'From casual sails to themed events, our board plans exciting events that make for unforgettable days out on the water.',
     icon: '📅',
   },
   {
     title: 'Maintaining the Fleet',
-    description: 'Supported by our boatwright, the club maintains its own fleet over 30 boat to make sure sailing is accessible to every student.',
+    description: 'Club members maintains our fleet of over 30 boats to make sure sailing is accessible to every student.',
     icon: '⚓',
   },
   {
     title: 'Summer Shields Program',
-    description: 'Each summer we sponsor a community sailing program open to the general public, offering beginner keelboat instruction aboard our classic Shields fleet.',
+    description: 'Each summer we sponsor a community sailing program, run through the research foundation, open to the general public, offering beginner keelboat training aboard our classic Shields fleet.',
     icon: '☀️',
   },
 ];
@@ -243,12 +243,17 @@ export default function About() {
           <div style={{ marginBottom: '56px' }}>
             <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>Our Story</h2>
             <p style={{ fontSize: '17px', color: '#4b5563', lineHeight: '1.8', marginBottom: '16px' }}>
-              The CSULB Sailing Association is one of the oldest recreational clubs on campus...
+              The CSULB Sailing Association is one of the oldest recreational clubs on campus. It was founded only a few years after CSULB was established.
             </p>
             <p style={{ fontSize: '17px', color: '#4b5563', lineHeight: '1.8' }}>
-              The club has always been student-run and student-driven. Each semester a new board
+              Our club is student-run and student-driven, each semester a new board
               takes the helm, carrying on the tradition of making sailing accessible and affordable
-              for the university community, and for the broader Long Beach area through our
+              for the university community. Students organize club events to get out on the water with fellow 
+              club members to enjoy the thrill of sailing. Volunteer coaches work help run trainings for new 
+              club members to learn the basics of sailing.  
+              
+              
+              , and for the broader Long Beach area through our
               summer program.
             </p>
           </div>
@@ -331,7 +336,7 @@ export default function About() {
             </div>
           </ExpandableSection>
 
-          {/* Meet our Coaches */}
+          {/* Meet our Coaches
           <ExpandableSection
             title="Meet our Coaches"
             accentColor="#0c4a6e"
@@ -369,7 +374,7 @@ export default function About() {
                 </div>
               ))}
             </div>
-          </ExpandableSection>
+          </ExpandableSection> */}
 
         </div>
       </div>
