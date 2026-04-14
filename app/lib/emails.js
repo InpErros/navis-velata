@@ -186,7 +186,7 @@ export async function sendShieldsRegistrationConfirmation({ to, name, session })
         <tr>
           <td style="background:#1e3a5f;padding:32px;text-align:center;">
             <p style="color:#ecaa00;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 8px;">CSULB Sailing Association</p>
-            <h1 style="color:#ffffff;font-size:24px;font-weight:700;margin:0;">Registration Confirmed</h1>
+            <h1 style="color:#ffffff;font-size:24px;font-weight:700;margin:0;">RSVP Confirmed</h1>
           </td>
         </tr>
 
@@ -195,7 +195,7 @@ export async function sendShieldsRegistrationConfirmation({ to, name, session })
           <td style="padding:40px 32px;">
             <p style="font-size:16px;color:#374151;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
             <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 32px;">
-              You're registered for the community sailing course below:
+              Your RSVP for the community sailing session below has been received:
             </p>
 
             <!-- Course card -->

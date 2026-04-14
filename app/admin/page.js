@@ -598,7 +598,7 @@ export default function Admin() {
   ]
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '48px 24px' }}>
+    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '48px 24px' }}>
       <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '48px', color: '#111827' }}>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
@@ -643,14 +643,14 @@ export default function Admin() {
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '40px', borderBottom: '2px solid #e5e7eb' }}>
+        <div style={{ display: 'flex', gap: '4px', marginBottom: '40px', borderBottom: '2px solid #e5e7eb', flexWrap: 'wrap' }}>
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
               style={{
-                padding: '10px 24px',
-                fontSize: '15px',
+                padding: '10px 16px',
+                fontSize: '14px',
                 fontWeight: '600',
                 border: 'none',
                 borderBottom: activeTab === tab.id ? '2px solid #ecaa00' : '2px solid transparent',
@@ -658,6 +658,7 @@ export default function Admin() {
                 backgroundColor: 'transparent',
                 color: activeTab === tab.id ? '#111827' : '#6b7280',
                 cursor: 'pointer',
+                whiteSpace: 'nowrap',
               }}
             >
               {tab.label}
