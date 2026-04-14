@@ -244,7 +244,7 @@ export default function CourseSchedule({ programType, courseType }) {
                           fontSize: '14px', cursor: canRegister ? 'pointer' : 'default',
                         }}
                       >
-                        {canRegister ? `Register for ${type}` : 'Full'}
+                        {canRegister ? `RSVP for ${type}` : 'Full'}
                       </button>
 
                       {/* Waitlist note */}

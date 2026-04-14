@@ -195,7 +195,7 @@ export default function ShieldsSchedule({ courseType }) {
                           fontSize: '13px', cursor: full ? 'default' : 'pointer',
                         }}
                       >
-                        {full ? 'Full' : 'Register'}
+                        {full ? 'Full' : 'RSVP'}
                       </button>
                     </div>
                   </div>
