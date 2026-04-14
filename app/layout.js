@@ -60,9 +60,10 @@ export default async function RootLayout({ children }) {
             <p style={{ color: '#003a45', fontSize: '13px', margin: '0 0 4px' }}>
               © {new Date().getFullYear()} CSULB Sailing Association. All rights reserved.
             </p>
-            <p style={{ color: '#6b7280', fontSize: '12px', margin: 0 }}>
+            <p style={{ color: '#6b7280', fontSize: '12px', margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
               All water activities are conducted in accordance with{' '}
-              <a href="https://dbw.parks.ca.gov" target="_blank" rel="noopener noreferrer" style={{ color: '#006E90', textDecoration: 'none', fontWeight: '600' }}>
+              <a href="https://dbw.parks.ca.gov" target="_blank" rel="noopener noreferrer" style={{ color: '#006E90', textDecoration: 'none', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                <Image src="/DBW_LOGO_Small.png" alt="California Division of Boating and Waterways" width={20} height={20} style={{ objectFit: 'contain' }} />
                 California Division of Boating and Waterways
               </a>{' '}
               safety guidelines.
