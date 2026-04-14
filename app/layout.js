@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import ExternalLinkModal from './components/ExternalLinkModal'
 import SiteBanner from './components/SiteBanner'
+import { cookies } from 'next/headers'
 
 // ─── Site-wide banner message ─────────────────────────────────────────────────
 // Set to a string to show a dismissible banner at the bottom of every page.
@@ -17,7 +18,10 @@ export const metadata = {
   description: 'The official website of the CSULB Sailing Association',
 }
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const cookieStore = await cookies()
+  const maintenanceAccess = cookieStore.get('maintenance_access')?.value === 'unlocked'
+
   return (
     <html lang="en">
       <body>
@@ -63,6 +67,26 @@ export default function RootLayout({ children }) {
             </svg>
           </a>
         </footer>
+        {/* Maintenance access bar */}
+        {maintenanceAccess && (
+          <div style={{
+            position: 'fixed', bottom: '16px', right: '16px', zIndex: 9999,
+            backgroundColor: '#1e3a5f', color: '#fff',
+            borderRadius: '8px', padding: '10px 16px',
+            display: 'flex', alignItems: 'center', gap: '10px',
+            fontSize: '13px', fontWeight: '600', boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+          }}>
+            <span style={{ opacity: 0.7 }}>Staff access</span>
+            <a href="/api/maintenance-logout" style={{
+              backgroundColor: '#dc2626', color: '#fff',
+              padding: '4px 12px', borderRadius: '6px',
+              textDecoration: 'none', fontSize: '12px', fontWeight: '700',
+            }}>
+              Lock Site
+            </a>
+          </div>
+        )}
+
         <Analytics />
         <SpeedInsights />
         <ExternalLinkModal />
