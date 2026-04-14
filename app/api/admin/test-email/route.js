@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { validateAdmin } from '@/app/lib/adminAuth'
 import {
   sendRegistrationConfirmation,
+  sendShieldsRegistrationConfirmation,
   sendWaitlistConfirmation,
   sendWaitlistNotification,
 } from '@/app/lib/emails'
@@ -20,6 +21,21 @@ export const POST = async (req) => {
         name: 'Test Student',
         course: { courseType: 'Sailing A', name: 'Sailing A', price: '150' },
         sessionSummary: 'Day 1: Sat Jun 7 · Day 2: Sun Jun 8',
+      })
+    } else if (type === 'shields-registration') {
+      await sendShieldsRegistrationConfirmation({
+        to,
+        name: 'Test Member',
+        session: {
+          name: 'Spring Session 1',
+          courseType: 'Keelboat 1',
+          day1Date: 'Sat Jun 7',
+          day1StartTime: '9:00 AM',
+          day1EndTime: '3:00 PM',
+          day2Date: 'Sun Jun 8',
+          day2StartTime: '9:00 AM',
+          day2EndTime: '3:00 PM',
+        },
       })
     } else if (type === 'waitlist-confirm') {
       await sendWaitlistConfirmation({ to, name: 'Test Student', courseType: 'Sailing A' })

@@ -1725,7 +1725,8 @@ function ShieldsBulkImport({ authHeaders, onImported }) {
 
 function TestEmailPanel({ authHeaders }) {
   const EMAIL_TYPES = [
-    { id: 'registration', label: 'Registration Confirmation', desc: 'Sent to students after they register for a course.' },
+    { id: 'registration', label: 'Student Registration Confirmation', desc: 'Sent to students after they register for a dinghy course.' },
+    { id: 'shields-registration', label: 'Community RSVP Confirmation', desc: 'Sent to community members after they RSVP for a Shields session.' },
     { id: 'waitlist-confirm', label: 'Waitlist Confirmation', desc: 'Sent when a student joins the waitlist.' },
     { id: 'waitlist-notify', label: 'Waitlist Notification', desc: 'Sent to waitlist members when sessions open.' },
   ]
