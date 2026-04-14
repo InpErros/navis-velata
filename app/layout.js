@@ -56,9 +56,18 @@ export default async function RootLayout({ children }) {
             </span>
           </div>
 
-          <p style={{ color: '#003a45', fontSize: '13px', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
-            © {new Date().getFullYear()} CSULB Sailing Association. All rights reserved.
-          </p>
+          <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', textAlign: 'center' }}>
+            <p style={{ color: '#003a45', fontSize: '13px', margin: '0 0 4px' }}>
+              © {new Date().getFullYear()} CSULB Sailing Association. All rights reserved.
+            </p>
+            <p style={{ color: '#6b7280', fontSize: '12px', margin: 0 }}>
+              All water activities are conducted in accordance with{' '}
+              <a href="https://dbw.parks.ca.gov" target="_blank" rel="noopener noreferrer" style={{ color: '#006E90', textDecoration: 'none', fontWeight: '600' }}>
+                California Division of Boating and Waterways
+              </a>{' '}
+              safety guidelines.
+            </p>
+          </div>
 
           <a href="/admin" className="footer-admin-link" style={{ color: '#9ca3af', display: 'flex', alignItems: 'center' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

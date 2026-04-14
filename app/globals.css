@@ -80,7 +80,7 @@ a:hover {
     gap: 16px !important;
     text-align: center !important;
   }
-  .site-footer p {
+  .site-footer p, .site-footer div {
     position: static !important;
     transform: none !important;
   }
