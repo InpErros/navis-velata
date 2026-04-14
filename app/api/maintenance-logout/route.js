@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
-export const GET = () => {
-  const res = NextResponse.redirect(new URL('/maintenance', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'))
+export const GET = (request) => {
+  const res = NextResponse.redirect(new URL('/maintenance', request.url))
   res.cookies.set('maintenance_access', '', {
     httpOnly: true,
     sameSite: 'lax',
