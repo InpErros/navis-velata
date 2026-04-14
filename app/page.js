@@ -88,10 +88,10 @@ export default function Home() {
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>What You Can Do</h2>
             <p style={{ fontSize: '18px', color: '#cce8f0' }}>
-              There&apos;s always something happening on the water — here&apos;s a taste of what club membership gets you.
+              There&apos;s always something happening on the water.
             </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px', marginBottom: '40px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '40px' }}>
             {[
               { icon: '⛵', text: 'Zip around Alamitos Bay on a Laser.' },
               { icon: '🛥️', text: 'Sail out into the harbor aboard a Shields.' },
@@ -106,10 +106,12 @@ export default function Home() {
                 borderRadius: '12px',
                 padding: '24px',
                 display: 'flex',
-                alignItems: 'flex-start',
-                gap: '14px',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                gap: '12px',
               }}>
-                <span style={{ fontSize: '28px', lineHeight: 1, flexShrink: 0 }}>{icon}</span>
+                <span style={{ fontSize: '32px', lineHeight: 1 }}>{icon}</span>
                 <p style={{ fontSize: '15px', color: '#e2f4f8', margin: 0, lineHeight: '1.6' }}>{text}</p>
               </div>
             ))}

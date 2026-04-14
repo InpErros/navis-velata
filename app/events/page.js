@@ -92,10 +92,6 @@ export default async function Events() {
               </a>
             </p>
           </div>
-          <div style={{ textAlign: 'right' }}>
-            <p style={{ fontSize: '36px', fontWeight: '700', margin: 0 }}>Free</p>
-            <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>one-time signup</p>
-          </div>
         </div>
 
         {/* Events list */}

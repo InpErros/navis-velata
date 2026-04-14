@@ -251,10 +251,6 @@ export default function About() {
               for the university community. Students organize club events to get out on the water with fellow 
               club members to enjoy the thrill of sailing. Volunteer coaches work help run trainings for new 
               club members to learn the basics of sailing.  
-              
-              
-              , and for the broader Long Beach area through our
-              summer program.
             </p>
           </div>
 
