@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-const MAINTENANCE_MODE = false // Set to true to lock the site
+const MAINTENANCE_MODE = true // Set to true to lock the site
 
 export function middleware(request) {
   if (!MAINTENANCE_MODE) return NextResponse.next()
