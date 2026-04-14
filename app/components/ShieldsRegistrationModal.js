@@ -65,9 +65,9 @@ export default function ShieldsRegistrationModal({ session, onClose, onSuccess }
         {status === 'success' ? (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
-            <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '12px', color: '#111827' }}>You&apos;re registered!</h2>
+            <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '12px', color: '#111827' }}>You&apos;re RSVPed!</h2>
             <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.7', marginBottom: '16px' }}>
-              We received your registration for <strong>{session.name}</strong>.
+              We received your RSVP for <strong>{session.name}</strong>.
             </p>
             <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '12px 16px', marginBottom: '24px', textAlign: 'left' }}>
               <p style={{ fontSize: '14px', color: '#15803d', margin: '0 0 4px', fontWeight: '600' }}>
@@ -137,15 +137,15 @@ export default function ShieldsRegistrationModal({ session, onClose, onSuccess }
                   value={form.phone} onChange={set('phone')} style={inputStyle} />
               </div>
               <div style={fieldWrap}>
-                <label style={fieldLabel}>Registration Password</label>
-                <input type="password" required placeholder="Enter a registration password"
+                <label style={fieldLabel}>RSVP Password</label>
+                <input type="password" required placeholder="Enter your RSVP password"
                   value={form.password} onChange={set('password')} style={inputStyle} />
                 <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0' }}>
                   Provided by a Sailing Association Representative
                 </p>
               </div>
               <button type="submit" disabled={status === 'submitting'} style={{ ...primaryBtn, width: '100%', marginTop: '8px' }}>
-                {status === 'submitting' ? 'Submitting...' : 'Submit Registration'}
+                {status === 'submitting' ? 'Submitting...' : 'Submit RSVP'}
               </button>
             </form>
           </>
