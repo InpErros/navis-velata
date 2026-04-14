@@ -60,7 +60,7 @@ export default async function Events() {
             </a>
           </div>
         </div>
-        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '48px' }}>
+        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '48px', textAlign: 'center' }}>
           Both are required to participate in club activities.
         </p>
 
